@@ -18,6 +18,8 @@ add_library(QXTree SHARED
   qxtreenode.h
   xpathtreemodel.cpp
   xpathtreemodel.h
+  tixi_utils.cpp
+  tixi_utils.h
 )
 
 # Tixi - the XML handling library
