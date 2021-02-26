@@ -12,7 +12,8 @@ class QXTreeNode : public QObject {
  public:
   explicit QXTreeNode(QObject* parent = nullptr);
 
-  // Recursively create children
+  // Recursively create children to adjust the node tree to the tixi XML
+  // structure
   void createChildren();
 
   // Return XML path in format '/*[i]/*[j]/*[k]...' associated with this node

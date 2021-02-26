@@ -1,4 +1,5 @@
 #include "qxtreenode.h"
+#include "tixi_utils.h"
 
 #include "xpathtreemodel.h"
 QXTreeNode::QXTreeNode(QObject* parent) : QObject(parent) {
@@ -31,12 +32,13 @@ QString QXTreeNode::xmlPath() {
       _tixihandle, xPath().toStdString().c_str(), 1, &xmlpath);
   if (res == SUCCESS) {
     return QString(xmlpath);
-  } else if (res == INVALID_HANDLE) {
-    throw std::runtime_error("Invalid Tixi Handle!");
   } else if (res == FAILED) {
+    // This shouldn't happen! Nodes and element count must agree
     throw std::runtime_error(std::string("Node ") + xPath().toStdString() +
                              std::string(" failed to resolve its own path!"));
   }
+  //
+  tixi_utils::handle_error(res);
   return QString();
 }
 
