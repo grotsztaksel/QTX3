@@ -17,6 +17,22 @@ QXTreeNode::QXTreeNode(QObject* parent) : QObject(parent) {
   _tixihandle = _model->_tixihandle;
 }
 
+void QXTreeNode::createChildren() {
+  std::string xpath = xPath().toStdString() + "/*";
+  int nchildren = 0;
+  auto res =
+      tixiXPathEvaluateNodeNumber(_tixihandle, xpath.c_str(), &nchildren);
+  tixi_utils::handle_error(res);
+  if (res == FAILED) {
+    nchildren = 0;
+  }
+  for (int i = 0; i < nchildren; i++) {
+    QXTreeNode* newNode = new QXTreeNode(this);
+    _children.append(newNode);
+    newNode->createChildren();
+  }
+}
+
 QString QXTreeNode::xPath() const {
   if (!_parent) {
     // Then this is a root node
