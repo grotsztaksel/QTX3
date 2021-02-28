@@ -1,3 +1,4 @@
+#include <regex>
 #include "gtest/gtest.h"
 #include "txutils.h"
 
@@ -7,7 +8,7 @@ class TxUtilsTest : public ::testing::Test {
   //  ~UtilsTest() override;
 
  protected:
-  const char* xml = R"(<?xml version="1.0"?>
+  const char* xml_raw = R"(<?xml version="1.0"?>
                        <root>
                            <child_1>
                                <child/>
@@ -39,10 +40,18 @@ class TxUtilsTest : public ::testing::Test {
                                    <node_5/>
                                </node_3>
                            </child_2>
-                       </root>                                   )";
+                       </root>)";
+  char* xml;
 };
 
-TxUtilsTest::TxUtilsTest() {}
+TxUtilsTest::TxUtilsTest() {
+  // Need to get rid of fake text elements from the string
+
+  std::string rawstring(xml_raw);
+  std::regex re(R"(>\s*<)");
+  std::string stripped = std::regex_replace(rawstring, re, "><");
+  xml = strdup(stripped.c_str());
+}
 
 TEST_F(TxUtilsTest, test_handle_error) {
   ReturnCode ret = ReturnCode::ALREADY_SAVED;
@@ -69,11 +78,13 @@ TEST_F(TxUtilsTest, test_uniqueName) {
       "node_4[3]",
       txutils::uniqueName("/root/child_2[1]/child_2[1]/node_3[1]/node_4[3]"));
 }
+
 TEST_F(TxUtilsTest, test_elementName) {
   EXPECT_STREQ(
       "node_4",
       txutils::elementName("/root/child_2[1]/child_2[1]/node_3[1]/node_4[3]"));
 }
+
 TEST_F(TxUtilsTest, test_elementNumber) {
   EXPECT_EQ(3, txutils::elementNumber(
                    "/root/child_2[1]/child_2[1]/node_3[1]/node_4[3]"));
@@ -87,6 +98,8 @@ TEST_F(TxUtilsTest, test_indexedPath) {
       handle, "/root/child_2[1]/child_2[1]/node_3[1]/node_4[3]", 1, &ipath);
 
   EXPECT_STREQ("/*[1]/*[2]/*[1]/*[1]/*[4]", ipath);
+
+  delete[] ipath;
 }
 
 int main(int argc, char** argv) {
