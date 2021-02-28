@@ -4,7 +4,7 @@
 #include <tixi.h>
 
 // Collection of general-purpose tixi & xml path utilities
-namespace tixi_utils {
+namespace txutils {
 
 // Throw error when INVALID_HANDLE
 void handle_error(ReturnCode code);

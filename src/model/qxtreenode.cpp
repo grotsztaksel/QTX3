@@ -1,5 +1,5 @@
 #include "qxtreenode.h"
-#include "tixi_utils.h"
+#include "txutils.h"
 
 #include "xpathtreemodel.h"
 QXTreeNode::QXTreeNode(QObject* parent) : QObject(parent) {
@@ -22,7 +22,7 @@ void QXTreeNode::createChildren() {
   int nchildren = 0;
   auto res =
       tixiXPathEvaluateNodeNumber(_tixihandle, xpath.c_str(), &nchildren);
-  tixi_utils::handle_error(res);
+  txutils::handle_error(res);
   if (res == FAILED) {
     nchildren = 0;
   }
@@ -54,7 +54,7 @@ QString QXTreeNode::xmlPath() {
                              std::string(" failed to resolve its own path!"));
   }
   //
-  tixi_utils::handle_error(res);
+  txutils::handle_error(res);
   return QString();
 }
 

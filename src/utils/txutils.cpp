@@ -1,7 +1,7 @@
-#include "tixi_utils.h"
 #include <stdexcept>
+#include "txutils.h"
 
-void tixi_utils::handle_error(ReturnCode code) {
+void txutils::handle_error(ReturnCode code) {
   if (code == INVALID_HANDLE) {
     throw std::runtime_error("Invalid Tixi Handle!");
   }
