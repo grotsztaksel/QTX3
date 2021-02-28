@@ -1,8 +1,5 @@
+file(GLOB_RECURSE SRC_UTILS *.cpp *.h)
 
-
-add_library(Utils OBJECT
-  txutils.cpp
-  txutils.h
-)
+add_library(Utils OBJECT ${SRC_UTILS})
 
 set(Utils_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
