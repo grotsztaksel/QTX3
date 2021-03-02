@@ -14,9 +14,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
-include_directories(${QT_INCLUDE_DIRS})
-include_directories(${Qt${QT_VERSION_MAJOR}_INCLUDE_DIRS})
-
+set(QT_INCLUDE ${QT_INCLUDE_DIRS} ${Qt${QT_VERSION_MAJOR}_INCLUDE_DIRS})
+include_directories(${QT_INCLUDE})
 
 # Tixi - the XML handling library
 find_package(TIXI3 REQUIRED)
@@ -24,21 +23,16 @@ include_directories(${TIXI_INCLUDE_DIRS})
 
 add_subdirectory(src)
 
-
 add_library(QXTree SHARED
   QXTree_global.h
 
 )
-
-
 
 target_link_libraries(QXTree PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(QXTree PRIVATE ${TIXI_LIBRARIES})
 target_link_libraries(QXTree PRIVATE QXmodel)
 target_link_libraries(QXTree PRIVATE Utils)
 target_compile_definitions(QXTree PRIVATE QXTREE_LIBRARY)
-
-
 
 add_subdirectory(test)
 
