@@ -5,7 +5,7 @@
 class TxUtilsTest : public ::testing::Test {
  protected:
   TxUtilsTest();
-  //  ~UtilsTest() override;
+  ~TxUtilsTest() override;
 
  protected:
   const char* xml_raw = R"(<?xml version="1.0"?>
@@ -51,6 +51,9 @@ TxUtilsTest::TxUtilsTest() {
   std::regex re(R"(>\s*<)");
   std::string stripped = std::regex_replace(rawstring, re, "><");
   xml = strdup(stripped.c_str());
+}
+TxUtilsTest::~TxUtilsTest() {
+  delete xml;
 }
 
 TEST_F(TxUtilsTest, test_handle_error) {
@@ -100,4 +103,44 @@ TEST_F(TxUtilsTest, test_indexedPath) {
   EXPECT_STREQ("/*[1]/*[2]/*[1]/*[1]/*[4]", ipath);
 
   delete[] ipath;
+}
+
+TEST_F(TxUtilsTest, test_copy) {
+  TixiDocumentHandle handle;
+  tixiImportFromString(this->xml, &handle);
+
+  const char* expected_clip_raw = R"(
+<?xml version="1.0"?>
+<child_2 attr="9">
+    <node_3>
+        <node_4/>
+        <node_4 attr="good"/>
+        <node_5>
+                                                           Text O
+                                       </node_5>
+        <node_4 name="node4">
+                                                           Text
+                                       </node_4>
+    </node_3>
+    <node_3 name="none"/>
+</child_2>
+)";
+  std::string rawstring(xml_raw);
+  std::regex re(R"(>\s*<)");
+  std::string stripped = std::regex_replace(rawstring, re, "><");
+  const char* expected_stripped = strdup(stripped.c_str());
+  char* expected_clip;
+  char* actual_clip;
+  TixiDocumentHandle expected;
+  tixiImportFromString(expected_stripped, &expected);
+  TixiDocumentHandle clip;
+  ASSERT_EQ(SUCCESS,
+            txutils::copy(handle, "/root/child_2[1]/child_2[1]", &clip));
+
+  char* clip_content;
+  ASSERT_EQ(SUCCESS, tixiExportDocumentAsString(clip, &clip_content));
+  ASSERT_EQ(SUCCESS, tixiExportDocumentAsString(expected, &expected_clip));
+  ASSERT_EQ(SUCCESS, tixiExportDocumentAsString(clip, &actual_clip));
+
+  ASSERT_TRUE(strcmp(expected_clip, actual_clip));
 }

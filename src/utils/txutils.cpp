@@ -101,3 +101,140 @@ char* txutils::uniqueName(const char* xPathExpression) {
   istr i = path.find_last_of("/") + 1;
   return strdup(path.substr(i).c_str());
 }
+
+ReturnCode txutils::copy(TixiDocumentHandle handle,
+                         const char* xPathExpression,
+                         TixiDocumentHandle* clip,
+                         const char* target_path) {
+  ReturnCode ret;
+  char* targetPath;
+
+  if (!target_path) {
+    // This is a toplevel recursion - get the toplevel node name
+    char* source_path;
+    ret = tixiXPathExpressionGetXPath(handle, xPathExpression, 1, &source_path);
+    if (ret != SUCCESS)
+      return ret;
+    char* name = elementName(source_path);
+
+    ret = tixiCreateDocument(name, clip);
+    if (ret != SUCCESS)
+      return ret;
+    // Need some dummy namespace to enable xPathExpression functions on the clip
+    ret = tixiRegisterNamespace(*clip, "/local", "clp");
+    if (ret != SUCCESS)
+      return ret;
+    targetPath = strdup(std::string(name).insert(0, 1, '/').c_str());
+  } else {
+    targetPath = strdup(target_path);
+  }
+
+  int na;
+  ret = tixiGetNumberOfAttributes(handle, xPathExpression, &na);
+  if (ret != SUCCESS) {
+    delete targetPath;
+    return ret;
+  }
+
+  // copy attributes first
+  for (int i = 1; i <= na; i++) {
+    char* attrName;
+    char* attrValue;
+    ret = tixiGetAttributeName(handle, xPathExpression, i, &attrName);
+    if (ret != SUCCESS) {
+      delete targetPath;
+      return ret;
+    }
+
+    ret = tixiGetTextAttribute(handle, xPathExpression, attrName, &attrValue);
+    if (ret != SUCCESS) {
+      delete targetPath;
+      //      delete attrName;
+      return ret;
+    }
+    ret = tixiAddTextAttribute(*clip, targetPath, attrName, attrValue);
+    //    delete targetPath;
+    //    delete attrName;
+    //    delete attrValue;
+    if (ret != SUCCESS) {
+      return ret;
+    }
+  }
+
+  // recursively copy elements
+
+  int ne;
+  ret = tixiGetNumberOfChilds(handle, xPathExpression, &ne);
+  if (ret != SUCCESS) {
+    delete targetPath;
+    return ret;
+  }
+  int ic = 0;
+  for (int i = 1; i <= ne; i++) {
+    char* elementName;
+    ret = tixiGetChildNodeName(handle, xPathExpression, i, &elementName);
+    if (ret != SUCCESS) {
+      delete targetPath;
+      return ret;
+    }
+    if (std::string(elementName) == "#comment") {
+      // skipping comments, count them first.
+      ic++;
+      continue;
+    } else if (std::string(elementName) == "#text") {
+      // Need to copy the text from the element and create
+      char* text;
+      ret = tixiGetTextElement(handle, xPathExpression, &text);
+      if (ret != SUCCESS) {
+        delete targetPath;
+        return ret;
+      }
+      // The targetPath is already the path to the element, that has been
+      // created in the previous recursion
+      ret = tixiUpdateTextElement(*clip, targetPath, text);
+      //      delete text;
+      if (ret != SUCCESS) {
+        delete targetPath;
+        return ret;
+      }
+
+    } else {
+      // 1. Create new element in the target
+      // 2. Append its name to the source and target paths
+      // 3. Run the function recursively with updated paths
+      ret = tixiCreateElement(*clip, targetPath, elementName);
+      if (ret != SUCCESS) {
+        delete targetPath;
+        return ret;
+      }
+      char* sourcePath;
+      char* xPath = strdup((std::string(xPathExpression) + "/*").c_str());
+      ret = tixiXPathExpressionGetXPath(handle, xPath, i - ic, &sourcePath);
+      delete xPath;
+      if (ret != SUCCESS) {
+        delete targetPath;
+        return ret;
+      }
+
+      int n;
+      xPath = strdup((std::string(targetPath) + "/*").c_str());
+      ret = tixiXPathEvaluateNodeNumber(*clip, xPath, &n);
+      if (ret != SUCCESS) {
+        delete targetPath;
+        //        delete sourcePath;
+        return ret;
+      }
+
+      char* newTargetPath;
+
+      ret = tixiXPathExpressionGetXPath(*clip, xPath, n, &newTargetPath);
+      if (ret != SUCCESS) {
+        delete targetPath;
+        //        delete sourcePath;
+        return ret;
+      }
+      ret = copy(handle, sourcePath, clip, newTargetPath);
+    }
+  }
+  return SUCCESS;
+}

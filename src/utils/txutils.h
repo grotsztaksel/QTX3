@@ -32,6 +32,13 @@ ReturnCode indexedPath(TixiDocumentHandle handle,
                        int index,
                        char** ipath);
 
+/**
+  @brief Copies the tree content of a selected element to a new handle
+ */
+ReturnCode copy(TixiDocumentHandle handle,
+                const char* xPathExpression,
+                TixiDocumentHandle* clip,
+                const char* target_path = nullptr);
 char* elementName(const char* xPathExpression);
 int elementNumber(const char* xPathExpression);
 char* uniqueName(const char* xPathExpression);
