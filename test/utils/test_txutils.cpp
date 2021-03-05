@@ -109,8 +109,8 @@ TEST_F(TxUtilsTest, test_copy) {
   TixiDocumentHandle handle;
   tixiImportFromString(this->xml, &handle);
 
-  const char* expected_clip_raw = R"(
-<?xml version="1.0"?>
+  ASSERT_EQ(SUCCESS, txutils::indentText(handle));
+  const char* expected_clip_raw = R"(<?xml version="1.0"?>
 <child_2 attr="9">
     <node_3>
         <node_4/>
@@ -125,7 +125,7 @@ TEST_F(TxUtilsTest, test_copy) {
     <node_3 name="none"/>
 </child_2>
 )";
-  std::string rawstring(xml_raw);
+  std::string rawstring(expected_clip_raw);
   std::regex re(R"(>\s*<)");
   std::string stripped = std::regex_replace(rawstring, re, "><");
   const char* expected_stripped = strdup(stripped.c_str());
@@ -137,10 +137,37 @@ TEST_F(TxUtilsTest, test_copy) {
   ASSERT_EQ(SUCCESS,
             txutils::copy(handle, "/root/child_2[1]/child_2[1]", &clip));
 
-  char* clip_content;
-  ASSERT_EQ(SUCCESS, tixiExportDocumentAsString(clip, &clip_content));
   ASSERT_EQ(SUCCESS, tixiExportDocumentAsString(expected, &expected_clip));
   ASSERT_EQ(SUCCESS, tixiExportDocumentAsString(clip, &actual_clip));
 
-  ASSERT_TRUE(strcmp(expected_clip, actual_clip));
+  ASSERT_STREQ(expected_clip, actual_clip);
+}
+
+TEST_F(TxUtilsTest, test_indentText) {
+  const char* original_text =
+      "\n                                                           Text O\n   "
+      "                                    ";
+  TixiDocumentHandle handle;
+  ASSERT_EQ(SUCCESS, tixiImportFromString(this->xml, &handle));
+  char* text_element;
+  ASSERT_EQ(SUCCESS, tixiGetTextElement(
+                         handle, "/root/child_2[1]/child_2[1]/node_3/node_5[1]",
+                         &text_element));
+  ASSERT_STREQ(original_text, text_element);
+
+  const char* expected_text = "\n          Text O\n        ";
+
+  ASSERT_EQ(SUCCESS,
+            txutils::indentText(
+                handle, "/root/child_2[1]/child_2[1]/node_3/node_5[1]"));
+
+  ASSERT_EQ(SUCCESS, tixiGetTextElement(
+                         handle, "/root/child_2[1]/child_2[1]/node_3/node_5[1]",
+                         &text_element));
+
+  ASSERT_STREQ(expected_text, text_element);
+}
+
+TEST_F(TxUtilsTest, test_indentation) {
+  ASSERT_EQ(2, txutils::indentation());
 }

@@ -39,9 +39,30 @@ ReturnCode copy(TixiDocumentHandle handle,
                 const char* xPathExpression,
                 TixiDocumentHandle* clip,
                 const char* target_path = nullptr);
+/**
+  @brief indent text in all text elements satisfying the provided
+  xPathExpression. If none is given, will indent all text elements
+  @param[in]  handle handle as returned by ::tixiOpenDocument,
+  ::tixiOpenDocumentRecursive, ::tixiOpenDocumentFromHTTP, ::tixiCreateDocument
+  @param[in]  xPathExpression The XPath Expression to evaluate.
+
+  NOTE: The function assumes, that the xPathExpression will only find text
+  elements. Otherwise will return error. Use "text()" in the xPathExpression to
+  filter out the text elements
+*/
+ReturnCode indentText(TixiDocumentHandle handle,
+                      const char* xPathExpression = nullptr);
 char* elementName(const char* xPathExpression);
 int elementNumber(const char* xPathExpression);
 char* uniqueName(const char* xPathExpression);
+
+/**
+  @brief Helper function returning the number of spaces per each indentation in
+  tixi using pretty print
+
+  @return Number of spaces per each indentation in tixi using pretty print
+*/
+int indentation();
 
 };  // namespace txutils
 
