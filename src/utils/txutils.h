@@ -46,7 +46,7 @@ ReturnCode paste(TixiDocumentHandle handle,
                  const char* elementPath,
                  TixiDocumentHandle clip,
                  int index = 0,
-                 const char* target_path = nullptr);
+                 const char* target_path_in = nullptr);
 /**
   @brief indent text in all text elements satisfying the provided
   xPathExpression. If none is given, will indent all text elements

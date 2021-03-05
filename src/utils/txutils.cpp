@@ -117,40 +117,41 @@ ReturnCode txutils::copy(TixiDocumentHandle handle,
   const char* target_path = strdup(std::string(name).insert(0, 1, '/').c_str());
 
   // The function paste does exactly the same thing but from clip to handle
-  return txutils::paste(handle, elementPath, *clip, 0, target_path);
+  // we want to paste from the handle (Document) to the clip ("clipboard" tixi)
+  return txutils::paste(*clip, target_path, handle, 0, elementPath);
 }
 
-ReturnCode txutils::paste(TixiDocumentHandle handle_to_be_clip,
-                          const char* target_path_to_be,
-                          TixiDocumentHandle handle,
+ReturnCode txutils::paste(TixiDocumentHandle handle,
+                          const char* elementPath,
+                          TixiDocumentHandle clip,
                           int index,
-                          const char* elementPath) {
-  ReturnCode ret;
-
+                          const char* target_path_in) {
+  char* target_path;
+  if (target_path_in) {
+    target_path = strdup(target_path_in);
+  } else {
+    target_path = strdup("/");
+  }
   int na;
-  CHECK_ERR(
-      tixiGetNumberOfAttributes(handle_to_be_clip, target_path_to_be, &na));
+  CHECK_ERR(tixiGetNumberOfAttributes(clip, target_path, &na));
 
   // copy attributes first
   for (int i = 1; i <= na; i++) {
     char* attrName;
     char* attrValue;
-    CHECK_ERR(tixiGetAttributeName(handle_to_be_clip, target_path_to_be, i,
-                                   &attrName));
-    CHECK_ERR(tixiGetTextAttribute(handle_to_be_clip, target_path_to_be,
-                                   attrName, &attrValue));
+    CHECK_ERR(tixiGetAttributeName(clip, target_path, i, &attrName));
+    CHECK_ERR(tixiGetTextAttribute(clip, target_path, attrName, &attrValue));
     CHECK_ERR(tixiAddTextAttribute(handle, elementPath, attrName, attrValue));
   }
 
   // recursively copy elements from one handle to another
 
   int ne;
-  CHECK_ERR(tixiGetNumberOfChilds(handle_to_be_clip, target_path_to_be, &ne));
+  CHECK_ERR(tixiGetNumberOfChilds(clip, target_path, &ne));
   int ic = 0;
   for (int i = 1; i <= ne; i++) {
     char* elementName;
-    CHECK_ERR(tixiGetChildNodeName(handle_to_be_clip, target_path_to_be, i,
-                                   &elementName));
+    CHECK_ERR(tixiGetChildNodeName(clip, target_path, i, &elementName));
     if (std::string(elementName) == "#comment") {
       // skipping comments, count them first.
       ic++;
@@ -158,8 +159,7 @@ ReturnCode txutils::paste(TixiDocumentHandle handle_to_be_clip,
     } else if (std::string(elementName) == "#text") {
       // Need to copy the text from the element and create
       char* text;
-      CHECK_ERR(
-          tixiGetTextElement(handle_to_be_clip, target_path_to_be, &text));
+      CHECK_ERR(tixiGetTextElement(clip, target_path, &text));
       // The targetPath is already the path to the element, that has been
       // created in the previous recursion
       CHECK_ERR(tixiUpdateTextElement(handle, elementPath, text));
@@ -176,22 +176,20 @@ ReturnCode txutils::paste(TixiDocumentHandle handle_to_be_clip,
       }
       ReturnCode res;
       char* sourcePath;
-      char* xPath = strdup((std::string(target_path_to_be) + "/*").c_str());
-      res = tixiXPathExpressionGetXPath(handle_to_be_clip, xPath, i - ic,
-                                        &sourcePath);
+      char* xPath = strdup((std::string(target_path) + "/*").c_str());
+      res = tixiXPathExpressionGetXPath(clip, xPath, i - ic, &sourcePath);
       delete xPath;
       CHECK_ERR(res);
 
       int n;
       xPath = strdup((std::string(elementPath) + "/*").c_str());
       res = tixiXPathEvaluateNodeNumber(handle, xPath, &n);
-      delete xPath;
       CHECK_ERR(res);
 
       char* newTargetPath;
 
       CHECK_ERR(tixiXPathExpressionGetXPath(handle, xPath, n, &newTargetPath));
-      CHECK_ERR(paste(handle_to_be_clip, sourcePath, handle, 0, newTargetPath));
+      CHECK_ERR(paste(handle, newTargetPath, clip, 0, sourcePath));
     }
   }
   return SUCCESS;
