@@ -144,6 +144,92 @@ TEST_F(TxUtilsTest, test_copy) {
   ASSERT_STREQ(expected_clip, actual_clip);
 }
 
+TEST_F(TxUtilsTest, test_paste) {
+  TixiDocumentHandle handle;
+  tixiImportFromString(this->xml, &handle);
+  TixiDocumentHandle clip;
+  ASSERT_EQ(SUCCESS,
+            txutils::copy(handle, "/root/child_2[1]/child_2[1]", &clip));
+
+  ASSERT_EQ(SUCCESS, txutils::paste(
+                         handle, "/root/child_2[2]/node_3[1]/node_4[2]", clip));
+  ASSERT_EQ(SUCCESS, txutils::paste(handle, "/root/child_2[2]", clip, 1));
+
+  tixiSaveCompleteDocument(handle, "result.xml");
+  char* path;
+  int i = 1;
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_1", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_1/child", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[1]", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[1]/child_2[1]", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[1]/child_2[1]/node_3[1]", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[1]/child_2[1]/node_3[1]/node_4[1]", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[1]/child_2[1]/node_3[1]/node_4[2]", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[1]/child_2[1]/node_3[1]/node_5", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[1]/child_2[1]/node_3[1]/node_4[3]", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[1]/child_2[1]/node_3[2]", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[1]/child_2[2]", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[1]/node_3", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[1]/node_3/node_4", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]/child_2", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]/node_3", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]/node_3/node_4[1]", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]/node_3/node_4[2]", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]/node_3/node_4[2]/child_2", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]/node_3/node_4[2]/child_2/node_3[1]", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]/node_3/node_4[2]/child_2/node_3[1]/node_4[1]",
+               path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]/node_3/node_4[2]/child_2/node_3[1]/node_4[2]",
+               path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]/node_3/node_4[2]/child_2/node_3[1]/node_5",
+               path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]/node_3/node_4[2]/child_2/node_3[1]/node_4[3]",
+               path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]/node_3/node_4[2]/child_2/node_3[2]", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]/node_3/node_5", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]/node_3/node_3[1]", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]/node_3/node_3[1]/node_4[1]", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]/node_3/node_3[1]/node_4[2]", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]/node_3/node_3[1]/node_5", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]/node_3/node_3[1]/node_4[3]", path);
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
+  ASSERT_STREQ("/root/child_2[2]/node_3/node_3[2]", path);
+}
+
 TEST_F(TxUtilsTest, test_indentText) {
   const char* original_text =
       "\n                                                           Text O\n   "
