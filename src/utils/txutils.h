@@ -36,9 +36,17 @@ ReturnCode indexedPath(TixiDocumentHandle handle,
   @brief Copies the tree content of a selected element to a new handle
  */
 ReturnCode copy(TixiDocumentHandle handle,
-                const char* xPathExpression,
-                TixiDocumentHandle* clip,
-                const char* target_path = nullptr);
+                const char* elementPath,
+                TixiDocumentHandle* clip);
+
+/**
+  @brief Pastes the tree content of a clip handle element to a target handle
+ */
+ReturnCode paste(TixiDocumentHandle handle,
+                 const char* elementPath,
+                 TixiDocumentHandle clip,
+                 int index = 0,
+                 const char* target_path = nullptr);
 /**
   @brief indent text in all text elements satisfying the provided
   xPathExpression. If none is given, will indent all text elements
