@@ -168,7 +168,12 @@ ReturnCode txutils::paste(TixiDocumentHandle handle_to_be_clip,
       // 1. Create new element in the target
       // 2. Append its name to the source and target paths
       // 3. Run the function recursively with updated paths
-      CHECK_ERR(tixiCreateElement(handle, elementPath, elementName));
+      if (index == 0) {
+        CHECK_ERR(tixiCreateElement(handle, elementPath, elementName));
+      } else {
+        CHECK_ERR(
+            tixiCreateElementAtIndex(handle, elementPath, elementName, index));
+      }
       ReturnCode res;
       char* sourcePath;
       char* xPath = strdup((std::string(target_path_to_be) + "/*").c_str());
