@@ -136,7 +136,8 @@ TEST_F(TxUtilsTest, test_copy) {
   TixiDocumentHandle clip;
   ASSERT_EQ(SUCCESS,
             txutils::copy(handle, "/root/child_2[1]/child_2[1]", &clip));
-
+  ASSERT_EQ(SUCCESS, txutils::indentText(expected));
+  ASSERT_EQ(SUCCESS, txutils::indentText(clip));
   ASSERT_EQ(SUCCESS, tixiExportDocumentAsString(expected, &expected_clip));
   ASSERT_EQ(SUCCESS, tixiExportDocumentAsString(clip, &actual_clip));
 
