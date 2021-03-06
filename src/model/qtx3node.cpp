@@ -2,20 +2,15 @@
 #include "txutils.h"
 
 #include "qtx3model.h"
-QTX3Node::QTX3Node(QObject* parent) : QObject(parent) {
-  // Try casting parent on either a model or node pointer
-  QTX3Model* model = qobject_cast<QTX3Model*>(parent);
-  _parent =
-      qobject_cast<QTX3Node*>(parent);  // If parent is not a node, but a
-                                          // model, then this will be a nullptr
-  if (model) {
-    _model = model;
-  } else if (_parent) {
-    _model = _parent->_model;
-  }
-
-  _tixihandle = _model->_tixihandle;
+QTX3Node::QTX3Node(QTX3Model* parent_model)
+    : QObject(parent_model), _model(parent_model) {
+  parent_model->giveHandle(this);
 }
+
+QTX3Node::QTX3Node(QTX3Node* parent_node)
+    : QObject(parent_node),
+      _model(parent_node->_model),
+      _tixihandle(parent_node->_tixihandle) {}
 
 void QTX3Node::createChildren() {
   std::string xpath = xPath().toStdString() + "/*";

@@ -10,7 +10,9 @@ class QTX3Model;
 class QTX3Node : public QObject {
   Q_OBJECT
  public:
-  explicit QTX3Node(QObject* parent = nullptr);
+  friend class QTX3Model;
+  explicit QTX3Node(QTX3Model* parent_model);
+  explicit QTX3Node(QTX3Node* parent_node);
 
   // Recursively create children to adjust the node tree to the tixi XML
   // structure
