@@ -6,11 +6,12 @@
 #include <QVector>
 
 class QTX3Model;
-
+class QXT3NodeTest;
 class QTX3Node : public QObject {
   Q_OBJECT
  public:
   friend class QTX3Model;
+  friend class QXT3NodeTest;
   explicit QTX3Node(QTX3Model* parent_model);
   explicit QTX3Node(QTX3Node* parent_node);
 

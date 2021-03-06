@@ -10,6 +10,7 @@ QTX3Node::QTX3Node(QTX3Model* parent_model)
 QTX3Node::QTX3Node(QTX3Node* parent_node)
     : QObject(parent_node),
       _model(parent_node->_model),
+      _parent(parent_node),
       _tixihandle(parent_node->_tixihandle) {}
 
 void QTX3Node::createChildren() {
