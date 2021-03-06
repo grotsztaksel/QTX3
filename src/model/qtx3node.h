@@ -28,6 +28,8 @@ class QTX3Node : public QObject {
   // Return index of this node in the parent's _children
   int index() const;
 
+  const QTX3Model* model() const;
+
  signals:
 
  private:
@@ -38,11 +40,11 @@ class QTX3Node : public QObject {
   QVector<QObject*> _columnItems;
 
   // Model to which the node belongs
-  const QTX3Model* _model;
+  const QTX3Model* _model = nullptr;
 
   // Parent node. Can be retrieved by calling parent(), but would have to be
   // cast onto QXTreeNode every time
-  const QTX3Node* _parent;
+  const QTX3Node* _parent = nullptr;
 
   TixiDocumentHandle _tixihandle;
 };

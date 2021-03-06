@@ -56,3 +56,7 @@ QString QTX3Node::xmlPath() {
 int QTX3Node::index() const {
   return _parent->_children.indexOf(this);
 }
+
+const QTX3Model* QTX3Node::model() const {
+  return _model;
+}
