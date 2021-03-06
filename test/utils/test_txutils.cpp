@@ -155,7 +155,6 @@ TEST_F(TxUtilsTest, test_paste) {
                          handle, "/root/child_2[2]/node_3[1]/node_4[2]", clip));
   ASSERT_EQ(SUCCESS, txutils::paste(handle, "/root/child_2[2]", clip, 1));
 
-  tixiSaveCompleteDocument(handle, "result.xml");
   char* path;
   int i = 1;
   ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
