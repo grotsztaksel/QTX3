@@ -4,12 +4,20 @@
 #include <tixi.h>
 #include <QAbstractItemModel>
 
+class QTX3Node;
 class QTX3Model : public QAbstractItemModel {
   Q_OBJECT
 
  public:
   explicit QTX3Model(QObject* parent = nullptr);
 
+  /****************************************************
+   *
+   *
+   *        Override QAbstractItemModel methods
+   *
+   *
+   *****************************************************/
   // Header:
   QVariant headerData(int section,
                       Qt::Orientation orientation,
@@ -55,7 +63,18 @@ class QTX3Model : public QAbstractItemModel {
                      int count,
                      const QModelIndex& parent = QModelIndex()) override;
 
- private:
+  /****************************************************
+   *
+   *
+   *        Class specific methods
+   *
+   *
+   *****************************************************/
+
+ public:
+  void giveHandle(QTX3Node* node);
+
+ protected:
   TixiDocumentHandle _tixihandle = -1;
 
   friend class QXTreeNode;

@@ -1,17 +1,18 @@
 #include "qtx3model.h"
+#include "qtx3node.h"
 
 QTX3Model::QTX3Model(QObject* parent) : QAbstractItemModel(parent) {}
 
 QVariant QTX3Model::headerData(int section,
-                                    Qt::Orientation orientation,
-                                    int role) const {
+                               Qt::Orientation orientation,
+                               int role) const {
   // FIXME: Implement me!
 }
 
 bool QTX3Model::setHeaderData(int section,
-                                   Qt::Orientation orientation,
-                                   const QVariant& value,
-                                   int role) {
+                              Qt::Orientation orientation,
+                              const QVariant& value,
+                              int role) {
   if (value != headerData(section, orientation, role)) {
     // FIXME: Implement me!
     emit headerDataChanged(orientation, section, section);
@@ -21,8 +22,8 @@ bool QTX3Model::setHeaderData(int section,
 }
 
 QModelIndex QTX3Model::index(int row,
-                                  int column,
-                                  const QModelIndex& parent) const {
+                             int column,
+                             const QModelIndex& parent) const {
   // FIXME: Implement me!
 }
 
@@ -53,8 +54,8 @@ QVariant QTX3Model::data(const QModelIndex& index, int role) const {
 }
 
 bool QTX3Model::setData(const QModelIndex& index,
-                             const QVariant& value,
-                             int role) {
+                        const QVariant& value,
+                        int role) {
   if (data(index, role) != value) {
     // FIXME: Implement me!
     emit dataChanged(index, index, QVector<int>() << role);
@@ -77,8 +78,8 @@ bool QTX3Model::insertRows(int row, int count, const QModelIndex& parent) {
 }
 
 bool QTX3Model::insertColumns(int column,
-                                   int count,
-                                   const QModelIndex& parent) {
+                              int count,
+                              const QModelIndex& parent) {
   beginInsertColumns(parent, column, column + count - 1);
   // FIXME: Implement me!
   endInsertColumns();
@@ -91,9 +92,13 @@ bool QTX3Model::removeRows(int row, int count, const QModelIndex& parent) {
 }
 
 bool QTX3Model::removeColumns(int column,
-                                   int count,
-                                   const QModelIndex& parent) {
+                              int count,
+                              const QModelIndex& parent) {
   beginRemoveColumns(parent, column, column + count - 1);
   // FIXME: Implement me!
   endRemoveColumns();
+}
+
+void QTX3Model::giveHandle(QTX3Node* node) {
+  node->_tixihandle = _tixihandle;
 }
