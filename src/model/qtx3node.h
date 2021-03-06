@@ -16,15 +16,15 @@ class QTX3Node : public QObject {
   explicit QTX3Node(QTX3Node* parent_node);
 
   // Recursively create children to adjust the node tree to the tixi XML
-  // structure
-  void createChildren();
+  // structure. Return number of children created on the top level
+  int createChildren();
 
   // Return XML path in format '/*[i]/*[j]/*[k]...' associated with this node
   QString xPath() const;
 
   // Return XML path in format '/root/element/subelement[j]/thiselement'
   // associated with this node.
-  QString xmlPath();
+  QString xmlPath() const;
 
   // Return index of this node in the parent's _children
   int index() const;

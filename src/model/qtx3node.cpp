@@ -13,7 +13,7 @@ QTX3Node::QTX3Node(QTX3Node* parent_node)
       _parent(parent_node),
       _tixihandle(parent_node->_tixihandle) {}
 
-void QTX3Node::createChildren() {
+int QTX3Node::createChildren() {
   std::string xpath = xPath().toStdString() + "/*";
   int nchildren = 0;
   auto res =
@@ -27,6 +27,7 @@ void QTX3Node::createChildren() {
     _children.append(newNode);
     newNode->createChildren();
   }
+  return nchildren;
 }
 
 QString QTX3Node::xPath() const {
@@ -38,7 +39,7 @@ QString QTX3Node::xPath() const {
   return _parent->xPath() + QString("/*[%1]").arg(QString::number(index() + 1));
 }
 
-QString QTX3Node::xmlPath() {
+QString QTX3Node::xmlPath() const {
   char* xmlpath;
   auto res = tixiXPathExpressionGetXPath(
       _tixihandle, xPath().toStdString().c_str(), 1, &xmlpath);
