@@ -1,4 +1,4 @@
-﻿#include "qxtreenodetest.h"
+﻿#include "gtest/gtest.h"
 
 #include <QObject>
 #include "qtx3model.h"
@@ -70,7 +70,7 @@ QTX3TestModel::QTX3TestModel(QObject* parent) : QTX3Model(parent) {
  *
  *
  ***************************************************/
-class QXTreeNodeTest : public ::testing::Test {
+class QXT3NodeTest : public ::testing::Test {
  public:
  protected:
   void SetUp() override;
@@ -87,21 +87,23 @@ class QXTreeNodeTest : public ::testing::Test {
  *
  *-------------------------------*/
 
-void QXTreeNodeTest::SetUp() {
+void QXT3NodeTest::SetUp() {
   model = new QTX3TestModel();
   node = new QTX3Node(model);
 }
 
-void QXTreeNodeTest::TearDown() {
+void QXT3NodeTest::TearDown() {
   delete node;
   delete model;
 }
 
-TEST_F(QXTreeNodeTest, test_xPath) {
+TEST_F(QXT3NodeTest, test_xPath) {
   ASSERT_EQ(QString("/*[1]"), node->xPath());
 }
 
-TEST_F(QXTreeNodeTest, test_Constructor_with_model) {
+TEST_F(QXT3NodeTest, test_Constructor_with_model) {
   ASSERT_EQ(model, node->model());
   ASSERT_EQ(model, node->parent());
+
+
 }
