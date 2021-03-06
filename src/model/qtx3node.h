@@ -5,13 +5,17 @@
 #include <QObject>
 #include <QVector>
 
+#include "qtx3item.h"
+
 class QTX3Model;
 class QXT3NodeTest;
+class QTX3Item;
 class QTX3Node : public QObject {
   Q_OBJECT
  public:
-  friend class QTX3Model;
   friend class QXT3NodeTest;
+  friend int QTX3Item::column();
+  friend QTX3Item::QTX3Item(QTX3Node* parent);
   explicit QTX3Node(QTX3Model* parent_model);
   explicit QTX3Node(QTX3Node* parent_node);
 
@@ -25,6 +29,9 @@ class QTX3Node : public QObject {
   // Return XML path in format '/root/element/subelement[j]/thiselement'
   // associated with this node.
   QString xmlPath() const;
+
+  // Return name of the own element
+  QString elementName() const;
 
   // Return index of this node in the parent's _children
   int row() const;

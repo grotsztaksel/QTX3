@@ -98,7 +98,3 @@ bool QTX3Model::removeColumns(int column,
   // FIXME: Implement me!
   endRemoveColumns();
 }
-
-void QTX3Model::giveHandle(QTX3Node* node) {
-  node->_tixihandle = _tixihandle;
-}

@@ -3,8 +3,10 @@
 
 #include "qtx3model.h"
 QTX3Node::QTX3Node(QTX3Model* parent_model)
-    : QObject(parent_model), _model(parent_model) {
-  parent_model->giveHandle(this);
+    : QObject(parent_model),
+      _model(parent_model),
+      _tixihandle(parent_model->_tixihandle) {
+  ;
 }
 
 QTX3Node::QTX3Node(QTX3Node* parent_node)
@@ -57,6 +59,10 @@ QString QTX3Node::xmlPath() const {
   //
   txutils::handle_error(res);
   return QString();
+}
+
+QString QTX3Node::elementName() const {
+  return QString(txutils::elementName(xmlPath().toStdString().c_str()));
 }
 
 int QTX3Node::row() const {

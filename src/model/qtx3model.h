@@ -4,11 +4,12 @@
 #include <tixi.h>
 #include <QAbstractItemModel>
 
-class QTX3Node;
+#include "qtx3node.h"
 class QTX3Model : public QAbstractItemModel {
   Q_OBJECT
 
  public:
+  friend QTX3Node::QTX3Node(QTX3Model* parent_model);
   explicit QTX3Model(QObject* parent = nullptr);
 
   /****************************************************
@@ -70,9 +71,6 @@ class QTX3Model : public QAbstractItemModel {
    *
    *
    *****************************************************/
-
- public:
-  void giveHandle(QTX3Node* node);
 
  protected:
   TixiDocumentHandle _tixihandle = -1;
