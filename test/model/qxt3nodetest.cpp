@@ -79,7 +79,7 @@ class QXT3NodeTest : public ::testing::Test {
 
   TixiDocumentHandle getHandle(QTX3Node* node) const;
   const QTX3Node* getParent(QTX3Node* node) const;
-  const QVector<const QTX3Node*> getChildrenList(const QTX3Node* node) const;
+  QVector<QTX3Node*> getChildrenList(const QTX3Node* node) const;
 
  protected:
   QTX3Node* node;
@@ -110,8 +110,7 @@ const QTX3Node* QXT3NodeTest::getParent(QTX3Node* node) const {
   return node->_parent;
 }
 
-const QVector<const QTX3Node*> QXT3NodeTest::getChildrenList(
-    const QTX3Node* node) const {
+QVector<QTX3Node*> QXT3NodeTest::getChildrenList(const QTX3Node* node) const {
   return node->_children;
 }
 
@@ -146,35 +145,42 @@ TEST_F(QXT3NodeTest, test_Constructor_with_node) {
 TEST_F(QXT3NodeTest, test_createChildren) {
   ASSERT_EQ(3, node->createChildren());
   auto child_1_1 = getChildrenList(node).at(0);
-  ASSERT_EQ(QString("/*[1]/*[1]"), child_1_1->xPath());
-  ASSERT_EQ(QString("/root/child_1"), child_1_1->xmlPath());
+  ASSERT_EQ("/*[1]/*[1]", child_1_1->xPath());
+  ASSERT_EQ("/root/child_1", child_1_1->xmlPath());
+  ASSERT_EQ(0, child_1_1->row());
   auto child_1_1_child = getChildrenList(child_1_1).at(0);
-  ASSERT_EQ(QString("/*[1]/*[1]/*[1]"), child_1_1_child->xPath());
-  ASSERT_EQ(QString("/root/child_1/child"), child_1_1_child->xmlPath());
+  ASSERT_EQ("/*[1]/*[1]/*[1]", child_1_1_child->xPath());
+  ASSERT_EQ("/root/child_1/child", child_1_1_child->xmlPath());
+  ASSERT_EQ(0, child_1_1_child->row());
   auto child_2_1 = getChildrenList(node).at(1);
-  ASSERT_EQ(QString("/*[1]/*[2]"), child_2_1->xPath());
-  ASSERT_EQ(QString("/root/child_2[1]"), child_2_1->xmlPath());
+  ASSERT_EQ("/*[1]/*[2]", child_2_1->xPath());
+  ASSERT_EQ("/root/child_2[1]", child_2_1->xmlPath());
+  ASSERT_EQ(1, child_2_1->row());
   auto child_2_1_child_2_1 = getChildrenList(child_2_1).at(0);
-  ASSERT_EQ(QString("/*[1]/*[2]/*[1]"), child_2_1_child_2_1->xPath());
-  ASSERT_EQ(QString("/root/child_2[1]/child_2[1]"),
-            child_2_1_child_2_1->xmlPath());
+  ASSERT_EQ("/*[1]/*[2]/*[1]", child_2_1_child_2_1->xPath());
+  ASSERT_EQ("/root/child_2[1]/child_2[1]", child_2_1_child_2_1->xmlPath());
   auto child_2_1_child_2_2 = getChildrenList(child_2_1).at(1);
-  ASSERT_EQ(QString("/*[1]/*[2]/*[2]"), child_2_1_child_2_2->xPath());
+  ASSERT_EQ("/*[1]/*[2]/*[2]", child_2_1_child_2_2->xPath());
   auto child_2_1_node_3 = getChildrenList(child_2_1).at(2);
-  ASSERT_EQ(QString("/*[1]/*[2]/*[3]"), child_2_1_node_3->xPath());
+  ASSERT_EQ("/*[1]/*[2]/*[3]", child_2_1_node_3->xPath());
+  ASSERT_EQ("/root/child_2[1]/node_3", child_2_1_node_3->xmlPath());
+  ASSERT_EQ(2, child_2_1_node_3->row());
   auto child_2_1_node_3_node_4 = getChildrenList(child_2_1_node_3).at(0);
-  ASSERT_EQ(QString("/*[1]/*[2]/*[3]/*[1]"), child_2_1_node_3_node_4->xPath());
+  ASSERT_EQ("/*[1]/*[2]/*[3]/*[1]", child_2_1_node_3_node_4->xPath());
 
   auto child_2_2 = getChildrenList(node).at(2);
-  ASSERT_EQ(QString("/*[1]/*[3]"), child_2_2->xPath());
+  ASSERT_EQ("/*[1]/*[3]", child_2_2->xPath());
   auto child_2_2_node_3 = getChildrenList(child_2_2).at(0);
-  ASSERT_EQ(QString("/*[1]/*[3]/*[1]"), child_2_2_node_3->xPath());
+  ASSERT_EQ("/*[1]/*[3]/*[1]", child_2_2_node_3->xPath());
   auto child_2_2_node_3_node_4_1 = getChildrenList(child_2_2_node_3).at(0);
-  ASSERT_EQ(QString("/*[1]/*[3]/*[1]/*[1]"),
-            child_2_2_node_3_node_4_1->xPath());
+  ASSERT_EQ("/*[1]/*[3]/*[1]/*[1]", child_2_2_node_3_node_4_1->xPath());
   auto child_2_2_node_3_node_4_2 = getChildrenList(child_2_2_node_3).at(1);
-  ASSERT_EQ(QString("/*[1]/*[3]/*[1]/*[2]"),
-            child_2_2_node_3_node_4_2->xPath());
+  ASSERT_EQ("/*[1]/*[3]/*[1]/*[2]", child_2_2_node_3_node_4_2->xPath());
   auto child_2_2_node_3_node_5 = getChildrenList(child_2_2_node_3).at(2);
-  ASSERT_EQ(QString("/*[1]/*[3]/*[1]/*[3]"), child_2_2_node_3_node_5->xPath());
+  ASSERT_EQ("/*[1]/*[3]/*[1]/*[3]", child_2_2_node_3_node_5->xPath());
+
+  // createChildren should not work when the items are already there
+  ASSERT_EQ(3, getChildrenList(child_2_2_node_3).size());
+  ASSERT_EQ(0, child_2_2_node_3->createChildren());
+  ASSERT_EQ(3, getChildrenList(child_2_2_node_3).size());
 }
