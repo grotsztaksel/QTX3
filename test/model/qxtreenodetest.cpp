@@ -1,12 +1,12 @@
 #include "qxtreenodetest.h"
 
 #include <QObject>
-#include "qxtreenode.h"
-#include "xpathtreemodel.h"
+#include "qtx3model.h"
+#include "qtx3node.h"
 QXTreeNodeTest::QXTreeNodeTest() {
-  model = new XpathTreeModel();
+  model = new QTX3Model();
 
-  node = new QXTreeNode(qobject_cast<QObject*>(model));
+  node = new QTX3Node(qobject_cast<QObject*>(model));
 }
 
 QXTreeNodeTest::~QXTreeNodeTest() {

@@ -3,8 +3,8 @@
 
 #include "gtest/gtest.h"
 
-class QXTreeNode;
-class XpathTreeModel;
+class QTX3Node;
+class QTX3Model;
 class QObject;
 
 class QXTreeNodeTest : public ::testing::Test {
@@ -13,7 +13,7 @@ class QXTreeNodeTest : public ::testing::Test {
   ~QXTreeNodeTest() override;
 
  protected:
-  QXTreeNode* node;
+  QTX3Node* node;
   QObject* model;
 };
 

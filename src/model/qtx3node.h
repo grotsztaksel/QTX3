@@ -5,12 +5,12 @@
 #include <QObject>
 #include <QVector>
 
-class XpathTreeModel;
+class QTX3Model;
 
-class QXTreeNode : public QObject {
+class QTX3Node : public QObject {
   Q_OBJECT
  public:
-  explicit QXTreeNode(QObject* parent = nullptr);
+  explicit QTX3Node(QObject* parent = nullptr);
 
   // Recursively create children to adjust the node tree to the tixi XML
   // structure
@@ -30,17 +30,17 @@ class QXTreeNode : public QObject {
 
  private:
   // List of child elements
-  QVector<const QXTreeNode*> _children;
+  QVector<const QTX3Node*> _children;
 
   // List of items to be presented in the columns
   QVector<QObject*> _columnItems;
 
   // Model to which the node belongs
-  const XpathTreeModel* _model;
+  const QTX3Model* _model;
 
   // Parent node. Can be retrieved by calling parent(), but would have to be
   // cast onto QXTreeNode every time
-  const QXTreeNode* _parent;
+  const QTX3Node* _parent;
 
   TixiDocumentHandle _tixihandle;
 };

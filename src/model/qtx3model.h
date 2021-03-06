@@ -4,11 +4,11 @@
 #include <tixi.h>
 #include <QAbstractItemModel>
 
-class XpathTreeModel : public QAbstractItemModel {
+class QTX3Model : public QAbstractItemModel {
   Q_OBJECT
 
  public:
-  explicit XpathTreeModel(QObject* parent = nullptr);
+  explicit QTX3Model(QObject* parent = nullptr);
 
   // Header:
   QVariant headerData(int section,

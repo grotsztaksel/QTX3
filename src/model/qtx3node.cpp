@@ -1,12 +1,12 @@
-#include "qxtreenode.h"
+#include "qtx3node.h"
 #include "txutils.h"
 
-#include "xpathtreemodel.h"
-QXTreeNode::QXTreeNode(QObject* parent) : QObject(parent) {
+#include "qtx3model.h"
+QTX3Node::QTX3Node(QObject* parent) : QObject(parent) {
   // Try casting parent on either a model or node pointer
-  XpathTreeModel* model = qobject_cast<XpathTreeModel*>(parent);
+  QTX3Model* model = qobject_cast<QTX3Model*>(parent);
   _parent =
-      qobject_cast<QXTreeNode*>(parent);  // If parent is not a node, but a
+      qobject_cast<QTX3Node*>(parent);  // If parent is not a node, but a
                                           // model, then this will be a nullptr
   if (model) {
     _model = model;
@@ -17,7 +17,7 @@ QXTreeNode::QXTreeNode(QObject* parent) : QObject(parent) {
   _tixihandle = _model->_tixihandle;
 }
 
-void QXTreeNode::createChildren() {
+void QTX3Node::createChildren() {
   std::string xpath = xPath().toStdString() + "/*";
   int nchildren = 0;
   auto res =
@@ -27,13 +27,13 @@ void QXTreeNode::createChildren() {
     nchildren = 0;
   }
   for (int i = 0; i < nchildren; i++) {
-    QXTreeNode* newNode = new QXTreeNode(this);
+    QTX3Node* newNode = new QTX3Node(this);
     _children.append(newNode);
     newNode->createChildren();
   }
 }
 
-QString QXTreeNode::xPath() const {
+QString QTX3Node::xPath() const {
   if (!_parent) {
     // Then this is a root node
     return QString("/*[1]");
@@ -42,7 +42,7 @@ QString QXTreeNode::xPath() const {
   return _parent->xPath() + QString("/*[%1]").arg(QString::number(index() + 1));
 }
 
-QString QXTreeNode::xmlPath() {
+QString QTX3Node::xmlPath() {
   char* xmlpath;
   auto res = tixiXPathExpressionGetXPath(
       _tixihandle, xPath().toStdString().c_str(), 1, &xmlpath);
@@ -58,6 +58,6 @@ QString QXTreeNode::xmlPath() {
   return QString();
 }
 
-int QXTreeNode::index() const {
+int QTX3Node::index() const {
   return _parent->_children.indexOf(this);
 }

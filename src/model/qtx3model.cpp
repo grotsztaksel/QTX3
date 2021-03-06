@@ -1,14 +1,14 @@
-#include "xpathtreemodel.h"
+#include "qtx3model.h"
 
-XpathTreeModel::XpathTreeModel(QObject* parent) : QAbstractItemModel(parent) {}
+QTX3Model::QTX3Model(QObject* parent) : QAbstractItemModel(parent) {}
 
-QVariant XpathTreeModel::headerData(int section,
+QVariant QTX3Model::headerData(int section,
                                     Qt::Orientation orientation,
                                     int role) const {
   // FIXME: Implement me!
 }
 
-bool XpathTreeModel::setHeaderData(int section,
+bool QTX3Model::setHeaderData(int section,
                                    Qt::Orientation orientation,
                                    const QVariant& value,
                                    int role) {
@@ -20,31 +20,31 @@ bool XpathTreeModel::setHeaderData(int section,
   return false;
 }
 
-QModelIndex XpathTreeModel::index(int row,
+QModelIndex QTX3Model::index(int row,
                                   int column,
                                   const QModelIndex& parent) const {
   // FIXME: Implement me!
 }
 
-QModelIndex XpathTreeModel::parent(const QModelIndex& index) const {
+QModelIndex QTX3Model::parent(const QModelIndex& index) const {
   // FIXME: Implement me!
 }
 
-int XpathTreeModel::rowCount(const QModelIndex& parent) const {
+int QTX3Model::rowCount(const QModelIndex& parent) const {
   if (!parent.isValid())
     return 0;
 
   // FIXME: Implement me!
 }
 
-int XpathTreeModel::columnCount(const QModelIndex& parent) const {
+int QTX3Model::columnCount(const QModelIndex& parent) const {
   if (!parent.isValid())
     return 0;
 
   // FIXME: Implement me!
 }
 
-QVariant XpathTreeModel::data(const QModelIndex& index, int role) const {
+QVariant QTX3Model::data(const QModelIndex& index, int role) const {
   if (!index.isValid())
     return QVariant();
 
@@ -52,7 +52,7 @@ QVariant XpathTreeModel::data(const QModelIndex& index, int role) const {
   return QVariant();
 }
 
-bool XpathTreeModel::setData(const QModelIndex& index,
+bool QTX3Model::setData(const QModelIndex& index,
                              const QVariant& value,
                              int role) {
   if (data(index, role) != value) {
@@ -63,20 +63,20 @@ bool XpathTreeModel::setData(const QModelIndex& index,
   return false;
 }
 
-Qt::ItemFlags XpathTreeModel::flags(const QModelIndex& index) const {
+Qt::ItemFlags QTX3Model::flags(const QModelIndex& index) const {
   if (!index.isValid())
     return Qt::NoItemFlags;
 
   return Qt::ItemIsEditable;  // FIXME: Implement me!
 }
 
-bool XpathTreeModel::insertRows(int row, int count, const QModelIndex& parent) {
+bool QTX3Model::insertRows(int row, int count, const QModelIndex& parent) {
   beginInsertRows(parent, row, row + count - 1);
   // FIXME: Implement me!
   endInsertRows();
 }
 
-bool XpathTreeModel::insertColumns(int column,
+bool QTX3Model::insertColumns(int column,
                                    int count,
                                    const QModelIndex& parent) {
   beginInsertColumns(parent, column, column + count - 1);
@@ -84,13 +84,13 @@ bool XpathTreeModel::insertColumns(int column,
   endInsertColumns();
 }
 
-bool XpathTreeModel::removeRows(int row, int count, const QModelIndex& parent) {
+bool QTX3Model::removeRows(int row, int count, const QModelIndex& parent) {
   beginRemoveRows(parent, row, row + count - 1);
   // FIXME: Implement me!
   endRemoveRows();
 }
 
-bool XpathTreeModel::removeColumns(int column,
+bool QTX3Model::removeColumns(int column,
                                    int count,
                                    const QModelIndex& parent) {
   beginRemoveColumns(parent, column, column + count - 1);
