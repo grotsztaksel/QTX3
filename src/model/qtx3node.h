@@ -27,7 +27,7 @@ class QTX3Node : public QObject {
   QString xmlPath() const;
 
   // Return index of this node in the parent's _children
-  int index() const;
+  int row() const;
 
   const QTX3Model* model() const;
 
@@ -35,7 +35,7 @@ class QTX3Node : public QObject {
 
  private:
   // List of child elements
-  QVector<const QTX3Node*> _children;
+  QVector<QTX3Node*> _children;
 
   // List of items to be presented in the columns
   QVector<QObject*> _columnItems;

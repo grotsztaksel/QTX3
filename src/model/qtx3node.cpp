@@ -14,6 +14,10 @@ QTX3Node::QTX3Node(QTX3Node* parent_node)
       _tixihandle(parent_node->_tixihandle) {}
 
 int QTX3Node::createChildren() {
+  if (_children.size() > 0)
+    // Already has children. Should use insert/remove rows to add items.
+    return 0;
+
   std::string xpath = xPath().toStdString() + "/*";
   int nchildren = 0;
   auto res =
@@ -36,7 +40,7 @@ QString QTX3Node::xPath() const {
     return QString("/*[1]");
   }
 
-  return _parent->xPath() + QString("/*[%1]").arg(QString::number(index() + 1));
+  return _parent->xPath() + QString("/*[%1]").arg(QString::number(row() + 1));
 }
 
 QString QTX3Node::xmlPath() const {
@@ -55,8 +59,20 @@ QString QTX3Node::xmlPath() const {
   return QString();
 }
 
-int QTX3Node::index() const {
-  return _parent->_children.indexOf(this);
+int QTX3Node::row() const {
+  for (int i = 0; i < _parent->_children.size(); i++) {
+    if (_parent->_children.at(i) == this)
+      return i;
+  }
+  return -1;
+  /* Cannot use the following:
+      return _parent->_children.indexOf(this);
+    because it is illegal:
+    * error: reference to type 'QTX3Node *const' could not bind to an rvalue of
+    type 'const QTX3Node *'
+    * error: invalid conversion from 'const QTX3Node*' to 'QTX3Node*'
+    [-fpermissive]
+  */
 }
 
 const QTX3Model* QTX3Node::model() const {
