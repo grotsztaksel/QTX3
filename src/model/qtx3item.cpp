@@ -33,6 +33,10 @@ const QTX3Node* QTX3Item::node() const {
 }
 
 QVariant QTX3Item::data(int role) const {
+  if (role == Qt::DisplayRole && column() == 0) {
+    // Default implementation displays element name
+    return QVariant(parent()->elementName());
+  }
   return QVariant();
 }
 
@@ -41,7 +45,10 @@ QVector<int> QTX3Item::setData(QVariant value, int role) {
 }
 
 Qt::ItemFlags QTX3Item::flags() const {
-  return Qt::ItemNeverHasChildren;
+  auto flags = Qt::ItemIsEnabled;
+  if (column() != 0)
+    flags | Qt::ItemNeverHasChildren;
+  return flags;
 }
 
 const QTX3Node* QTX3Item::parent() const {
