@@ -43,4 +43,59 @@ void QTX3ModelTest::test_index() {
   QCOMPARE("/root/child_2[1]/child_2[2]", item->parent()->xmlPath());
 }
 
+void QTX3ModelTest::test_parent() {
+  QModelIndex index = model->parent(QModelIndex());
+  QVERIFY(!index.isValid());
+
+  index = model->index(1, 0, QModelIndex());
+  QModelIndex childindex = model->index(1, 0, index);
+  QCOMPARE(index, model->parent(childindex));
+}
+
+void QTX3ModelTest::test_rowCount() {
+  QCOMPARE(3, model->rowCount(QModelIndex()));
+  QModelIndex index = model->index(2, 0, QModelIndex());
+
+  QCOMPARE(1, model->rowCount(index));
+
+  index = model->index(0, 0, index);
+  QCOMPARE(3, model->rowCount(index));
+}
+
+void QTX3ModelTest::test_columnCount() {
+  QCOMPARE(0, model->columnCount(QModelIndex()));
+  QModelIndex index = model->index(2, 0, QModelIndex());
+  QCOMPARE(1, model->columnCount(index));
+
+  // The child_1 and child will have special constructors
+  QModelIndex child_1_index = model->index(1, 0);
+  QModelIndex child_index = model->index(1, 0, child_1_index);
+  QCOMPARE(1, model->columnCount(child_1_index));
+  QCOMPARE(0, model->columnCount(child_index));
+}
+
+void QTX3ModelTest::test_createNode_baseclass() {
+  QTX3Node* parentNode = model->_root->childAt(1)->childAt(1);
+  QTX3Node* newNode =
+      model->QTX3Model::createNode(parentNode, QString("justName"));
+  QCOMPARE(newNode->parent(), parentNode);
+  QCOMPARE(newNode->model(), model);
+}
+
+void QTX3ModelTest::test_createNode_testclass() {
+  QTX3Node* parentNode = model->_root->childAt(0);
+  QCOMPARE("child_1", parentNode->elementName());
+  QTX3Node* newNode =
+      model->QTX3Model::createNode(parentNode, QString("justName"));
+  QCOMPARE(newNode->parent(), parentNode);
+  QCOMPARE(newNode->model(), model);
+  QCOMPARE(newNode->columns(), 1);
+
+  newNode = model->createNode(parentNode, QString("justName"));
+
+  QCOMPARE(newNode->parent(), parentNode);
+  QCOMPARE(newNode->model(), model);
+  QCOMPARE(newNode->columns(), 3);
+}
+
 QTEST_MAIN(QTX3ModelTest)

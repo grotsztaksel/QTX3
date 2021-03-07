@@ -1,6 +1,6 @@
 #include "qtx3testcasemodel.h"
-
 #include <regex>
+#include "qtx3specialtestnode.h"
 
 QTX3TestcaseModel::QTX3TestcaseModel(QObject* parent, TixiDocumentHandle handle)
     : QTX3Model(parent, handle) {}
@@ -46,4 +46,11 @@ QTX3TestcaseModel* QTX3TestcaseModel::createModel(QObject* parent) {
   tixiImportFromString(xml, &handle);
 
   return new QTX3TestcaseModel(parent, handle);
+}
+
+QTX3Node* QTX3TestcaseModel::createNode(QTX3Node* parent, const QString& name) {
+  if (parent->elementName() == "child_1") {
+    return new QTX3specialTestNode(parent);
+  }
+  return QTX3Model::createNode(parent, name);
 }

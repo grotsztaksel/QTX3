@@ -50,7 +50,7 @@ class QTX3Node : public QObject {
   void createItems();
  signals:
 
- private:
+ protected:
   // List of child elements
   QVector<QTX3Node*> _children;
 

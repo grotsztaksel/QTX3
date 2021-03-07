@@ -15,6 +15,14 @@ class QTX3ModelTest : public QObject {
   void test_constructor_with_string();
 
   void test_index();
+  void test_parent();
+
+  void test_rowCount();
+  void test_columnCount();
+
+  void test_createNode_baseclass();
+  // Using a specially modified model with a non-default factory
+  void test_createNode_testclass();
 
  private:
   QTX3TestcaseModel* model;
