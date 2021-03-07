@@ -31,3 +31,19 @@ int QTX3Item::row() const {
 const QTX3Node* QTX3Item::node() const {
   return _parent;
 }
+
+QVariant QTX3Item::data(int role) const {
+  return QVariant();
+}
+
+QVector<int> QTX3Item::setData(QVariant value, int role) {
+  return QVector<int>();
+}
+
+Qt::ItemFlags QTX3Item::flags() const {
+  return Qt::ItemNeverHasChildren;
+}
+
+const QTX3Node* QTX3Item::parent() const {
+  return _parent;
+}

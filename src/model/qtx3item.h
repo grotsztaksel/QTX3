@@ -19,14 +19,18 @@ class QTX3Item : public QObject {
   // return parent element node
   const QTX3Node* node() const;
 
-  QVariant data(Qt::ItemDataRole role);
+  QVariant data(int role) const;
 
-  bool setData(QVariant value, Qt::ItemDataRole role);
+  /* set data through this item.
+   * If operation is successful, a non-empty vector of roles is returned,
+   * otherwise returns an empty vector. Returning a vector, instead of a bool
+   * allows setting specific roles to emit dataChanged from the model.
+   */
+  QVector<int> setData(QVariant value, int role);
 
-  Qt::ItemFlags flags();
+  Qt::ItemFlags flags() const;
 
- private:
-  TixiDocumentHandle getTixiHandle();
+  const QTX3Node* parent() const;
 
  private:
   const QTX3Node* _parent;
