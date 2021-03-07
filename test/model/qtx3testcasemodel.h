@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "qtx3model.h"
-
+#include "tixi.h"
 
 /***************************************************
  *
@@ -13,13 +13,12 @@
  *
  ***************************************************/
 
+class QTX3TestcaseModel : public QTX3Model {
+  Q_OBJECT
+ public:
+  QTX3TestcaseModel(QObject* parent = nullptr, TixiDocumentHandle handle = -1);
 
-class QTX3TestcaseModel: public QTX3Model
-{
-    Q_OBJECT
-public:
-    QTX3TestcaseModel(QObject* parent=nullptr);
+  static QTX3TestcaseModel* createModel(QObject* parent);
 };
 
-#endif // QTX3TESTCASEMODEL_H
-
+#endif  // QTX3TESTCASEMODEL_H

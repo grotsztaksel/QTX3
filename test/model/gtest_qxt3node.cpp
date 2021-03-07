@@ -35,7 +35,7 @@ class QXT3NodeTest : public ::testing::Test {
  *-------------------------------*/
 
 void QXT3NodeTest::SetUp() {
-  model = new QTX3TestcaseModel();
+  model = QTX3TestcaseModel::createModel(nullptr);
   node = new QTX3Node(model);
 }
 
