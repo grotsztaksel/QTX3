@@ -72,10 +72,13 @@ class QTX3Model : public QAbstractItemModel {
    *
    *****************************************************/
 
+  QTX3Item* itemFromIndex(QModelIndex index) const;
+  const QTX3Node* nodeFromIndex(QModelIndex index) const;
+
  protected:
   TixiDocumentHandle _tixihandle = -1;
 
-  friend class QXTreeNode;
+  const QTX3Node* _root;
 };
 
 #endif  // XPATHTREEMODEL_H

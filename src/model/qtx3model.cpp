@@ -1,7 +1,8 @@
 #include "qtx3model.h"
 #include "qtx3node.h"
 
-QTX3Model::QTX3Model(QObject* parent) : QAbstractItemModel(parent) {}
+QTX3Model::QTX3Model(QObject* parent)
+    : QAbstractItemModel(parent), _root(new QTX3Node(this)) {}
 
 QVariant QTX3Model::headerData(int section,
                                Qt::Orientation orientation,
@@ -24,11 +25,29 @@ bool QTX3Model::setHeaderData(int section,
 QModelIndex QTX3Model::index(int row,
                              int column,
                              const QModelIndex& parent) const {
-  // FIXME: Implement me!
+  if (!hasIndex(row, column, parent))
+    return QModelIndex();
+
+  const QTX3Node* parentNode;
+  if (!parent.isValid()) {
+    parentNode = _root;
+  } else {
+    parentNode = nodeFromIndex(parent);
+  }
+  QTX3Node* childNode = parentNode->childAt(row);
+  if (!childNode)
+    return QModelIndex();
+
+  QTX3Item* columnItem = childNode->itemAt(column);
+
+  return createIndex(row, column, columnItem);
 }
 
 QModelIndex QTX3Model::parent(const QModelIndex& index) const {
-  // FIXME: Implement me!
+  if (!index.isValid())
+    return QModelIndex();
+  const QTX3Node* parentNode = nodeFromIndex(index)->parent();
+  return createIndex(parentNode->row(), 0, parentNode->itemAt(0));
 }
 
 int QTX3Model::rowCount(const QModelIndex& parent) const {
@@ -41,7 +60,6 @@ int QTX3Model::rowCount(const QModelIndex& parent) const {
 int QTX3Model::columnCount(const QModelIndex& parent) const {
   if (!parent.isValid())
     return 0;
-
   // FIXME: Implement me!
 }
 
@@ -49,16 +67,18 @@ QVariant QTX3Model::data(const QModelIndex& index, int role) const {
   if (!index.isValid())
     return QVariant();
 
-  // FIXME: Implement me!
-  return QVariant();
+  return itemFromIndex(index)->data(role);
 }
 
 bool QTX3Model::setData(const QModelIndex& index,
                         const QVariant& value,
                         int role) {
   if (data(index, role) != value) {
-    // FIXME: Implement me!
-    emit dataChanged(index, index, QVector<int>() << role);
+    QVector<int> roles = itemFromIndex(index)->setData(value, role);
+    if (roles.empty()) {
+      return false;
+    }
+    emit dataChanged(index, index, roles);
     return true;
   }
   return false;
@@ -68,7 +88,7 @@ Qt::ItemFlags QTX3Model::flags(const QModelIndex& index) const {
   if (!index.isValid())
     return Qt::NoItemFlags;
 
-  return Qt::ItemIsEditable;  // FIXME: Implement me!
+  return itemFromIndex(index)->flags();
 }
 
 bool QTX3Model::insertRows(int row, int count, const QModelIndex& parent) {
@@ -97,4 +117,12 @@ bool QTX3Model::removeColumns(int column,
   beginRemoveColumns(parent, column, column + count - 1);
   // FIXME: Implement me!
   endRemoveColumns();
+}
+
+QTX3Item* QTX3Model::itemFromIndex(QModelIndex index) const {
+  return static_cast<QTX3Item*>(index.internalPointer());
+}
+
+const QTX3Node* QTX3Model::nodeFromIndex(QModelIndex index) const {
+  return itemFromIndex(index)->parent();
 }
