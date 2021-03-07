@@ -36,7 +36,7 @@ class QTX3Node : public QObject {
   QTX3Item* itemAt(int column) const;
 
   QTX3Node* childAt(int row) const;
-  int size() const;
+  int rows() const;
 
   // Return index of this node in the parent's _children
   int row() const;

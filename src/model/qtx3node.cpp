@@ -73,7 +73,7 @@ QTX3Node* QTX3Node::childAt(int row) const {
   return _children.at(row);
 }
 
-int QTX3Node::size() const {
+int QTX3Node::rows() const {
   return _children.size();
 }
 

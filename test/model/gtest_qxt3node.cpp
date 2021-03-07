@@ -80,12 +80,12 @@ TEST_F(QXT3NodeTest, test_Constructor_with_node) {
 
 TEST_F(QXT3NodeTest, test_createChildren) {
   ASSERT_EQ(3, node->createChildren());
-  ASSERT_EQ(3, node->size());
+  ASSERT_EQ(3, node->rows());
 
   // createChildren should not work when the items are already there
-  ASSERT_EQ(3, node->childAt(2)->childAt(0)->size());
+  ASSERT_EQ(3, node->childAt(2)->childAt(0)->rows());
   ASSERT_EQ(0, node->childAt(2)->childAt(0)->createChildren());
-  ASSERT_EQ(3, node->childAt(2)->childAt(0)->size());
+  ASSERT_EQ(3, node->childAt(2)->childAt(0)->rows());
 }
 
 TEST_F(QXT3NodeTest, test_pathProperties) {
