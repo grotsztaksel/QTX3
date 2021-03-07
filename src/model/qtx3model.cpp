@@ -1,8 +1,18 @@
 #include "qtx3model.h"
 #include "qtx3node.h"
 
-QTX3Model::QTX3Model(QObject* parent)
-    : QAbstractItemModel(parent), _root(new QTX3Node(this)) {}
+QTX3Model::QTX3Model(QObject* parent, TixiDocumentHandle handle)
+    : QAbstractItemModel(parent),
+      _tixihandle(handle),
+      _root(new QTX3Node(this)) {
+  assert(handle > 0);
+}
+
+QTX3Model::QTX3Model(QObject* parent, QString rootName) {
+  TixiDocumentHandle handle;
+  tixiCreateDocument(rootName.toStdString().c_str(), &handle);
+  QTX3Model(parent, handle);
+}
 
 QVariant QTX3Model::headerData(int section,
                                Qt::Orientation orientation,

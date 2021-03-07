@@ -9,8 +9,10 @@ class QTX3Model : public QAbstractItemModel {
   Q_OBJECT
 
  public:
+  friend class QTX3ModelTest;
   friend QTX3Node::QTX3Node(QTX3Model* parent_model);
-  explicit QTX3Model(QObject* parent = nullptr);
+  explicit QTX3Model(QObject* parent = nullptr, TixiDocumentHandle handle = -1);
+  explicit QTX3Model(QObject* parent = nullptr, QString rootName = "root");
 
   /****************************************************
    *
@@ -76,7 +78,7 @@ class QTX3Model : public QAbstractItemModel {
   const QTX3Node* nodeFromIndex(QModelIndex index) const;
 
  protected:
-  TixiDocumentHandle _tixihandle = -1;
+  const TixiDocumentHandle _tixihandle = -1;
 
   const QTX3Node* _root;
 };
