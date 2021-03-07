@@ -12,7 +12,8 @@ class QTX3Model : public QAbstractItemModel {
   friend class QTX3ModelTest;
   friend QTX3Node::QTX3Node(QTX3Model* parent_model);
   explicit QTX3Model(QObject* parent = nullptr, TixiDocumentHandle handle = -1);
-  explicit QTX3Model(QObject* parent = nullptr, QString rootName = "root");
+  explicit QTX3Model(QObject* parent = nullptr,
+                     const QString& rootName = "root");
 
   /****************************************************
    *
@@ -78,9 +79,14 @@ class QTX3Model : public QAbstractItemModel {
   const QTX3Node* nodeFromIndex(QModelIndex index) const;
 
  protected:
+  // Create an empty tixi element. Intended to be used in the constructor to
+  // initialize an empty model from root element name.
+  static TixiDocumentHandle createNewHandle(const QString& rootName);
+
+ protected:
   const TixiDocumentHandle _tixihandle = -1;
 
-  const QTX3Node* _root;
+  QTX3Node* _root;
 };
 
 #endif  // XPATHTREEMODEL_H

@@ -5,13 +5,27 @@ QTX3Model::QTX3Model(QObject* parent, TixiDocumentHandle handle)
     : QAbstractItemModel(parent),
       _tixihandle(handle),
       _root(new QTX3Node(this)) {
-  assert(handle > 0);
+  if (handle <= 0) {
+    throw(std::runtime_error(
+        "QTX3Model: constructor received invalid tixi handle!"));
+  }
+  _root->createChildren();
 }
 
-QTX3Model::QTX3Model(QObject* parent, QString rootName) {
+QTX3Model::QTX3Model(QObject* parent, const QString& rootName)
+    : QTX3Model(parent, QTX3Model::createNewHandle(rootName)) {}
+
+TixiDocumentHandle QTX3Model::createNewHandle(const QString& rootName) {
   TixiDocumentHandle handle;
-  tixiCreateDocument(rootName.toStdString().c_str(), &handle);
-  QTX3Model(parent, handle);
+  ReturnCode res = tixiCreateDocument(rootName.toStdString().c_str(), &handle);
+  if (res != SUCCESS) {
+    throw(std::runtime_error((QString("QTX3Model: constructor failed to create "
+                                      "tixihandle with root element!") +
+                              rootName)
+                                 .toStdString()
+                                 .c_str()));
+  }
+  return handle;
 }
 
 QVariant QTX3Model::headerData(int section,
