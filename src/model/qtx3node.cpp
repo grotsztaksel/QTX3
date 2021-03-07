@@ -65,6 +65,18 @@ QString QTX3Node::elementName() const {
   return QString(txutils::elementName(xmlPath().toStdString().c_str()));
 }
 
+QTX3Item* QTX3Node::itemAt(int column) const {
+  return _columnItems.at(column);
+}
+
+QTX3Node* QTX3Node::childAt(int row) const {
+  return _children.at(row);
+}
+
+int QTX3Node::size() const {
+  return _children.size();
+}
+
 int QTX3Node::row() const {
   for (int i = 0; i < _parent->_children.size(); i++) {
     if (_parent->_children.at(i) == this)
@@ -83,4 +95,8 @@ int QTX3Node::row() const {
 
 const QTX3Model* QTX3Node::model() const {
   return _model;
+}
+
+const QTX3Node* QTX3Node::parent() const {
+  return _parent;
 }

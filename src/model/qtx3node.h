@@ -14,7 +14,7 @@ class QTX3Node : public QObject {
   Q_OBJECT
  public:
   friend class QXT3NodeTest;
-  friend int QTX3Item::column();
+  friend int QTX3Item::column() const;
   friend QTX3Item::QTX3Item(QTX3Node* parent);
   explicit QTX3Node(QTX3Model* parent_model);
   explicit QTX3Node(QTX3Node* parent_node);
@@ -33,10 +33,17 @@ class QTX3Node : public QObject {
   // Return name of the own element
   QString elementName() const;
 
+  QTX3Item* itemAt(int column) const;
+
+  QTX3Node* childAt(int row) const;
+  int size() const;
+
   // Return index of this node in the parent's _children
   int row() const;
 
   const QTX3Model* model() const;
+
+  const QTX3Node* parent() const;
 
  signals:
 
@@ -45,7 +52,7 @@ class QTX3Node : public QObject {
   QVector<QTX3Node*> _children;
 
   // List of items to be presented in the columns
-  QVector<QObject*> _columnItems;
+  QVector<QTX3Item*> _columnItems;
 
   // Model to which the node belongs
   const QTX3Model* _model = nullptr;
