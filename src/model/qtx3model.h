@@ -55,17 +55,11 @@ class QTX3Model : public QAbstractItemModel {
   bool insertRows(int row,
                   int count,
                   const QModelIndex& parent = QModelIndex()) override;
-  bool insertColumns(int column,
-                     int count,
-                     const QModelIndex& parent = QModelIndex()) override;
 
   // Remove data:
   bool removeRows(int row,
                   int count,
                   const QModelIndex& parent = QModelIndex()) override;
-  bool removeColumns(int column,
-                     int count,
-                     const QModelIndex& parent = QModelIndex()) override;
 
   /****************************************************
    *
@@ -82,6 +76,8 @@ class QTX3Model : public QAbstractItemModel {
   // Create an empty tixi element. Intended to be used in the constructor to
   // initialize an empty model from root element name.
   static TixiDocumentHandle createNewHandle(const QString& rootName);
+  // Node factory
+  QTX3Node* createNode(QTX3Node* parent, const QString& name);
 
  protected:
   const TixiDocumentHandle _tixihandle = -1;

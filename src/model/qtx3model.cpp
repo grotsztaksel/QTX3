@@ -121,31 +121,17 @@ Qt::ItemFlags QTX3Model::flags(const QModelIndex& index) const {
 }
 
 bool QTX3Model::insertRows(int row, int count, const QModelIndex& parent) {
+  return false;
   beginInsertRows(parent, row, row + count - 1);
   // FIXME: Implement me!
   endInsertRows();
 }
 
-bool QTX3Model::insertColumns(int column,
-                              int count,
-                              const QModelIndex& parent) {
-  beginInsertColumns(parent, column, column + count - 1);
-  // FIXME: Implement me!
-  endInsertColumns();
-}
-
 bool QTX3Model::removeRows(int row, int count, const QModelIndex& parent) {
+  return false;
   beginRemoveRows(parent, row, row + count - 1);
   // FIXME: Implement me!
   endRemoveRows();
-}
-
-bool QTX3Model::removeColumns(int column,
-                              int count,
-                              const QModelIndex& parent) {
-  beginRemoveColumns(parent, column, column + count - 1);
-  // FIXME: Implement me!
-  endRemoveColumns();
 }
 
 QTX3Item* QTX3Model::itemFromIndex(QModelIndex index) const {
@@ -153,5 +139,12 @@ QTX3Item* QTX3Model::itemFromIndex(QModelIndex index) const {
 }
 
 const QTX3Node* QTX3Model::nodeFromIndex(QModelIndex index) const {
+  if (!index.isValid())
+    return _root;
   return itemFromIndex(index)->parent();
+}
+
+QTX3Node* QTX3Model::createNode(QTX3Node* parent, const QString& name) {
+  // Basic implementation creates always the same nodes
+  return new QTX3Node(parent);
 }
