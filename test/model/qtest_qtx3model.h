@@ -10,7 +10,11 @@ class QTX3ModelTest : public QObject {
 
   void init();
   void cleanup();
-  void test_anything();
+
+  void test_constructor_with_tixihandle();
+  void test_constructor_with_string();
+
+  void test_index();
 
  private:
   QTX3TestcaseModel* model;
