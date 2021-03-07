@@ -6,14 +6,16 @@ QTX3Node::QTX3Node(QTX3Model* parent_model)
     : QObject(parent_model),
       _model(parent_model),
       _tixihandle(parent_model->_tixihandle) {
-  ;
+  createItems();
 }
 
 QTX3Node::QTX3Node(QTX3Node* parent_node)
     : QObject(parent_node),
       _model(parent_node->_model),
       _parent(parent_node),
-      _tixihandle(parent_node->_tixihandle) {}
+      _tixihandle(parent_node->_tixihandle) {
+  createItems();
+}
 
 int QTX3Node::createChildren() {
   if (_children.size() > 0)
@@ -99,4 +101,8 @@ const QTX3Model* QTX3Node::model() const {
 
 const QTX3Node* QTX3Node::parent() const {
   return _parent;
+}
+
+void QTX3Node::createItems() {
+  _columnItems.append(new QTX3Item(this));
 }

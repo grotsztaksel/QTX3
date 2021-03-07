@@ -45,6 +45,9 @@ class QTX3Node : public QObject {
 
   const QTX3Node* parent() const;
 
+ protected:
+  // Fill the list _columnItems. The default implementation creates one item
+  void createItems();
  signals:
 
  private:
