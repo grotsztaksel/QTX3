@@ -71,6 +71,10 @@ QTX3Item* QTX3Node::itemAt(int column) const {
   return _columnItems.at(column);
 }
 
+int QTX3Node::columns() const {
+  return _columnItems.size();
+}
+
 QTX3Node* QTX3Node::childAt(int row) const {
   return _children.at(row);
 }
