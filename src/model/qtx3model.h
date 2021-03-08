@@ -78,7 +78,7 @@ class QTX3Model : public QAbstractItemModel {
   const QTX3Node* nodeFromPath(QString path = "/*[1]") const;
 
  protected:
-  void init();
+  virtual void init();
 
   // Create an empty tixi element. Intended to be used in the constructor to
   // initialize an empty model from root element name.
