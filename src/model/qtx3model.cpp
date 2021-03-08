@@ -41,7 +41,9 @@ TixiDocumentHandle QTX3Model::createNewHandle(const QString& rootName) {
 QVariant QTX3Model::headerData(int section,
                                Qt::Orientation orientation,
                                int role) const {
-  // FIXME: Implement me!
+  if (role == Qt::DisplayRole) {
+    return QVariant("element");
+  }
 }
 
 bool QTX3Model::setHeaderData(int section,
