@@ -26,9 +26,9 @@ TixiDocumentHandle QTX3Model::createNewHandle(const QString& rootName) {
   TixiDocumentHandle handle;
   ReturnCode res = tixiCreateDocument(rootName.toStdString().c_str(), &handle);
   if (res != SUCCESS) {
-    throw(std::runtime_error((QString("QTX3Model: constructor failed to create "
-                                      "tixihandle with root element!") +
-                              rootName)
+    throw(std::runtime_error(QString("QTX3Model: constructor failed to create "
+                                     "tixihandle with root element \"%1\"")
+                                 .arg(rootName)
                                  .toStdString()
                                  .c_str()));
   }
