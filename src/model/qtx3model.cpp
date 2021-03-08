@@ -1,5 +1,8 @@
 #include "qtx3model.h"
 #include "qtx3node.h"
+#include "txutils.h"
+
+#include <QRegularExpression>
 
 QTX3Model::QTX3Model(QObject* parent,
                      TixiDocumentHandle handle,
@@ -149,6 +152,32 @@ const QTX3Node* QTX3Model::nodeFromIndex(QModelIndex index) const {
   if (!index.isValid())
     return _root;
   return itemFromIndex(index)->parent();
+}
+
+const QTX3Node* QTX3Model::nodeFromPath(QString path) const {
+  char* ipath;
+  ReturnCode res =
+      txutils::indexedPath(_tixihandle, path.toStdString().c_str(), 1, &ipath);
+  if (res != SUCCESS)
+    throw(std::runtime_error(QString("nodeFromPath: failed to convert path %1 "
+                                     "to indexed XPath (TiXi error code: %2)")
+                                 .arg(path)
+                                 .arg(res)
+                                 .toStdString()
+                                 .c_str()));
+
+  QRegularExpression re("(\\d+)");
+  // Use size() to skip the part of the path refering to the root element.
+  QRegularExpressionMatchIterator i =
+      re.globalMatch(QString(ipath), QString("/*[1]").size());
+  QTX3Node* node = _root;
+
+  while (i.hasNext()) {
+    QRegularExpressionMatch match = i.next();
+    int number = match.captured().toInt() - 1;
+    node = node->childAt(number);
+  }
+  return node;
 }
 
 QTX3Node* QTX3Model::createNode(QTX3Node* parent, const QString& name) const {

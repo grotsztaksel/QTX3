@@ -100,4 +100,25 @@ void QTX3ModelTest::test_createNode_testclass() {
   QCOMPARE(newNode->columns(), 3);
 }
 
+void QTX3ModelTest::test_nodeFromPath() {
+  QCOMPARE(model->nodeFromPath("/root/child_2[1]/child_2[1]/node_3[1]"),
+           model->_root->childAt(1)->childAt(0)->childAt(0));
+  QCOMPARE(model->nodeFromPath("/root/child_2[1]/*[2]"),
+           model->_root->childAt(1)->childAt(1));
+  QCOMPARE(model->nodeFromPath("/*[1]/*[2]/*[2]"),
+           model->_root->childAt(1)->childAt(1));
+  QCOMPARE(model->nodeFromPath("//*[@attr=\"9\"]/node_3[1]"),
+           model->_root->childAt(1)->childAt(0)->childAt(0));
+  try {
+    auto node = model->nodeFromPath("/root/child_2[1]/child_2[1]/noodle_3[1]");
+    // Should have thrown error. If we're still here, the test should fail
+    QVERIFY(false);
+  } catch (const std::runtime_error& e) {
+    QCOMPARE(e.what(),
+             "nodeFromPath: failed to convert path "
+             "/root/child_2[1]/child_2[1]/noodle_3[1] to indexed XPath (TiXi "
+             "error code: 1)");
+  }
+}
+
 QTEST_MAIN(QTX3ModelTest)
