@@ -24,6 +24,7 @@ class QTX3ModelTest : public QObject {
   // Using a specially modified model with a non-default factory
   void test_createNode_testclass();
 
+  void test_nodeFromIndex();
   void test_nodeFromPath();
 
  private:

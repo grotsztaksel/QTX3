@@ -100,6 +100,18 @@ void QTX3ModelTest::test_createNode_testclass() {
   QCOMPARE(newNode->columns(), 3);
 }
 
+void QTX3ModelTest::test_nodeFromIndex() {
+  QModelIndex index = model->index(1, 0);
+  QCOMPARE(model->nodeFromIndex(index), model->_root->childAt(1));
+  index = model->index(1, 0, index);
+  QCOMPARE(model->nodeFromIndex(index), model->_root->childAt(1)->childAt(1));
+
+  // Navigate down to "/root/child_1/child" - it should have 3 columns
+  index = model->index(0, 0);
+  index = model->index(0, 2, index);
+  QCOMPARE(model->nodeFromIndex(index), model->_root->childAt(0)->childAt(0));
+}
+
 void QTX3ModelTest::test_nodeFromPath() {
   QCOMPARE(model->nodeFromPath("/root/child_2[1]/child_2[1]/node_3[1]"),
            model->_root->childAt(1)->childAt(0)->childAt(0));
