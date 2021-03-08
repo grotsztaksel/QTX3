@@ -27,6 +27,8 @@ class QTX3ModelTest : public QObject {
   void test_nodeFromIndex();
   void test_nodeFromPath();
 
+  void test_data();
+
  private:
   QTX3TestcaseModel* model;
 };

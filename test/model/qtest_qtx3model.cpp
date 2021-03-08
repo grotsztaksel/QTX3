@@ -109,6 +109,7 @@ void QTX3ModelTest::test_nodeFromIndex() {
   // Navigate down to "/root/child_1/child" - it should have 3 columns
   index = model->index(0, 0);
   index = model->index(0, 2, index);
+  // But pointing to the non-0 column should also return the node
   QCOMPARE(model->nodeFromIndex(index), model->_root->childAt(0)->childAt(0));
 }
 
@@ -131,6 +132,22 @@ void QTX3ModelTest::test_nodeFromPath() {
              "/root/child_2[1]/child_2[1]/noodle_3[1] to indexed XPath (TiXi "
              "error code: 1)");
   }
+}
+
+void QTX3ModelTest::test_data() {
+  QModelIndex child = model->index(0, 0);
+  QCOMPARE("child_1", model->data(child, Qt::DisplayRole));
+  QModelIndex index = model->index(0, 0, child);
+  QCOMPARE("child", model->data(index, Qt::DisplayRole));
+  index = model->index(0, 1, child);
+  QCOMPARE("child", model->data(index, Qt::DisplayRole));
+  index = model->index(0, 2, child);
+  QCOMPARE("child", model->data(index, Qt::DisplayRole));
+
+  index = model->index(1, 0);
+  QCOMPARE("child_2", model->data(index, Qt::DisplayRole));
+  index = model->index(1, 0, index);
+  QCOMPARE("child_2", model->data(index, Qt::DisplayRole));
 }
 
 QTEST_MAIN(QTX3ModelTest)
