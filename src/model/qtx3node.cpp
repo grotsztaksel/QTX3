@@ -22,16 +22,19 @@ int QTX3Node::createChildren() {
     // Already has children. Should use insert/remove rows to add items.
     return 0;
 
-  std::string xpath = xPath().toStdString() + "/*";
+  std::string xpath_s = xPath().toStdString() + "/*";
+  const char* xpath = xpath_s.c_str();
   int nchildren = 0;
-  auto res =
-      tixiXPathEvaluateNodeNumber(_tixihandle, xpath.c_str(), &nchildren);
+  auto res = tixiXPathEvaluateNodeNumber(_tixihandle, xpath, &nchildren);
   txutils::handle_error(res);
   if (res == FAILED) {
     nchildren = 0;
   }
-  for (int i = 0; i < nchildren; i++) {
-    QTX3Node* newNode = new QTX3Node(this);
+  for (int i = 1; i <= nchildren; i++) {
+    char* newName;
+    res = tixiXPathExpressionGetXPath(_tixihandle, xpath, i, &newName);
+
+    QTX3Node* newNode = _model->createNode(this, QString(newName));
     _children.append(newNode);
     newNode->createChildren();
   }
