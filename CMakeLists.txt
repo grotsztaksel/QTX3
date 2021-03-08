@@ -30,10 +30,11 @@ add_library(QXTree SHARED
 
 target_link_libraries(QXTree PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(QXTree PRIVATE ${TIXI_LIBRARIES})
-target_link_libraries(QXTree PRIVATE QXmodel)
+target_link_libraries(QXTree PUBLIC QXmodel)
 target_link_libraries(QXTree PRIVATE Utils)
 target_compile_definitions(QXTree PRIVATE QXTREE_LIBRARY)
 
+add_subdirectory(demo)
 add_subdirectory(test)
 
 enable_testing()
