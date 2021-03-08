@@ -22,7 +22,7 @@ class QTX3TestcaseModel : public QTX3Model {
   static QTX3TestcaseModel* createModel(QObject* parent);
 
  protected:
-  QTX3Node* createNode(QTX3Node* parent, const QString& name);
+  QTX3Node* createNode(QTX3Node* parent, const QString& name) const;
 };
 
 #endif  // QTX3TESTCASEMODEL_H

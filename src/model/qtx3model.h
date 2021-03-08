@@ -11,6 +11,7 @@ class QTX3Model : public QAbstractItemModel {
  public:
   friend class QTX3ModelTest;
   friend QTX3Node::QTX3Node(QTX3Model* parent_model);
+  friend int QTX3Node::createChildren();
   explicit QTX3Model(QObject* parent = nullptr, TixiDocumentHandle handle = -1);
   explicit QTX3Model(QObject* parent = nullptr,
                      const QString& rootName = "root");
@@ -77,7 +78,7 @@ class QTX3Model : public QAbstractItemModel {
   // initialize an empty model from root element name.
   static TixiDocumentHandle createNewHandle(const QString& rootName);
   // Node factory
-  QTX3Node* createNode(QTX3Node* parent, const QString& name);
+  QTX3Node* createNode(QTX3Node* parent, const QString& name) const;
 
  protected:
   const TixiDocumentHandle _tixihandle = -1;

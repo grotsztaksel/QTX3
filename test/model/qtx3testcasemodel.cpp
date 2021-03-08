@@ -48,7 +48,8 @@ QTX3TestcaseModel* QTX3TestcaseModel::createModel(QObject* parent) {
   return new QTX3TestcaseModel(parent, handle);
 }
 
-QTX3Node* QTX3TestcaseModel::createNode(QTX3Node* parent, const QString& name) {
+QTX3Node* QTX3TestcaseModel::createNode(QTX3Node* parent,
+                                        const QString& name) const {
   if (parent->elementName() == "child_1") {
     return new QTX3specialTestNode(parent);
   }

@@ -144,7 +144,7 @@ const QTX3Node* QTX3Model::nodeFromIndex(QModelIndex index) const {
   return itemFromIndex(index)->parent();
 }
 
-QTX3Node* QTX3Model::createNode(QTX3Node* parent, const QString& name) {
+QTX3Node* QTX3Model::createNode(QTX3Node* parent, const QString& name) const {
   // Basic implementation creates always the same nodes
   return new QTX3Node(parent);
 }
