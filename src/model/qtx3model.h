@@ -78,7 +78,7 @@ class QTX3Model : public QAbstractItemModel {
   // initialize an empty model from root element name.
   static TixiDocumentHandle createNewHandle(const QString& rootName);
   // Node factory
-  QTX3Node* createNode(QTX3Node* parent, const QString& name) const;
+  virtual QTX3Node* createNode(QTX3Node* parent, const QString& name) const;
 
  protected:
   const TixiDocumentHandle _tixihandle = -1;
