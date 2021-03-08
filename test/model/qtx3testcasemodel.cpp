@@ -2,8 +2,13 @@
 #include <regex>
 #include "qtx3specialtestnode.h"
 
-QTX3TestcaseModel::QTX3TestcaseModel(QObject* parent, TixiDocumentHandle handle)
-    : QTX3Model(parent, handle) {}
+QTX3TestcaseModel::QTX3TestcaseModel(QObject* parent,
+                                     TixiDocumentHandle handle,
+                                     bool initialize)
+    : QTX3Model(parent, handle, false) {
+  if (initialize)
+    init();
+}
 
 QTX3TestcaseModel* QTX3TestcaseModel::createModel(QObject* parent) {
   TixiDocumentHandle handle;

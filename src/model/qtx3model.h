@@ -12,9 +12,12 @@ class QTX3Model : public QAbstractItemModel {
   friend class QTX3ModelTest;
   friend QTX3Node::QTX3Node(QTX3Model* parent_model);
   friend int QTX3Node::createChildren();
-  explicit QTX3Model(QObject* parent = nullptr, TixiDocumentHandle handle = -1);
   explicit QTX3Model(QObject* parent = nullptr,
-                     const QString& rootName = "root");
+                     TixiDocumentHandle handle = -1,
+                     bool initialize = true);
+  explicit QTX3Model(QObject* parent = nullptr,
+                     const QString& rootName = "root",
+                     bool initialize = true);
 
   /****************************************************
    *
@@ -74,6 +77,8 @@ class QTX3Model : public QAbstractItemModel {
   const QTX3Node* nodeFromIndex(QModelIndex index) const;
 
  protected:
+  void init();
+
   // Create an empty tixi element. Intended to be used in the constructor to
   // initialize an empty model from root element name.
   static TixiDocumentHandle createNewHandle(const QString& rootName);

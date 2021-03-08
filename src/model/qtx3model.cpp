@@ -1,7 +1,9 @@
 #include "qtx3model.h"
 #include "qtx3node.h"
 
-QTX3Model::QTX3Model(QObject* parent, TixiDocumentHandle handle)
+QTX3Model::QTX3Model(QObject* parent,
+                     TixiDocumentHandle handle,
+                     bool initialize)
     : QAbstractItemModel(parent),
       _tixihandle(handle),
       _root(new QTX3Node(this)) {
@@ -9,11 +11,16 @@ QTX3Model::QTX3Model(QObject* parent, TixiDocumentHandle handle)
     throw(std::runtime_error(
         "QTX3Model: constructor received invalid tixi handle!"));
   }
-  _root->createChildren();
+  if (initialize)
+    init();
 }
 
-QTX3Model::QTX3Model(QObject* parent, const QString& rootName)
+QTX3Model::QTX3Model(QObject* parent, const QString& rootName, bool initialize)
     : QTX3Model(parent, QTX3Model::createNewHandle(rootName)) {}
+
+void QTX3Model::init() {
+  _root->createChildren();
+}
 
 TixiDocumentHandle QTX3Model::createNewHandle(const QString& rootName) {
   TixiDocumentHandle handle;

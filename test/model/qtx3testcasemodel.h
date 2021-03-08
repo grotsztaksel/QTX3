@@ -17,7 +17,9 @@ class QTX3TestcaseModel : public QTX3Model {
   Q_OBJECT
  public:
   friend class QTX3ModelTest;
-  QTX3TestcaseModel(QObject* parent = nullptr, TixiDocumentHandle handle = -1);
+  QTX3TestcaseModel(QObject* parent = nullptr,
+                    TixiDocumentHandle handle = -1,
+                    bool initialize = true);
 
   static QTX3TestcaseModel* createModel(QObject* parent);
 
