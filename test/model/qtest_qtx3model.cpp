@@ -17,6 +17,8 @@ void QTX3ModelTest::cleanup() {
 void QTX3ModelTest::test_constructor_with_tixihandle() {
   QCOMPARE(3, model->_root->rows());
   QVERIFY(model->_tixihandle > 0);
+
+  QCOMPARE(3, model->_root->childAt(0)->childAt(0)->columns());
 }
 
 void QTX3ModelTest::test_constructor_with_string() {
