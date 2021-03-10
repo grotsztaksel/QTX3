@@ -61,6 +61,8 @@ bool QTX3Model::setHeaderData(int section,
 QModelIndex QTX3Model::index(int row,
                              int column,
                              const QModelIndex& parent) const {
+  if (!hasIndex(row, column, parent))
+    return QModelIndex();
   const QTX3Node* parentNode;
   if (!parent.isValid()) {
     parentNode = _root;
