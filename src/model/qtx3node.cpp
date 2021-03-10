@@ -87,6 +87,8 @@ int QTX3Node::rows() const {
 }
 
 int QTX3Node::row() const {
+  if (!_parent)
+    return 0;
   for (int i = 0; i < _parent->_children.size(); i++) {
     if (_parent->_children.at(i) == this)
       return i;
