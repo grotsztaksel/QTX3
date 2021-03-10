@@ -47,7 +47,7 @@ class QTX3Node : public QObject {
 
  protected:
   // Fill the list _columnItems. The default implementation creates one item
-  void createItems();
+  virtual void createItems();
  signals:
 
  protected:
