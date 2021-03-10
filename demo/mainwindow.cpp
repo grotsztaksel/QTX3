@@ -6,7 +6,7 @@
 #include "./ui_mainwindow.h"
 #include "tixi.h"
 
-#include "qtx3model.h"
+#include "songmodel.h"
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -41,7 +41,7 @@ void MainWindow::onOpenFileTriggered() {
     return;
   }
 
-  QTX3Model* model = new QTX3Model(ui->treeView, handle);
+  QTX3Model* model = new SongModel(ui->treeView, handle);
 
   ui->treeView->setModel(model);
   char* text;
