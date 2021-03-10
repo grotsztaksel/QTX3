@@ -44,6 +44,7 @@ QVariant QTX3Model::headerData(int section,
   if (role == Qt::DisplayRole) {
     return QVariant("element");
   }
+  return QVariant();
 }
 
 bool QTX3Model::setHeaderData(int section,
