@@ -41,7 +41,7 @@ void MainWindow::onOpenFileTriggered() {
     return;
   }
 
-  QTX3Model* model = new QTX3Model(this, handle);
+  QTX3Model* model = new QTX3Model(ui->treeView, handle);
 
   ui->treeView->setModel(model);
   char* text;
