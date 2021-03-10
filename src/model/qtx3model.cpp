@@ -87,6 +87,8 @@ QModelIndex QTX3Model::parent(const QModelIndex& index) const {
 }
 
 int QTX3Model::rowCount(const QModelIndex& parent) const {
+  if (parent.column() > 0)
+    return 0;
   return nodeFromIndex(parent)->rows();
 }
 
