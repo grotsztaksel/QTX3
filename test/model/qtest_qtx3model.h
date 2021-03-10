@@ -3,6 +3,7 @@
 
 #include <QObject>
 class QTX3TestcaseModel;
+
 class QTX3ModelTest : public QObject {
   Q_OBJECT
  public:

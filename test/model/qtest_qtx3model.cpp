@@ -67,15 +67,15 @@ void QTX3ModelTest::test_rowCount() {
 }
 
 void QTX3ModelTest::test_columnCount() {
-  QCOMPARE(0, model->columnCount(QModelIndex()));
+  QCOMPARE(model->columnCount(QModelIndex()), 0);
   QModelIndex index = model->index(2, 0, QModelIndex());
-  QCOMPARE(1, model->columnCount(index));
+  QCOMPARE(model->columnCount(index), 1);
 
   // The child_1 and child will have special constructors
   QModelIndex child_1_index = model->index(1, 0);
   QModelIndex child_index = model->index(1, 0, child_1_index);
-  QCOMPARE(1, model->columnCount(child_1_index));
-  QCOMPARE(0, model->columnCount(child_index));
+  QCOMPARE(model->columnCount(child_1_index), 1);
+  QCOMPARE(model->columnCount(child_index), 1);
 }
 
 void QTX3ModelTest::test_createNode_baseclass() {
