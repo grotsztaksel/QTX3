@@ -154,13 +154,13 @@ QTX3Item* QTX3Model::itemFromIndex(QModelIndex index) const {
   return static_cast<QTX3Item*>(index.internalPointer());
 }
 
-const QTX3Node* QTX3Model::nodeFromIndex(QModelIndex index) const {
+QTX3Node* QTX3Model::nodeFromIndex(QModelIndex index) const {
   if (!index.isValid())
     return _root;
   return itemFromIndex(index)->parent();
 }
 
-const QTX3Node* QTX3Model::nodeFromPath(QString path) const {
+QTX3Node* QTX3Model::nodeFromPath(QString path) const {
   char* ipath;
   ReturnCode res =
       txutils::indexedPath(_tixihandle, path.toStdString().c_str(), 1, &ipath);

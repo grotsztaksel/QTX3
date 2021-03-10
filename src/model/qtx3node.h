@@ -43,7 +43,7 @@ class QTX3Node : public QObject {
 
   const QTX3Model* model() const;
 
-  const QTX3Node* parent() const;
+  QTX3Node* parent() const;
 
  protected:
   // Fill the list _columnItems. The default implementation creates one item
@@ -62,7 +62,7 @@ class QTX3Node : public QObject {
 
   // Parent node. Can be retrieved by calling parent(), but would have to be
   // cast onto QXTreeNode every time
-  const QTX3Node* _parent = nullptr;
+  QTX3Node* _parent = nullptr;
 
   TixiDocumentHandle _tixihandle;
 };

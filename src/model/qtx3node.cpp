@@ -108,7 +108,7 @@ const QTX3Model* QTX3Node::model() const {
   return _model;
 }
 
-const QTX3Node* QTX3Node::parent() const {
+QTX3Node* QTX3Node::parent() const {
   return _parent;
 }
 

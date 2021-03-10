@@ -74,8 +74,8 @@ class QTX3Model : public QAbstractItemModel {
    *****************************************************/
 
   QTX3Item* itemFromIndex(QModelIndex index) const;
-  const QTX3Node* nodeFromIndex(QModelIndex index) const;
-  const QTX3Node* nodeFromPath(QString path = "/*[1]") const;
+  QTX3Node* nodeFromIndex(QModelIndex index) const;
+  QTX3Node* nodeFromPath(QString path = "/*[1]") const;
 
  protected:
   virtual void init();

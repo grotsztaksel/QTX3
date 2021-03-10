@@ -30,10 +30,10 @@ class QTX3Item : public QObject {
 
   virtual Qt::ItemFlags flags() const;
 
-  const QTX3Node* parent() const;
+  QTX3Node* parent() const;
 
  private:
-  const QTX3Node* _parent;
+  QTX3Node* _parent;
   const QTX3Model* _model;
   const TixiDocumentHandle _tixihandle;
 };

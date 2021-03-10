@@ -51,6 +51,6 @@ Qt::ItemFlags QTX3Item::flags() const {
   return flags;
 }
 
-const QTX3Node* QTX3Item::parent() const {
+QTX3Node* QTX3Item::parent() const {
   return _parent;
 }
