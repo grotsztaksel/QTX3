@@ -64,26 +64,29 @@ QModelIndex QTX3Model::index(int row,
                              const QModelIndex& parent) const {
   if (!hasIndex(row, column, parent))
     return QModelIndex();
-  const QTX3Node* parentNode;
-  if (!parent.isValid()) {
+
+  QTX3Node* parentNode;
+
+  if (!parent.isValid())
     parentNode = _root;
-  } else {
+  else
     parentNode = nodeFromIndex(parent);
-  }
+
   QTX3Node* childNode = parentNode->childAt(row);
-  if (!childNode)
-    return QModelIndex();
-
-  QTX3Item* columnItem = childNode->itemAt(column);
-
-  return createIndex(row, column, columnItem);
+  if (childNode)
+    return createIndex(row, column, childNode);
+  return QModelIndex();
 }
 
 QModelIndex QTX3Model::parent(const QModelIndex& index) const {
   if (!index.isValid())
     return QModelIndex();
-  const QTX3Node* parentNode = nodeFromIndex(index)->parent();
-  return createIndex(parentNode->row(), 0, parentNode->itemAt(0));
+
+  QTX3Node* parentNode = nodeFromIndex(index)->parent();
+  if (parentNode == _root)
+    return QModelIndex();
+
+  return createIndex(parentNode->row(), 0, parentNode);
 }
 
 int QTX3Model::rowCount(const QModelIndex& parent) const {
@@ -150,13 +153,13 @@ bool QTX3Model::removeRows(int row, int count, const QModelIndex& parent) {
 }
 
 QTX3Item* QTX3Model::itemFromIndex(QModelIndex index) const {
-  return static_cast<QTX3Item*>(index.internalPointer());
+  return nodeFromIndex(index)->itemAt(index.column());
 }
 
 QTX3Node* QTX3Model::nodeFromIndex(QModelIndex index) const {
   if (!index.isValid())
     return _root;
-  return itemFromIndex(index)->parent();
+  return static_cast<QTX3Node*>(index.internalPointer());
 }
 
 QTX3Node* QTX3Model::nodeFromPath(QString path) const {
