@@ -149,5 +149,3 @@ void QTX3ModelTest::test_data() {
   index = model->index(1, 0, index);
   QCOMPARE("child_2", model->data(index, Qt::DisplayRole));
 }
-
-QTEST_MAIN(QTX3ModelTest)
