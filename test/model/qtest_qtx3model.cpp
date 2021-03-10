@@ -29,7 +29,9 @@ void QTX3ModelTest::test_constructor_with_string() {
 }
 
 void QTX3ModelTest::test_index() {
-  QModelIndex index = model->index(1, 0, QModelIndex());
+  QModelIndex index = model->index(0, 0, QModelIndex());
+  QVERIFY(index.isValid());
+  index = model->index(1, 0, QModelIndex());
   QVERIFY(index.isValid());
   QTX3Item* item = static_cast<QTX3Item*>(index.internalPointer());
   QVERIFY(item);
