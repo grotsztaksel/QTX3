@@ -91,9 +91,6 @@ int QTX3Model::rowCount(const QModelIndex& parent) const {
 }
 
 int QTX3Model::columnCount(const QModelIndex& parent) const {
-  if (!parent.isValid())
-    return 0;
-
   return 1;
   int ic = 0;
   auto parent_node = nodeFromIndex(parent);
