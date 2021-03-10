@@ -21,8 +21,16 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::onOpenFileTriggered() {
-  QString xmlFileName = QFileDialog::getOpenFileName(
-      this, tr("Open File"), QString(), tr("XML files (*.xml)"));
+  QString xmlFileName;
+  bool use_dialog = false;
+  if (use_dialog) {
+    xmlFileName = QFileDialog::getOpenFileName(this, tr("Open File"), QString(),
+                                               tr("XML files (*.xml)"));
+  } else {
+    xmlFileName =
+        "C:/Users/piotr/Documents/Songs XML/SeparateFiles/0_main_file.xml";
+  }
+
   TixiDocumentHandle handle;
   ReturnCode res = tixiOpenDocument(xmlFileName.toStdString().c_str(), &handle);
   if (res != SUCCESS) {
