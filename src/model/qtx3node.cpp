@@ -105,7 +105,7 @@ QTX3Node* QTX3Node::parent() const {
 }
 
 QVariant QTX3Node::data(const QModelIndex& index, int role) const {
-  if (role == Qt::DisplayRole) {
+  if (role == Qt::DisplayRole && index.column() == 0) {
     // Default implementation displays element name
     return QVariant(elementName());
   }
