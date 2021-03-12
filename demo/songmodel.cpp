@@ -19,6 +19,10 @@ QVariant SongModel::data(const QModelIndex& index, int role) const {
   return QTX3Model::data(index, role);
 }
 
+int SongModel::columnCount(const QModelIndex& parent) const {
+  return 3;
+}
+
 QTX3Node* SongModel::createNode(QTX3Node* parent, const QString& name) const {
   // Basic implementation creates always the same nodes
   if (name == "song") {

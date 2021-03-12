@@ -16,6 +16,8 @@ class SongModel : public QTX3Model {
 
   QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
+  int columnCount(const QModelIndex& parent = QModelIndex()) const override;
+
  protected:
   virtual QTX3Node* createNode(QTX3Node* parent, const QString& name) const;
 };
