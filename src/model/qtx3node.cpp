@@ -27,10 +27,10 @@ int QTX3Node::createChildren() {
     nchildren = 0;
   }
   for (int i = 1; i <= nchildren; i++) {
-    char* newName;
-    res = tixiXPathExpressionGetXPath(_tixihandle, xpath, i, &newName);
-
-    QTX3Node* newNode = _model->createNode(this, QString(newName));
+    char* newPath;
+    res = tixiXPathExpressionGetXPath(_tixihandle, xpath, i, &newPath);
+    QTX3Node* newNode =
+        _model->createNode(this, QString(txutils::elementName(newPath)));
     _children.append(newNode);
     newNode->createChildren();
   }
