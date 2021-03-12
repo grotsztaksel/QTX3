@@ -10,25 +10,11 @@ class QTX3Item : public QObject {
  public:
   explicit QTX3Item(QTX3Node* parent);
 
-  // return column number
-  int column() const;
-
   // return row number
   int row() const;
 
   // return parent element node
   const QTX3Node* node() const;
-
-  virtual QVariant data(int role) const;
-
-  /* set data through this item.
-   * If operation is successful, a non-empty vector of roles is returned,
-   * otherwise returns an empty vector. Returning a vector, instead of a bool
-   * allows setting specific roles to emit dataChanged from the model.
-   */
-  virtual QVector<int> setData(QVariant value, int role);
-
-  virtual Qt::ItemFlags flags() const;
 
   QTX3Node* parent() const;
 

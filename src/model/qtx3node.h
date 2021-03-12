@@ -14,7 +14,6 @@ class QTX3Node : public QObject {
   Q_OBJECT
  public:
   friend class QXT3NodeTest;
-  friend int QTX3Item::column() const;
   friend QTX3Item::QTX3Item(QTX3Node* parent);
   explicit QTX3Node(QTX3Model* parent_model);
   explicit QTX3Node(QTX3Node* parent_node);
@@ -40,14 +39,27 @@ class QTX3Node : public QObject {
 
   // Return index of this node in the parent's _children
   int row() const;
+  // Return number of columns this node produces
+  virtual int columnCount() const;
 
   const QTX3Model* model() const;
 
   QTX3Node* parent() const;
 
- protected:
-  // Fill the list _columnItems. The default implementation creates one item
-  virtual void createItems();
+  virtual QVariant data(const QModelIndex& index,
+                        int role = Qt::DisplayRole) const;
+
+  /* set data through this item.
+   * If operation is successful, a non-empty vector of roles is returned,
+   * otherwise returns an empty vector. Returning a vector, instead of a bool
+   * allows setting specific roles to emit dataChanged from the model.
+   */
+  virtual QVector<int> setData(const QModelIndex& index,
+                               const QVariant& value,
+                               int role = Qt::EditRole);
+
+  virtual Qt::ItemFlags flags(const QModelIndex& index) const;
+
  signals:
 
  protected:

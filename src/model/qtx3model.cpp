@@ -96,32 +96,28 @@ int QTX3Model::rowCount(const QModelIndex& parent) const {
 }
 
 int QTX3Model::columnCount(const QModelIndex& parent) const {
-  return 1;
-  int ic = 0;
-  auto parent_node = nodeFromIndex(parent);
-  // This may be sufficient. The question is what "parent" means
-  //  return parent_node->columns();
-
-  for (int i = 0; i < parent_node->rows(); i++) {
-    int child_columnCount = parent_node->childAt(i)->columns();
-
-    ic = child_columnCount > ic ? child_columnCount : ic;
-  }
-  return ic;
+  return nodeFromIndex(parent)->columnCount();
+  /*
+https://stackoverflow.com/questions/53219850/how-to-show-the-proper-number-of-columns-in-a-qtreeview-for-a-model-with-differe
+    As @eyllanesc answered, the number of columns in the View is only affected
+by the root item. However, columnCount() will have an effect on rows that give a
+number that is less than this number, in that columns less than this numberwill
+not be populated.
+    */
 }
 
 QVariant QTX3Model::data(const QModelIndex& index, int role) const {
   if (!index.isValid())
     return QVariant();
 
-  return itemFromIndex(index)->data(role);
+  return nodeFromIndex(index)->data(index, role);
 }
 
 bool QTX3Model::setData(const QModelIndex& index,
                         const QVariant& value,
                         int role) {
   if (data(index, role) != value) {
-    QVector<int> roles = itemFromIndex(index)->setData(value, role);
+    QVector<int> roles = nodeFromIndex(index)->setData(index, value, role);
     if (roles.empty()) {
       return false;
     }
@@ -135,7 +131,7 @@ Qt::ItemFlags QTX3Model::flags(const QModelIndex& index) const {
   if (!index.isValid())
     return Qt::NoItemFlags;
 
-  return itemFromIndex(index)->flags();
+  return nodeFromIndex(index)->flags(index);
 }
 
 bool QTX3Model::insertRows(int row, int count, const QModelIndex& parent) {

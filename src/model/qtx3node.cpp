@@ -5,17 +5,13 @@
 QTX3Node::QTX3Node(QTX3Model* parent_model)
     : QObject(parent_model),
       _model(parent_model),
-      _tixihandle(parent_model->_tixihandle) {
-  createItems();
-}
+      _tixihandle(parent_model->_tixihandle) {}
 
 QTX3Node::QTX3Node(QTX3Node* parent_node)
     : QObject(parent_node),
       _model(parent_node->_model),
       _parent(parent_node),
-      _tixihandle(parent_node->_tixihandle) {
-  createItems();
-}
+      _tixihandle(parent_node->_tixihandle) {}
 
 int QTX3Node::createChildren() {
   if (_children.size() > 0)
@@ -104,6 +100,10 @@ int QTX3Node::row() const {
   */
 }
 
+int QTX3Node::columnCount() const {
+  return 1;
+}
+
 const QTX3Model* QTX3Node::model() const {
   return _model;
 }
@@ -112,6 +112,24 @@ QTX3Node* QTX3Node::parent() const {
   return _parent;
 }
 
-void QTX3Node::createItems() {
-  _columnItems.append(new QTX3Item(this));
+QVariant QTX3Node::data(const QModelIndex& index, int role) const {
+  if (role == Qt::DisplayRole) {
+    // Default implementation displays element name
+    return QVariant(elementName());
+  }
+  return QVariant();
+}
+
+QVector<int> QTX3Node::setData(const QModelIndex& index,
+                               const QVariant& value,
+                               int role) {
+  // Base class does not allow editing
+  return QVector<int>();
+}
+
+Qt::ItemFlags QTX3Node::flags(const QModelIndex& index) const {
+  auto flags = Qt::ItemIsEnabled;
+  if (index.column() != 0)
+    flags | Qt::ItemNeverHasChildren;
+  return flags;
 }
