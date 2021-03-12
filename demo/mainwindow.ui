@@ -68,7 +68,7 @@
     <string>Exit</string>
    </property>
    <property name="shortcut">
-    <string>F10</string>
+    <string>Alt+F4</string>
    </property>
    <property name="shortcutContext">
     <enum>Qt::ApplicationShortcut</enum>
