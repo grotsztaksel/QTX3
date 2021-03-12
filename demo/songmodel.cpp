@@ -6,7 +6,10 @@
 SongModel::SongModel(QObject* parent,
                      TixiDocumentHandle handle,
                      bool initialize)
-    : QTX3Model(parent, handle, initialize) {}
+    : QTX3Model(parent, handle, false) {
+  if (initialize)
+    init();
+}
 
 SongModel::SongModel(QObject* parent, const QString& rootName, bool initialize)
     : QTX3Model(parent, rootName, initialize) {}
