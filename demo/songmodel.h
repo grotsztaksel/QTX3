@@ -19,7 +19,7 @@ class SongModel : public QTX3Model {
   int columnCount(const QModelIndex& parent = QModelIndex()) const override;
 
  protected:
-  virtual QTX3Node* createNode(QTX3Node* parent, const QString& name) const;
+  QTX3Node* createNode(QTX3Node* parent, const QString& name) const override;
 };
 
 #endif  // SONGMODEL_H

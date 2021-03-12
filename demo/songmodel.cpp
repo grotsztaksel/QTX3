@@ -20,6 +20,9 @@ QVariant SongModel::data(const QModelIndex& index, int role) const {
 }
 
 int SongModel::columnCount(const QModelIndex& parent) const {
+  if (nodeFromIndex(parent)->elementName() == "section") {
+    return 2;
+  }
   return 3;
 }
 
