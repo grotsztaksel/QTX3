@@ -10,8 +10,9 @@ class QTX3specialTestNode : public QTX3Node {
   friend class QTX3ModelTest;
   explicit QTX3specialTestNode(QTX3Node* parent_node);
 
+  int columnCount() const override;
+
  protected:
-  void createItems();
  signals:
 };
 

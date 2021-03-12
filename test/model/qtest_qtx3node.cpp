@@ -22,14 +22,14 @@ void QTX3NodeTest::test_rows() {
   QCOMPARE(nextNode->rows(), 0);
 }
 
-void QTX3NodeTest::test_columns() {
-  QCOMPARE(rootNode->columns(), 1);
-  QCOMPARE(node->columns(), 1);
+void QTX3NodeTest::test_columnCount() {
+  QCOMPARE(rootNode->columnCount(), 1);
+  QCOMPARE(node->columnCount(), 1);
   auto nextNode = node->childAt(2);
-  QCOMPARE(nextNode->columns(), 1);
+  QCOMPARE(nextNode->columnCount(), 1);
 
   nextNode = rootNode->childAt(0)->childAt(0);
-  QCOMPARE(nextNode->columns(), 3);
+  QCOMPARE(nextNode->columnCount(), 3);
 }
 
 void QTX3NodeTest::test_row() {

@@ -15,10 +15,10 @@ void QTX3ModelTest::cleanup() {
 }
 
 void QTX3ModelTest::test_constructor_with_tixihandle() {
-  QCOMPARE(3, model->_root->rows());
+  QCOMPARE(model->_root->rows(), 3);
   QVERIFY(model->_tixihandle > 0);
 
-  QCOMPARE(3, model->_root->childAt(0)->childAt(0)->columns());
+  QCOMPARE(model->_root->childAt(0)->childAt(0)->columnCount(), 3);
 }
 
 void QTX3ModelTest::test_constructor_with_string() {
@@ -33,18 +33,18 @@ void QTX3ModelTest::test_index() {
   QVERIFY(index.isValid());
   index = model->index(1, 0, QModelIndex());
   QVERIFY(index.isValid());
-  QTX3Item* item = static_cast<QTX3Item*>(index.internalPointer());
-  QVERIFY(item);
+  QTX3Node* node = static_cast<QTX3Node*>(index.internalPointer());
+  QVERIFY(node);
 
-  QCOMPARE("/root/child_2[1]", item->parent()->xmlPath());
+  QCOMPARE("/root/child_2[1]", node->xmlPath());
 
   index = model->index(1, 0, index);
 
   QVERIFY(index.isValid());
-  item = static_cast<QTX3Item*>(index.internalPointer());
-  QVERIFY(item);
+  node = static_cast<QTX3Node*>(index.internalPointer());
+  QVERIFY(node);
 
-  QCOMPARE("/root/child_2[1]/child_2[2]", item->parent()->xmlPath());
+  QCOMPARE("/root/child_2[1]/child_2[2]", node->xmlPath());
 }
 
 void QTX3ModelTest::test_parent() {
@@ -67,7 +67,7 @@ void QTX3ModelTest::test_rowCount() {
 }
 
 void QTX3ModelTest::test_columnCount() {
-  QCOMPARE(model->columnCount(QModelIndex()), 0);
+  QCOMPARE(model->columnCount(QModelIndex()), 1);
   QModelIndex index = model->index(2, 0, QModelIndex());
   QCOMPARE(model->columnCount(index), 1);
 
@@ -93,13 +93,13 @@ void QTX3ModelTest::test_createNode_testclass() {
       model->QTX3Model::createNode(parentNode, QString("justName"));
   QCOMPARE(newNode->parent(), parentNode);
   QCOMPARE(newNode->model(), model);
-  QCOMPARE(newNode->columns(), 1);
+  QCOMPARE(newNode->columnCount(), 1);
 
   newNode = model->createNode(parentNode, QString("justName"));
 
   QCOMPARE(newNode->parent(), parentNode);
   QCOMPARE(newNode->model(), model);
-  QCOMPARE(newNode->columns(), 3);
+  QCOMPARE(newNode->columnCount(), 3);
 }
 
 void QTX3ModelTest::test_nodeFromIndex() {
@@ -107,12 +107,6 @@ void QTX3ModelTest::test_nodeFromIndex() {
   QCOMPARE(model->nodeFromIndex(index), model->_root->childAt(1));
   index = model->index(1, 0, index);
   QCOMPARE(model->nodeFromIndex(index), model->_root->childAt(1)->childAt(1));
-
-  // Navigate down to "/root/child_1/child" - it should have 3 columns
-  index = model->index(0, 0);
-  index = model->index(0, 2, index);
-  // But pointing to the non-0 column should also return the node
-  QCOMPARE(model->nodeFromIndex(index), model->_root->childAt(0)->childAt(0));
 }
 
 void QTX3ModelTest::test_nodeFromPath() {

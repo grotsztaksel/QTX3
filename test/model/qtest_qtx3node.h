@@ -13,7 +13,7 @@ class QTX3NodeTest : public QObject {
   void cleanup();
 
   void test_rows();
-  void test_columns();
+  void test_columnCount();
   void test_row();
   void test_xPath();
   void test_xmlPath();
