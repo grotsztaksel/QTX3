@@ -16,7 +16,7 @@ class Item : public QObject {
   // return row number
   int row() const;
 
-  // return parent element node
+  // return parent element node - alias to parent()
   const Node* node() const;
 
   Node* parent() const;
