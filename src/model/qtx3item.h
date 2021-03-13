@@ -21,7 +21,7 @@ class QTX3Item : public QObject {
 
   QTX3Node* parent() const;
 
- private:
+ protected:
   QTX3Node* _parent;
   const QTX3Model* _model;
   const TixiDocumentHandle _tixihandle;
