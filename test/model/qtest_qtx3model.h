@@ -24,6 +24,10 @@ class QTX3ModelTest : public QObject {
   void test_rowCount();
   void test_columnCount();
 
+  void test_data_f();  // for some reason, test_data() is not recognized as test
+  void test_setData();
+  void test_setFlags();
+
   void test_createNode_baseclass();
   // Using a specially modified model with a non-default factory
   void test_createNode_testclass();

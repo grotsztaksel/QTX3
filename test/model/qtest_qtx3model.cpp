@@ -80,6 +80,22 @@ void QTX3ModelTest::test_columnCount() {
   QCOMPARE(model->columnCount(child_index), 1);
 }
 
+void QTX3ModelTest::test_data_f() {
+  QModelIndex index = model->index(2, 0, QModelIndex());
+  QCOMPARE(model->data(index), "child_2");
+}
+
+void QTX3ModelTest::test_setData() {
+  QModelIndex index = model->index(2, 0, QModelIndex());
+  QVERIFY(!model->setData(index, "just any value", Qt::EditRole));
+}
+
+void QTX3ModelTest::test_setFlags() {
+  QModelIndex index = model->index(2, 0, QModelIndex());
+  QCOMPARE(model->flags(index), Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+  QCOMPARE(model->flags(QModelIndex()), Qt::NoItemFlags);
+}
+
 void QTX3ModelTest::test_createNode_baseclass() {
   Node* parentNode = model->_root->childAt(1)->childAt(1);
   Node* newNode = model->Model::createNode(parentNode, QString("justName"));
