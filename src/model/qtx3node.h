@@ -36,6 +36,11 @@ class Node : public QObject {
   QString elementName() const;
 
   Node* childAt(int row) const;
+
+  void insertChild(Node* child, const int index);
+
+  void removeChildren(const int first, const int count);
+
   int rows() const;
 
   // Return index of this node in the parent's _children

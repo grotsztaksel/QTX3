@@ -73,6 +73,14 @@ Node* Node::childAt(int row) const {
   return _children.at(row);
 }
 
+void Node::insertChild(Node* child, const int index) {
+  _children.insert(index, child);
+}
+
+void Node::removeChildren(const int first, const int count) {
+  _children.remove(first, count);
+}
+
 int Node::rows() const {
   return _children.size();
 }
