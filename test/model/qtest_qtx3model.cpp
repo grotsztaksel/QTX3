@@ -72,12 +72,6 @@ void QTX3ModelTest::test_columnCount() {
   QCOMPARE(model->columnCount(QModelIndex()), 1);
   QModelIndex index = model->index(2, 0, QModelIndex());
   QCOMPARE(model->columnCount(index), 1);
-
-  // The child_1 and child will have special constructors
-  QModelIndex child_1_index = model->index(1, 0);
-  QModelIndex child_index = model->index(1, 0, child_1_index);
-  QCOMPARE(model->columnCount(child_1_index), 1);
-  QCOMPARE(model->columnCount(child_index), 1);
 }
 
 void QTX3ModelTest::test_data_f() {
