@@ -3,6 +3,7 @@
 
 #include <qtx3node.h>
 #include <QObject>
+#include "qtx3attribute.h"
 
 class SongNode : public QTX3::QTX3Node {
   Q_OBJECT
@@ -12,6 +13,9 @@ class SongNode : public QTX3::QTX3Node {
   int columnCount() const override;
   QVariant data(const QModelIndex& index,
                 int role = Qt::DisplayRole) const override;
+
+ protected:
+  const QTX3::QTX3Attribute _title;
 };
 
 #endif  // SONGNODE_H

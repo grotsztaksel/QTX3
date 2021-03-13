@@ -1,7 +1,8 @@
 #include "songnode.h"
 #include "QAbstractItemModel"
-
-SongNode::SongNode(QTX3::QTX3Node* parent_node) : QTX3::QTX3Node(parent_node) {}
+#include "qtx3attribute.h"
+SongNode::SongNode(QTX3::QTX3Node* parent_node)
+    : QTX3::QTX3Node(parent_node), _title(this, "title") {}
 
 int SongNode::columnCount() const {
   return 2;
@@ -9,7 +10,7 @@ int SongNode::columnCount() const {
 
 QVariant SongNode::data(const QModelIndex& index, int role) const {
   if (role == Qt::DisplayRole && index.column() == 1) {
-    return "Lalala";
+    return _title.value();
   }
   return QTX3::QTX3Node::data(index, role);
 }
