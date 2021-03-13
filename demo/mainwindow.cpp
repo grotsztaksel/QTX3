@@ -43,7 +43,7 @@ void MainWindow::onOpenFileTriggered() {
     return;
   }
 
-  QTX3Model* model = new SongModel(ui->treeView, handle);
+  Model* model = new SongModel(ui->treeView, handle);
 
   ui->treeView->setModel(model);
   char* text;

@@ -6,20 +6,20 @@
 SongModel::SongModel(QObject* parent,
                      TixiDocumentHandle handle,
                      bool initialize)
-    : QTX3Model(parent, handle, false) {
+    : Model(parent, handle, false) {
   if (initialize)
     init();
 }
 
 SongModel::SongModel(QObject* parent, const QString& rootName, bool initialize)
-    : QTX3Model(parent, rootName, initialize) {}
+    : Model(parent, rootName, initialize) {}
 
 QVariant SongModel::data(const QModelIndex& index, int role) const {
   if (role == Qt::ForegroundRole &&
       nodeFromIndex(index)->elementName() == "song")
     return QVariant(QColor(Qt::darkGreen));
 
-  return QTX3Model::data(index, role);
+  return Model::data(index, role);
 }
 
 int SongModel::columnCount(const QModelIndex& parent) const {
@@ -29,11 +29,11 @@ int SongModel::columnCount(const QModelIndex& parent) const {
   return 3;
 }
 
-QTX3::QTX3Node* SongModel::createNode(QTX3::QTX3Node* parent,
+QTX3::Node* SongModel::createNode(QTX3::Node* parent,
                                       const QString& name) const {
   // Basic implementation creates always the same nodes
   if (name == "song") {
     return new SongNode(parent);
   }
-  return QTX3::QTX3Model::createNode(parent, name);
+  return QTX3::Model::createNode(parent, name);
 }
