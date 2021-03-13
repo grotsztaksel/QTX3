@@ -148,10 +148,6 @@ bool QTX3Model::removeRows(int row, int count, const QModelIndex& parent) {
   endRemoveRows();
 }
 
-QTX3Item* QTX3Model::itemFromIndex(QModelIndex index) const {
-  return nodeFromIndex(index)->itemAt(index.column());
-}
-
 QTX3Node* QTX3Model::nodeFromIndex(QModelIndex index) const {
   if (!index.isValid())
     return _root;

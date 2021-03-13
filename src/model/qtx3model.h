@@ -73,7 +73,6 @@ class QTX3Model : public QAbstractItemModel {
    *
    *****************************************************/
 
-  QTX3Item* itemFromIndex(QModelIndex index) const;
   QTX3Node* nodeFromIndex(QModelIndex index = QModelIndex()) const;
   QTX3Node* nodeFromPath(QString path = "/*[1]") const;
 

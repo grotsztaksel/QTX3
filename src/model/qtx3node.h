@@ -32,8 +32,6 @@ class QTX3Node : public QObject {
   // Return name of the own element
   QString elementName() const;
 
-  QTX3Item* itemAt(int column) const;
-  int columns() const;
   QTX3Node* childAt(int row) const;
   int rows() const;
 
