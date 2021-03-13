@@ -14,6 +14,9 @@ class QTX3NodeTest : public QObject {
   void init();
   void cleanup();
 
+  void test_createChildren();
+  void test_childAt();
+
   void test_rows();
   void test_columnCount();
   void test_row();
@@ -23,6 +26,10 @@ class QTX3NodeTest : public QObject {
 
   void test_model();
   void test_parent();
+
+  void test_data_f();  // for some reason, test_data() is not recognized as test
+  void test_setData();
+  void test_setFlags();
 
  private:
   QTX3TestcaseModel* model;
