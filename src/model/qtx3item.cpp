@@ -2,6 +2,8 @@
 #include "qtx3model.h"
 #include "qtx3node.h"
 
+using namespace QTX3;
+
 QTX3Item::QTX3Item(QTX3Node* parent)
     : QObject(parent),
       _parent(parent),

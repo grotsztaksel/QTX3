@@ -4,6 +4,8 @@
 
 #include <QRegularExpression>
 
+using namespace QTX3;
+
 QTX3Model::QTX3Model(QObject* parent,
                      TixiDocumentHandle handle,
                      bool initialize)

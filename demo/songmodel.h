@@ -4,7 +4,7 @@
 #include <QObject>
 #include "qtx3model.h"
 
-class SongModel : public QTX3Model {
+class SongModel : public QTX3::QTX3Model {
   Q_OBJECT
  public:
   explicit SongModel(QObject* parent = nullptr,
@@ -19,7 +19,8 @@ class SongModel : public QTX3Model {
   int columnCount(const QModelIndex& parent = QModelIndex()) const override;
 
  protected:
-  QTX3Node* createNode(QTX3Node* parent, const QString& name) const override;
+  QTX3::QTX3Node* createNode(QTX3::QTX3Node* parent,
+                             const QString& name) const override;
 };
 
 #endif  // SONGMODEL_H

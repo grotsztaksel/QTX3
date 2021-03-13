@@ -2,6 +2,9 @@
 #define QTX3MODELTEST_H
 
 #include <QObject>
+
+namespace QTX3 {
+
 class QTX3TestcaseModel;
 
 class QTX3ModelTest : public QObject {
@@ -33,5 +36,5 @@ class QTX3ModelTest : public QObject {
  private:
   QTX3TestcaseModel* model;
 };
-
+}  // namespace QTX3
 #endif  // QTX3MODELTEST_H

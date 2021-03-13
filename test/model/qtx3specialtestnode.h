@@ -4,6 +4,8 @@
 #include <QObject>
 #include "qtx3node.h"
 
+namespace QTX3 {
+
 class QTX3specialTestNode : public QTX3Node {
   Q_OBJECT
  public:
@@ -15,5 +17,5 @@ class QTX3specialTestNode : public QTX3Node {
  protected:
  signals:
 };
-
+}  // namespace QTX3
 #endif  // QTX3SPECIALTESTNODE_H

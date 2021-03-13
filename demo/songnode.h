@@ -4,10 +4,10 @@
 #include <qtx3node.h>
 #include <QObject>
 
-class SongNode : public QTX3Node {
+class SongNode : public QTX3::QTX3Node {
   Q_OBJECT
  public:
-  SongNode(QTX3Node* parent_node);
+  SongNode(QTX3::QTX3Node* parent_node);
 
   int columnCount() const override;
   QVariant data(const QModelIndex& index,

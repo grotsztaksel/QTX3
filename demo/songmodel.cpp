@@ -29,10 +29,11 @@ int SongModel::columnCount(const QModelIndex& parent) const {
   return 3;
 }
 
-QTX3Node* SongModel::createNode(QTX3Node* parent, const QString& name) const {
+QTX3::QTX3Node* SongModel::createNode(QTX3::QTX3Node* parent,
+                                      const QString& name) const {
   // Basic implementation creates always the same nodes
   if (name == "song") {
     return new SongNode(parent);
   }
-  return QTX3Model::createNode(parent, name);
+  return QTX3::QTX3Model::createNode(parent, name);
 }

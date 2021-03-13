@@ -13,6 +13,8 @@
  *
  ***************************************************/
 
+namespace QTX3 {
+
 class QTX3TestcaseModel : public QTX3Model {
   Q_OBJECT
  public:
@@ -26,5 +28,5 @@ class QTX3TestcaseModel : public QTX3Model {
  protected:
   QTX3Node* createNode(QTX3Node* parent, const QString& name) const;
 };
-
+}  // namespace QTX3
 #endif  // QTX3TESTCASEMODEL_H

@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+namespace QTX3 {
+
 class QTX3TestcaseModel;
 class QTX3Node;
 class QTX3NodeTest : public QObject {
@@ -27,5 +29,5 @@ class QTX3NodeTest : public QObject {
   QTX3Node* rootNode;
   QTX3Node* node;
 };
-
+}  // namespace QTX3
 #endif  // QTX3NODETEST_H

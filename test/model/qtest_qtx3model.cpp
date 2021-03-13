@@ -4,6 +4,8 @@
 #include <QtTest/QTest>
 #include "qtx3testcasemodel.h"
 
+using namespace QTX3;
+
 void QTX3ModelTest::init() {
   model = QTX3TestcaseModel::createModel(this);
   new QAbstractItemModelTester(

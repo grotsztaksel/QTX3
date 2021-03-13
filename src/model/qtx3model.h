@@ -5,6 +5,9 @@
 #include <QAbstractItemModel>
 
 #include "qtx3node.h"
+
+namespace QTX3 {
+
 class QTX3Model : public QAbstractItemModel {
   Q_OBJECT
 
@@ -90,5 +93,5 @@ class QTX3Model : public QAbstractItemModel {
 
   QTX3Node* _root;
 };
-
+}  // namespace QTX3
 #endif  // XPATHTREEMODEL_H

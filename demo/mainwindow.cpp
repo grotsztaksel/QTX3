@@ -8,6 +8,8 @@
 
 #include "songmodel.h"
 
+using namespace QTX3;
+
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);

@@ -2,6 +2,8 @@
 #include <QtTest/QTest>
 #include "qtx3testcasemodel.h"
 
+using namespace QTX3;
+
 void QTX3NodeTest::init() {
   model = QTX3TestcaseModel::createModel(this);
 

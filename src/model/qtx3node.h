@@ -7,6 +7,8 @@
 
 #include "qtx3item.h"
 
+namespace QTX3 {
+
 class QTX3Model;
 class QXT3NodeTest;
 class QTX3Item;
@@ -76,5 +78,5 @@ class QTX3Node : public QObject {
 
   TixiDocumentHandle _tixihandle;
 };
-
+}  // namespace QTX3
 #endif  // QXTREENODE_H

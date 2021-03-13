@@ -3,6 +3,9 @@
 
 #include <QObject>
 #include "tixi.h"
+
+namespace QTX3 {
+
 class QTX3Node;
 class QTX3Model;
 class QTX3Item : public QObject {
@@ -23,5 +26,5 @@ class QTX3Item : public QObject {
   const QTX3Model* _model;
   const TixiDocumentHandle _tixihandle;
 };
-
+}  // namespace QTX3
 #endif  // QTX3ITEM_H

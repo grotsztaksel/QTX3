@@ -2,6 +2,8 @@
 #include <regex>
 #include "qtx3specialtestnode.h"
 
+using namespace QTX3;
+
 QTX3TestcaseModel::QTX3TestcaseModel(QObject* parent,
                                      TixiDocumentHandle handle,
                                      bool initialize)

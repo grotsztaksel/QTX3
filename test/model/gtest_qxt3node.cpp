@@ -14,6 +14,9 @@
  *
  *
  ***************************************************/
+
+namespace QTX3 {
+
 class QXT3NodeTest : public ::testing::Test {
  protected:
   void SetUp() override;
@@ -126,3 +129,4 @@ TEST_F(QXT3NodeTest, test_pathProperties) {
   ASSERT_EQ("/*[1]/*[3]/*[1]/*[3]",
             node->childAt(2)->childAt(0)->childAt(2)->xPath());
 }
+}  // namespace QTX3
