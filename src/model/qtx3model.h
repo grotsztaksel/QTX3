@@ -16,11 +16,11 @@ class Model : public QAbstractItemModel {
   friend Node::Node(Model* parent_model);
   friend int Node::createChildren();
   explicit Model(QObject* parent = nullptr,
-                     TixiDocumentHandle handle = -1,
-                     bool initialize = true);
+                 TixiDocumentHandle handle = -1,
+                 bool initialize = true);
   explicit Model(QObject* parent = nullptr,
-                     const QString& rootName = "root",
-                     bool initialize = true);
+                 const QString& rootName = "root",
+                 bool initialize = true);
 
   /****************************************************
    *
@@ -29,15 +29,6 @@ class Model : public QAbstractItemModel {
    *
    *
    *****************************************************/
-  // Header:
-  QVariant headerData(int section,
-                      Qt::Orientation orientation,
-                      int role = Qt::DisplayRole) const override;
-
-  bool setHeaderData(int section,
-                     Qt::Orientation orientation,
-                     const QVariant& value,
-                     int role = Qt::EditRole) override;
 
   // Basic functionality:
   QModelIndex index(int row,

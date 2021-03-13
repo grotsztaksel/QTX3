@@ -6,12 +6,8 @@
 
 using namespace QTX3;
 
-Model::Model(QObject* parent,
-                     TixiDocumentHandle handle,
-                     bool initialize)
-    : QAbstractItemModel(parent),
-      _tixihandle(handle),
-      _root(new Node(this)) {
+Model::Model(QObject* parent, TixiDocumentHandle handle, bool initialize)
+    : QAbstractItemModel(parent), _tixihandle(handle), _root(new Node(this)) {
   if (handle <= 0) {
     throw(std::runtime_error(
         "QTX3Model: constructor received invalid tixi handle!"));
@@ -40,30 +36,7 @@ TixiDocumentHandle Model::createNewHandle(const QString& rootName) {
   return handle;
 }
 
-QVariant Model::headerData(int section,
-                               Qt::Orientation orientation,
-                               int role) const {
-  if (role == Qt::DisplayRole) {
-    return QVariant("element");
-  }
-  return QVariant();
-}
-
-bool Model::setHeaderData(int section,
-                              Qt::Orientation orientation,
-                              const QVariant& value,
-                              int role) {
-  if (value != headerData(section, orientation, role)) {
-    // FIXME: Implement me!
-    emit headerDataChanged(orientation, section, section);
-    return true;
-  }
-  return false;
-}
-
-QModelIndex Model::index(int row,
-                             int column,
-                             const QModelIndex& parent) const {
+QModelIndex Model::index(int row, int column, const QModelIndex& parent) const {
   if (!hasIndex(row, column, parent))
     return QModelIndex();
 
@@ -115,9 +88,7 @@ QVariant Model::data(const QModelIndex& index, int role) const {
   return nodeFromIndex(index)->data(index, role);
 }
 
-bool Model::setData(const QModelIndex& index,
-                        const QVariant& value,
-                        int role) {
+bool Model::setData(const QModelIndex& index, const QVariant& value, int role) {
   if (data(index, role) != value) {
     QVector<int> roles = nodeFromIndex(index)->setData(index, value, role);
     if (roles.empty()) {
