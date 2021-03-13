@@ -107,18 +107,49 @@ Qt::ItemFlags Model::flags(const QModelIndex& index) const {
   return nodeFromIndex(index)->flags(index);
 }
 
-bool Model::insertRows(int row, int count, const QModelIndex& parent) {
-  return false;
-  beginInsertRows(parent, row, row + count - 1);
-  // FIXME: Implement me!
+bool Model::addElement(int row,
+                       const QString& name,
+                       const QModelIndex& parent) {
+  if (row < 0 || row > rowCount(parent))
+    return false;
+  auto parentNode = nodeFromIndex(parent);
+  auto parentPath = parentNode->xPath();
+
+  beginInsertRows(parent, row, row);
+  ReturnCode res =
+      tixiCreateElementAtIndex(_tixihandle, parentPath.toStdString().c_str(),
+                               name.toStdString().c_str(), row + 1);
+
+  if (res != SUCCESS) {
+    return false;
+  }
+  auto newNode = createNode(parentNode, name);
+  if (!newNode) {
+    return false;
+  }
+
+  parentNode->insertChild(newNode, row);
+
   endInsertRows();
+  return true;
 }
 
 bool Model::removeRows(int row, int count, const QModelIndex& parent) {
-  return false;
+  auto parentNode = nodeFromIndex(parent);
+  auto parentPath = parentNode->xPath();
+  auto deletedPath = strdup(QString(parentPath + QString("/*[%1]").arg(row + 1))
+                                .toStdString()
+                                .c_str());
   beginRemoveRows(parent, row, row + count - 1);
-  // FIXME: Implement me!
+  for (int i = 0; i < count; i++) {
+    ReturnCode res = tixiRemoveElement(_tixihandle, deletedPath);
+    if (res != SUCCESS) {
+      return false;
+    }
+  }
+  parentNode->removeChildren(row, count);
   endRemoveRows();
+  return true;
 }
 
 Node* Model::nodeFromIndex(QModelIndex index) const {

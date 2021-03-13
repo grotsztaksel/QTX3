@@ -50,9 +50,9 @@ class Model : public QAbstractItemModel {
   Qt::ItemFlags flags(const QModelIndex& index) const override;
 
   // Add data:
-  bool insertRows(int row,
-                  int count,
-                  const QModelIndex& parent = QModelIndex()) override;
+  bool addElement(int row,
+                  const QString& name,
+                  const QModelIndex& parent = QModelIndex());
 
   // Remove data:
   bool removeRows(int row,

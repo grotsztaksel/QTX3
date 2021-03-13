@@ -28,6 +28,9 @@ class QTX3ModelTest : public QObject {
   void test_setData();
   void test_setFlags();
 
+  void test_addElement();
+  void test_removeElement();
+
   void test_createNode_baseclass();
   // Using a specially modified model with a non-default factory
   void test_createNode_testclass();

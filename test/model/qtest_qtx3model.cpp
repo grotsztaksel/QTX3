@@ -90,6 +90,87 @@ void QTX3ModelTest::test_setFlags() {
   QCOMPARE(model->flags(QModelIndex()), Qt::NoItemFlags);
 }
 
+void QTX3ModelTest::test_addElement() {
+  QModelIndex index = model->index(1, 0);  // /root/child_2[1]
+  index = model->index(1, 0, index);       // /root/child_2[1]/child_2[2]
+  QCOMPARE(model->rowCount(index), 0);
+  QCOMPARE(model->nodeFromIndex(index)->elementName(), "child_2");
+  int nChild;
+  QCOMPARE(tixiGetNumberOfChilds(model->_tixihandle,
+                                 "/root/child_2[1]/child_2[2]", &nChild),
+           SUCCESS);
+  QCOMPARE(nChild, 0);
+
+  // Cannot insert at index < 0, because that's ridiculous!
+  QCOMPARE(model->addElement(-9, "the_thing_that_should_not_be", index), false);
+  // Content should not have changed
+  QCOMPARE(model->rowCount(index), 0);
+  QCOMPARE(tixiGetNumberOfChilds(model->_tixihandle,
+                                 "/root/child_2[1]/child_2[2]", &nChild),
+           SUCCESS);
+  QCOMPARE(nChild, 0);
+
+  // Cannot insert at index > 0, because there is no children yet
+  QCOMPARE(model->addElement(2, "the_thing_that_should_not_be", index), false);
+  // Content should not have changed
+  QCOMPARE(model->rowCount(index), 0);
+  QCOMPARE(tixiGetNumberOfChilds(model->_tixihandle,
+                                 "/root/child_2[1]/child_2[2]", &nChild),
+           SUCCESS);
+  QCOMPARE(nChild, 0);
+
+  // Cannot insert element of non-XML compliant name
+  QCOMPARE(model->addElement(0, "the thing that should not be", index), false);
+  // Content should not have changed
+  QCOMPARE(model->rowCount(index), 0);
+  QCOMPARE(tixiGetNumberOfChilds(model->_tixihandle,
+                                 "/root/child_2[1]/child_2[2]", &nChild),
+           SUCCESS);
+  QCOMPARE(nChild, 0);
+
+  // Should be able to insert after all; The order and row of insertion should
+  // result in sequential element numbers
+  QVERIFY(model->addElement(0, "elem2", index));
+  QVERIFY(model->addElement(0, "elem0", index));
+  QVERIFY(model->addElement(1, "elem1", index));
+
+  QCOMPARE(model->rowCount(index), 3);
+  QCOMPARE(tixiGetNumberOfChilds(model->_tixihandle,
+                                 "/root/child_2[1]/child_2[2]", &nChild),
+           SUCCESS);
+  QCOMPARE(nChild, 3);
+
+  char* childName;
+  QCOMPARE(tixiGetChildNodeName(model->_tixihandle,
+                                "/root/child_2[1]/child_2[2]", 1, &childName),
+           SUCCESS);
+  QCOMPARE(childName, "elem0");
+  QCOMPARE(tixiGetChildNodeName(model->_tixihandle,
+                                "/root/child_2[1]/child_2[2]", 2, &childName),
+           SUCCESS);
+  QCOMPARE(childName, "elem1");
+  QCOMPARE(tixiGetChildNodeName(model->_tixihandle,
+                                "/root/child_2[1]/child_2[2]", 3, &childName),
+           SUCCESS);
+  QCOMPARE(childName, "elem2");
+}
+
+void QTX3ModelTest::test_removeElement() {
+  QModelIndex index = model->index(2, 0);  // /root/child_2[2]
+  index = model->index(0, 0, index);       // /root/child_2[2]/node_3
+  QCOMPARE(model->rowCount(index), 3);
+  QCOMPARE(model->nodeFromIndex(index)->elementName(), "node_3");
+
+  QVERIFY(model->removeRows(0, 2, index));
+
+  QCOMPARE(model->rowCount(index), 1);
+  char* childName;
+  QCOMPARE(tixiGetChildNodeName(model->_tixihandle, "/root/child_2[2]/node_3",
+                                1, &childName),
+           SUCCESS);
+  QCOMPARE(childName, "node_5");
+}
+
 void QTX3ModelTest::test_createNode_baseclass() {
   Node* parentNode = model->_root->childAt(1)->childAt(1);
   Node* newNode = model->Model::createNode(parentNode, QString("justName"));
