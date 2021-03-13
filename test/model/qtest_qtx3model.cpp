@@ -24,7 +24,7 @@ void QTX3ModelTest::test_constructor_with_tixihandle() {
 }
 
 void QTX3ModelTest::test_constructor_with_string() {
-  QTX3Model m(nullptr, QString("extra_root"));
+  Model m(nullptr, QString("extra_root"));
   QVERIFY(m._root != nullptr);
   QVERIFY(m._tixihandle > 0);
   QCOMPARE(0, m._root->rows());
@@ -35,7 +35,7 @@ void QTX3ModelTest::test_index() {
   QVERIFY(index.isValid());
   index = model->index(1, 0, QModelIndex());
   QVERIFY(index.isValid());
-  QTX3Node* node = static_cast<QTX3Node*>(index.internalPointer());
+  Node* node = static_cast<Node*>(index.internalPointer());
   QVERIFY(node);
 
   QCOMPARE("/root/child_2[1]", node->xmlPath());
@@ -43,7 +43,7 @@ void QTX3ModelTest::test_index() {
   index = model->index(1, 0, index);
 
   QVERIFY(index.isValid());
-  node = static_cast<QTX3Node*>(index.internalPointer());
+  node = static_cast<Node*>(index.internalPointer());
   QVERIFY(node);
 
   QCOMPARE("/root/child_2[1]/child_2[2]", node->xmlPath());
@@ -81,18 +81,16 @@ void QTX3ModelTest::test_columnCount() {
 }
 
 void QTX3ModelTest::test_createNode_baseclass() {
-  QTX3Node* parentNode = model->_root->childAt(1)->childAt(1);
-  QTX3Node* newNode =
-      model->QTX3Model::createNode(parentNode, QString("justName"));
+  Node* parentNode = model->_root->childAt(1)->childAt(1);
+  Node* newNode = model->Model::createNode(parentNode, QString("justName"));
   QCOMPARE(newNode->parent(), parentNode);
   QCOMPARE(newNode->model(), model);
 }
 
 void QTX3ModelTest::test_createNode_testclass() {
-  QTX3Node* parentNode = model->_root->childAt(0);
+  Node* parentNode = model->_root->childAt(0);
   QCOMPARE("child_1", parentNode->elementName());
-  QTX3Node* newNode =
-      model->QTX3Model::createNode(parentNode, QString("justName"));
+  Node* newNode = model->Model::createNode(parentNode, QString("justName"));
   QCOMPARE(newNode->parent(), parentNode);
   QCOMPARE(newNode->model(), model);
   QCOMPARE(newNode->columnCount(), 1);

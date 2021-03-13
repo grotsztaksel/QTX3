@@ -17,17 +17,17 @@
 
 namespace QTX3 {
 
-class QXT3NodeTest : public ::testing::Test {
+class QTX3NodeGTest : public ::testing::Test {
  protected:
   void SetUp() override;
   void TearDown() override;
 
-  TixiDocumentHandle getHandle(QTX3Node* node) const;
-  const QTX3Node* getParent(QTX3Node* node) const;
+  TixiDocumentHandle getHandle(Node* node) const;
+  const Node* getParent(Node* node) const;
 
  protected:
-  QTX3Node* node;
-  QTX3Model* model;
+  Node* node;
+  Model* model;
 };
 
 /*-------------------------------*
@@ -36,21 +36,21 @@ class QXT3NodeTest : public ::testing::Test {
  *
  *-------------------------------*/
 
-void QXT3NodeTest::SetUp() {
+void QTX3NodeGTest::SetUp() {
   model = QTX3TestcaseModel::createModel(nullptr);
-  node = new QTX3Node(model);
+  node = new Node(model);
 }
 
-void QXT3NodeTest::TearDown() {
+void QTX3NodeGTest::TearDown() {
   delete node;
   delete model;
 }
 
-TixiDocumentHandle QXT3NodeTest::getHandle(QTX3Node* node) const {
+TixiDocumentHandle QTX3NodeGTest::getHandle(Node* node) const {
   return node->_tixihandle;
 }
 
-const QTX3Node* QXT3NodeTest::getParent(QTX3Node* node) const {
+const Node* QTX3NodeGTest::getParent(Node* node) const {
   return node->_parent;
 }
 
@@ -60,11 +60,11 @@ const QTX3Node* QXT3NodeTest::getParent(QTX3Node* node) const {
  *
  **************************************************/
 
-TEST_F(QXT3NodeTest, test_xPath) {
+TEST_F(QTX3NodeGTest, test_xPath) {
   ASSERT_EQ(QString("/*[1]"), node->xPath());
 }
 
-TEST_F(QXT3NodeTest, test_Constructor_with_model) {
+TEST_F(QTX3NodeGTest, test_Constructor_with_model) {
   ASSERT_EQ(model, node->model());
 
   char* name;
@@ -74,14 +74,14 @@ TEST_F(QXT3NodeTest, test_Constructor_with_model) {
   ASSERT_STREQ("root", name);
 }
 
-TEST_F(QXT3NodeTest, test_Constructor_with_node) {
-  QTX3Node* node2 = new QTX3Node(node);
+TEST_F(QTX3NodeGTest, test_Constructor_with_node) {
+  Node* node2 = new Node(node);
   ASSERT_EQ(model, node2->model());
   ASSERT_EQ(node, node2->parent());
   ASSERT_EQ(node, getParent(node2));
 }
 
-TEST_F(QXT3NodeTest, test_createChildren) {
+TEST_F(QTX3NodeGTest, test_createChildren) {
   ASSERT_EQ(3, node->createChildren());
   ASSERT_EQ(3, node->rows());
 
@@ -91,7 +91,7 @@ TEST_F(QXT3NodeTest, test_createChildren) {
   ASSERT_EQ(3, node->childAt(2)->childAt(0)->rows());
 }
 
-TEST_F(QXT3NodeTest, test_pathProperties) {
+TEST_F(QTX3NodeGTest, test_pathProperties) {
   ASSERT_EQ(3, node->createChildren());
 
   ASSERT_EQ("/*[1]/*[1]", node->childAt(0)->xPath());

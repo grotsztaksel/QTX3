@@ -6,11 +6,11 @@
 
 namespace QTX3 {
 
-class QTX3specialTestNode : public QTX3Node {
+class QTX3specialTestNode : public Node {
   Q_OBJECT
  public:
   friend class QTX3ModelTest;
-  explicit QTX3specialTestNode(QTX3Node* parent_node);
+  explicit QTX3specialTestNode(Node* parent_node);
 
   int columnCount() const override;
 

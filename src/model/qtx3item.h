@@ -6,24 +6,24 @@
 
 namespace QTX3 {
 
-class QTX3Node;
-class QTX3Model;
-class QTX3Item : public QObject {
+class Node;
+class Model;
+class Item : public QObject {
   Q_OBJECT
  public:
-  explicit QTX3Item(QTX3Node* parent);
+  explicit Item(Node* parent);
 
   // return row number
   int row() const;
 
   // return parent element node
-  const QTX3Node* node() const;
+  const Node* node() const;
 
-  QTX3Node* parent() const;
+  Node* parent() const;
 
  protected:
-  QTX3Node* _parent;
-  const QTX3Model* _model;
+  Node* _parent;
+  const Model* _model;
   const TixiDocumentHandle _tixihandle;
 };
 }  // namespace QTX3

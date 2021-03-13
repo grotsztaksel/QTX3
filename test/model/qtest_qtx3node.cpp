@@ -7,7 +7,7 @@ using namespace QTX3;
 void QTX3NodeTest::init() {
   model = QTX3TestcaseModel::createModel(this);
 
-  rootNode = new QTX3Node(model);
+  rootNode = new Node(model);
 
   rootNode->createChildren();
   node = rootNode->childAt(1)->childAt(0)->childAt(0);

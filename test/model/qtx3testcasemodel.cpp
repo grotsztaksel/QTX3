@@ -7,7 +7,7 @@ using namespace QTX3;
 QTX3TestcaseModel::QTX3TestcaseModel(QObject* parent,
                                      TixiDocumentHandle handle,
                                      bool initialize)
-    : QTX3Model(parent, handle, false) {
+    : Model(parent, handle, false) {
   if (initialize)
     init();
 }
@@ -55,10 +55,10 @@ QTX3TestcaseModel* QTX3TestcaseModel::createModel(QObject* parent) {
   return new QTX3TestcaseModel(parent, handle);
 }
 
-QTX3Node* QTX3TestcaseModel::createNode(QTX3Node* parent,
+Node* QTX3TestcaseModel::createNode(Node* parent,
                                         const QString& name) const {
   if (parent->elementName() == "child_1") {
     return new QTX3specialTestNode(parent);
   }
-  return QTX3Model::createNode(parent, name);
+  return Model::createNode(parent, name);
 }

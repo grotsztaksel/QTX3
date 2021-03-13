@@ -3,11 +3,11 @@
 #include "qtx3node.h"
 using namespace QTX3;
 
-QTX3Attribute::QTX3Attribute(QTX3Node* parent, const QString& attributeName)
-    : QTX3Item(parent),
+Attribute::Attribute(Node* parent, const QString& attributeName)
+    : Item(parent),
       _attributeName(strdup(attributeName.toStdString().c_str())) {}
 
-QVariant QTX3Attribute::value() const {
+QVariant Attribute::value() const {
   char* value;
   ReturnCode res = tixiCheckAttribute(
       _tixihandle, _parent->xPath().toStdString().c_str(), _attributeName);

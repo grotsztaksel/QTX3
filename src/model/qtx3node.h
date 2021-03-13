@@ -9,16 +9,17 @@
 
 namespace QTX3 {
 
-class QTX3Model;
-class QXT3NodeTest;
-class QTX3Item;
-class QTX3Node : public QObject {
+class Model;
+class QTX3NodeTest;
+class Item;
+class Node : public QObject {
   Q_OBJECT
  public:
-  friend class QXT3NodeTest;
-  friend QTX3Item::QTX3Item(QTX3Node* parent);
-  explicit QTX3Node(QTX3Model* parent_model);
-  explicit QTX3Node(QTX3Node* parent_node);
+  friend class QTX3NodeTest;
+  friend class QTX3NodeGTest;
+  friend Item::Item(Node* parent);
+  explicit Node(Model* parent_model);
+  explicit Node(Node* parent_node);
 
   // Recursively create children to adjust the node tree to the tixi XML
   // structure. Return number of children created on the top level
@@ -34,7 +35,7 @@ class QTX3Node : public QObject {
   // Return name of the own element
   QString elementName() const;
 
-  QTX3Node* childAt(int row) const;
+  Node* childAt(int row) const;
   int rows() const;
 
   // Return index of this node in the parent's _children
@@ -42,9 +43,9 @@ class QTX3Node : public QObject {
   // Return number of columns this node produces
   virtual int columnCount() const;
 
-  const QTX3Model* model() const;
+  const Model* model() const;
 
-  QTX3Node* parent() const;
+  Node* parent() const;
 
   virtual QVariant data(const QModelIndex& index,
                         int role = Qt::DisplayRole) const;
@@ -64,17 +65,17 @@ class QTX3Node : public QObject {
 
  protected:
   // List of child elements
-  QVector<QTX3Node*> _children;
+  QVector<Node*> _children;
 
   // List of items to be presented in the columns
-  QVector<QTX3Item*> _columnItems;
+  QVector<Item*> _columnItems;
 
   // Model to which the node belongs
-  const QTX3Model* _model = nullptr;
+  const Model* _model = nullptr;
 
   // Parent node. Can be retrieved by calling parent(), but would have to be
   // cast onto QXTreeNode every time
-  QTX3Node* _parent = nullptr;
+  Node* _parent = nullptr;
 
   TixiDocumentHandle _tixihandle;
 };

@@ -5,18 +5,18 @@
 
 using namespace QTX3;
 
-QTX3Node::QTX3Node(QTX3Model* parent_model)
+Node::Node(Model* parent_model)
     : QObject(parent_model),
       _model(parent_model),
       _tixihandle(parent_model->_tixihandle) {}
 
-QTX3Node::QTX3Node(QTX3Node* parent_node)
+Node::Node(Node* parent_node)
     : QObject(parent_node),
       _model(parent_node->_model),
       _parent(parent_node),
       _tixihandle(parent_node->_tixihandle) {}
 
-int QTX3Node::createChildren() {
+int Node::createChildren() {
   if (_children.size() > 0)
     // Already has children. Should use insert/remove rows to add items.
     return 0;
@@ -32,7 +32,7 @@ int QTX3Node::createChildren() {
   for (int i = 1; i <= nchildren; i++) {
     char* newPath;
     res = tixiXPathExpressionGetXPath(_tixihandle, xpath, i, &newPath);
-    QTX3Node* newNode =
+    Node* newNode =
         _model->createNode(this, QString(txutils::elementName(newPath)));
     _children.append(newNode);
     newNode->createChildren();
@@ -40,7 +40,7 @@ int QTX3Node::createChildren() {
   return nchildren;
 }
 
-QString QTX3Node::xPath() const {
+QString Node::xPath() const {
   if (!_parent) {
     // Then this is a root node
     return QString("/*[1]");
@@ -49,7 +49,7 @@ QString QTX3Node::xPath() const {
   return _parent->xPath() + QString("/*[%1]").arg(QString::number(row() + 1));
 }
 
-QString QTX3Node::xmlPath() const {
+QString Node::xmlPath() const {
   char* xmlpath;
   auto res = tixiXPathExpressionGetXPath(
       _tixihandle, xPath().toStdString().c_str(), 1, &xmlpath);
@@ -65,19 +65,19 @@ QString QTX3Node::xmlPath() const {
   return QString();
 }
 
-QString QTX3Node::elementName() const {
+QString Node::elementName() const {
   return QString(txutils::elementName(xmlPath().toStdString().c_str()));
 }
 
-QTX3Node* QTX3Node::childAt(int row) const {
+Node* Node::childAt(int row) const {
   return _children.at(row);
 }
 
-int QTX3Node::rows() const {
+int Node::rows() const {
   return _children.size();
 }
 
-int QTX3Node::row() const {
+int Node::row() const {
   if (!_parent)
     return 0;
   for (int i = 0; i < _parent->_children.size(); i++) {
@@ -95,19 +95,19 @@ int QTX3Node::row() const {
   */
 }
 
-int QTX3Node::columnCount() const {
+int Node::columnCount() const {
   return 1;
 }
 
-const QTX3Model* QTX3Node::model() const {
+const Model* Node::model() const {
   return _model;
 }
 
-QTX3Node* QTX3Node::parent() const {
+Node* Node::parent() const {
   return _parent;
 }
 
-QVariant QTX3Node::data(const QModelIndex& index, int role) const {
+QVariant Node::data(const QModelIndex& index, int role) const {
   if (role == Qt::DisplayRole && index.column() == 0) {
     // Default implementation displays element name
     return QVariant(elementName());
@@ -115,15 +115,15 @@ QVariant QTX3Node::data(const QModelIndex& index, int role) const {
   return QVariant();
 }
 
-QVector<int> QTX3Node::setData(const QModelIndex& index,
-                               const QVariant& value,
-                               int role) {
+QVector<int> Node::setData(const QModelIndex& index,
+                           const QVariant& value,
+                           int role) {
   // Base class does not allow editing
   return QVector<int>();
 }
 
-Qt::ItemFlags QTX3Node::flags(const QModelIndex& index) const {
-  auto flags = Qt::ItemIsEnabled;
+Qt::ItemFlags Node::flags(const QModelIndex& index) const {
+  auto flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
   if (index.column() != 0)
     flags | Qt::ItemNeverHasChildren;
   return flags;

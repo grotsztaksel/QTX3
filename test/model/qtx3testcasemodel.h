@@ -15,7 +15,7 @@
 
 namespace QTX3 {
 
-class QTX3TestcaseModel : public QTX3Model {
+class QTX3TestcaseModel : public Model {
   Q_OBJECT
  public:
   friend class QTX3ModelTest;
@@ -26,7 +26,7 @@ class QTX3TestcaseModel : public QTX3Model {
   static QTX3TestcaseModel* createModel(QObject* parent);
 
  protected:
-  QTX3Node* createNode(QTX3Node* parent, const QString& name) const;
+  Node* createNode(Node* parent, const QString& name) const;
 };
 }  // namespace QTX3
 #endif  // QTX3TESTCASEMODEL_H

@@ -6,7 +6,7 @@
 namespace QTX3 {
 
 class QTX3TestcaseModel;
-class QTX3Node;
+class Node;
 class QTX3NodeTest : public QObject {
   Q_OBJECT
  public:
@@ -26,8 +26,8 @@ class QTX3NodeTest : public QObject {
 
  private:
   QTX3TestcaseModel* model;
-  QTX3Node* rootNode;
-  QTX3Node* node;
+  Node* rootNode;
+  Node* node;
 };
 }  // namespace QTX3
 #endif  // QTX3NODETEST_H

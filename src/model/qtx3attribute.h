@@ -9,10 +9,10 @@ namespace QTX3 {
 /*
     Special Item class to handle XML attributes
 */
-class QTX3Attribute : public QTX3Item {
+class Attribute : public Item {
   Q_OBJECT
  public:
-  QTX3Attribute(QTX3Node* parent, const QString& attributeName);
+  Attribute(Node* parent, const QString& attributeName);
 
   QVariant value() const;
 

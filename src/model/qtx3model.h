@@ -8,17 +8,17 @@
 
 namespace QTX3 {
 
-class QTX3Model : public QAbstractItemModel {
+class Model : public QAbstractItemModel {
   Q_OBJECT
 
  public:
   friend class QTX3ModelTest;
-  friend QTX3Node::QTX3Node(QTX3Model* parent_model);
-  friend int QTX3Node::createChildren();
-  explicit QTX3Model(QObject* parent = nullptr,
+  friend Node::Node(Model* parent_model);
+  friend int Node::createChildren();
+  explicit Model(QObject* parent = nullptr,
                      TixiDocumentHandle handle = -1,
                      bool initialize = true);
-  explicit QTX3Model(QObject* parent = nullptr,
+  explicit Model(QObject* parent = nullptr,
                      const QString& rootName = "root",
                      bool initialize = true);
 
@@ -76,8 +76,8 @@ class QTX3Model : public QAbstractItemModel {
    *
    *****************************************************/
 
-  QTX3Node* nodeFromIndex(QModelIndex index = QModelIndex()) const;
-  QTX3Node* nodeFromPath(QString path = "/*[1]") const;
+  Node* nodeFromIndex(QModelIndex index = QModelIndex()) const;
+  Node* nodeFromPath(QString path = "/*[1]") const;
 
  protected:
   virtual void init();
@@ -86,12 +86,12 @@ class QTX3Model : public QAbstractItemModel {
   // initialize an empty model from root element name.
   static TixiDocumentHandle createNewHandle(const QString& rootName);
   // Node factory
-  virtual QTX3Node* createNode(QTX3Node* parent, const QString& name) const;
+  virtual Node* createNode(Node* parent, const QString& name) const;
 
  protected:
   const TixiDocumentHandle _tixihandle = -1;
 
-  QTX3Node* _root;
+  Node* _root;
 };
 }  // namespace QTX3
 #endif  // XPATHTREEMODEL_H
