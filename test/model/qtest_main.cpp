@@ -2,6 +2,7 @@
 #include "qtest_main.h"
 #include <qlogging.h>
 #include <QTest>
+#include "qtest_qtx3attribute.h"
 #include "qtest_qtx3item.h"
 #include "qtest_qtx3model.h"
 #include "qtest_qtx3node.h"
@@ -20,6 +21,10 @@ int main(int argc, char** argv) {
   {
     QTX3::QTX3ItemTest test_item;
     results["QTX3ItemTest"] = QTest::qExec(&test_item, argc, argv);
+  }
+  {
+    QTX3::QTX3AttributeTest test_attribute;
+    results["QTX3AttributeTest"] = QTest::qExec(&test_attribute, argc, argv);
   }
 
   return printSummary(results);
