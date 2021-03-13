@@ -123,6 +123,8 @@ QVector<int> Node::setData(const QModelIndex& index,
 }
 
 Qt::ItemFlags Node::flags(const QModelIndex& index) const {
+  if (!index.isValid())
+    return Qt::NoItemFlags;
   auto flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
   if (index.column() != 0)
     flags | Qt::ItemNeverHasChildren;
