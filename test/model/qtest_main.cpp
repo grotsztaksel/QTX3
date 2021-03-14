@@ -50,4 +50,5 @@ int printSummary(QMap<QString, int> results) {
                 .arg(failedSuites.size());
   }
   qInfo().noquote() << title << failedSuites.join("\n");
+  return status;
 }
