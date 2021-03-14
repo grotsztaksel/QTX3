@@ -40,5 +40,11 @@ add_subdirectory(test)
 
 enable_testing()
 
+find_package(PythonInterp)
+if( NOT PYTHONINTERP_FOUND )
+    message(ERROR "Could not find Python Interpreter. Will not be able to generate library header files")
+endif()
+
+
 install(TARGETS QTX3)
 
