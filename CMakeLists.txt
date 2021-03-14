@@ -33,6 +33,8 @@ target_link_libraries(QTX3 PUBLIC QXmodel)
 target_link_libraries(QTX3 PUBLIC Utils)
 target_compile_definitions(QTX3 PRIVATE QTX3_LIBRARY)
 
+set_target_properties(QTX3 PROPERTIES PUBLIC_HEADER "${TIXI_INCLUDE_DIRS}/tixi.h;${INSTALL_HEADERS}")
+
 add_subdirectory(demo)
 add_subdirectory(test)
 
