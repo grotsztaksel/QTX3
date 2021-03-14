@@ -17,10 +17,11 @@ class SongModel : public QTX3::Model {
   QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
   int columnCount(const QModelIndex& parent = QModelIndex()) const override;
+  Qt::ItemFlags flags(const QModelIndex& index) const override;
 
  protected:
   QTX3::Node* createNode(QTX3::Node* parent,
-                             const QString& name) const override;
+                         const QString& name) const override;
 };
 
 #endif  // SONGMODEL_H

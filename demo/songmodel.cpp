@@ -29,8 +29,12 @@ int SongModel::columnCount(const QModelIndex& parent) const {
   return 3;
 }
 
+Qt::ItemFlags SongModel::flags(const QModelIndex& index) const {
+  return QTX3::Model::flags(index) | Qt::ItemIsEditable;
+}
+
 QTX3::Node* SongModel::createNode(QTX3::Node* parent,
-                                      const QString& name) const {
+                                  const QString& name) const {
   // Basic implementation creates always the same nodes
   if (name == "song") {
     return new SongNode(parent);
