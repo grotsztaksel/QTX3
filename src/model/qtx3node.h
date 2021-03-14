@@ -1,5 +1,5 @@
-#ifndef QXTREENODE_H
-#define QXTREENODE_H
+#ifndef QTX3NODE_H
+#define QTX3NODE_H
 
 #include <tixi.h>
 #include <QObject>
@@ -79,10 +79,10 @@ class Node : public QObject {
   const Model* _model = nullptr;
 
   // Parent node. Can be retrieved by calling parent(), but would have to be
-  // cast onto QXTreeNode every time
+  // cast onto QTX3Node every time
   Node* _parent = nullptr;
 
   TixiDocumentHandle _tixihandle;
 };
 }  // namespace QTX3
-#endif  // QXTREENODE_H
+#endif  // QTX3NODE_H

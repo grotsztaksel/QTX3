@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(QXTree LANGUAGES CXX)
+project(QTX3 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC ON)
@@ -23,20 +23,20 @@ include_directories(${TIXI_INCLUDE_DIRS})
 
 add_subdirectory(src)
 
-add_library(QXTree SHARED
-  QXTree_global.h
-
+add_library(QTX3 SHARED
+  QTX3_global.h
 )
 
-target_link_libraries(QXTree PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-target_link_libraries(QXTree PRIVATE ${TIXI_LIBRARIES})
-target_link_libraries(QXTree PUBLIC QXmodel)
-target_link_libraries(QXTree PRIVATE Utils)
-target_compile_definitions(QXTree PRIVATE QXTREE_LIBRARY)
+target_link_libraries(QTX3 PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(QTX3 PRIVATE ${TIXI_LIBRARIES})
+target_link_libraries(QTX3 PUBLIC QXmodel)
+target_link_libraries(QTX3 PUBLIC Utils)
+target_compile_definitions(QTX3 PRIVATE QTX3_LIBRARY)
 
 add_subdirectory(demo)
 add_subdirectory(test)
 
 enable_testing()
 
-install(TARGETS QXTree)
+install(TARGETS QTX3)
+
