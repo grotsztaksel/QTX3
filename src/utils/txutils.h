@@ -1,7 +1,7 @@
-#ifndef TIXI_UTILS_H
-#define TIXI_UTILS_H
+#ifndef TXUTILS_H
+#define TXUTILS_H
 
-#include <tixi.h>
+#include "tixi.h"
 
 // Collection of general-purpose tixi & xml path utilities
 namespace txutils {
@@ -74,4 +74,4 @@ int indentation();
 
 };  // namespace txutils
 
-#endif  // TIXI_UTILS_H
+#endif  // TXUTILS_H

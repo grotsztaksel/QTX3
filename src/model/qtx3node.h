@@ -1,9 +1,9 @@
 #ifndef QTX3NODE_H
 #define QTX3NODE_H
 
-#include <tixi.h>
 #include <QObject>
 #include <QVector>
+#include "tixi.h"
 
 #include "qtx3item.h"
 

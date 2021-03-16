@@ -1,8 +1,8 @@
-#ifndef XPATHTREEMODEL_H
-#define XPATHTREEMODEL_H
+#ifndef QTX3MODEL_H
+#define QTX3MODEL_H
 
-#include <tixi.h>
 #include <QAbstractItemModel>
+#include "tixi.h"
 
 #include "qtx3node.h"
 
@@ -85,4 +85,4 @@ class Model : public QAbstractItemModel {
   Node* _root;
 };
 }  // namespace QTX3
-#endif  // XPATHTREEMODEL_H
+#endif  // QTX3MODEL_H
