@@ -23,7 +23,7 @@ def main():
     parser = argparse.ArgumentParser(
         "Collect selected header files relevant to external use of the library and put them in a single header file")
 
-    parser.add_argument('i', help='List of semicolon-separated header file names to be merged')
+    parser.add_argument('-i', help='List of semicolon-separated header file names to be merged', required=True)
     parser.add_argument('-o', '-output', default="qtx3.h", help='Output header file name')
 
     args = parser.parse_args()
