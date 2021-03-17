@@ -67,6 +67,13 @@ class Model : public QAbstractItemModel {
    *
    *****************************************************/
 
+  // Reset the model using a new Tixi handle. If none (or invalid) is provided,
+  // the model will be reset using its own tixi
+  void reset(const TixiDocumentHandle& newhandle = -1);
+
+  // Access the model's tixi
+  TixiDocumentHandle tixi() const;
+
   Node* nodeFromIndex(QModelIndex index = QModelIndex()) const;
   Node* nodeFromPath(QString path = "/*[1]") const;
 
@@ -80,7 +87,7 @@ class Model : public QAbstractItemModel {
   virtual Node* createNode(Node* parent, const QString& name) const;
 
  protected:
-  const TixiDocumentHandle _tixihandle = -1;
+  TixiDocumentHandle _tixihandle = -1;
 
   Node* _root;
 };

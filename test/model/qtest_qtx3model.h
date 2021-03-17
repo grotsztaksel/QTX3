@@ -40,6 +40,9 @@ class QTX3ModelTest : public QObject {
 
   void test_data();
 
+  void test_reset();
+  void test_tixi();
+
  private:
   QTX3TestcaseModel* model;
 };

@@ -236,3 +236,58 @@ void QTX3ModelTest::test_data() {
   index = model->index(1, 0, index);
   QCOMPARE("child_2", model->data(index, Qt::DisplayRole));
 }
+
+void QTX3ModelTest::test_reset() {
+  // First check, if the structure is as expected
+  QCOMPARE("/root/child_1", model->_root->childAt(0)->xmlPath());
+  QCOMPARE("/root/child_1/child",
+           model->_root->childAt(0)->childAt(0)->xmlPath());
+  QCOMPARE("/root/child_2[1]", model->_root->childAt(1)->xmlPath());
+  QCOMPARE("/root/child_2[1]/child_2[1]",
+           model->_root->childAt(1)->childAt(0)->xmlPath());
+  QCOMPARE("/root/child_2[1]/node_3",
+           model->_root->childAt(1)->childAt(2)->xmlPath());
+
+  // reset without valid handle
+  model->reset();
+  // nothing should have changed
+  QCOMPARE("/root/child_1", model->_root->childAt(0)->xmlPath());
+  QCOMPARE("/root/child_1/child",
+           model->_root->childAt(0)->childAt(0)->xmlPath());
+  QCOMPARE("/root/child_2[1]", model->_root->childAt(1)->xmlPath());
+  QCOMPARE("/root/child_2[1]/child_2[1]",
+           model->_root->childAt(1)->childAt(0)->xmlPath());
+  QCOMPARE("/root/child_2[1]/node_3",
+           model->_root->childAt(1)->childAt(2)->xmlPath());
+
+  TixiDocumentHandle th;
+  model->reset(th);
+  // nothing should have changed
+  QCOMPARE("/root/child_1", model->_root->childAt(0)->xmlPath());
+  QCOMPARE("/root/child_1/child",
+           model->_root->childAt(0)->childAt(0)->xmlPath());
+  QCOMPARE("/root/child_2[1]", model->_root->childAt(1)->xmlPath());
+  QCOMPARE("/root/child_2[1]/child_2[1]",
+           model->_root->childAt(1)->childAt(0)->xmlPath());
+  QCOMPARE("/root/child_2[1]/node_3",
+           model->_root->childAt(1)->childAt(2)->xmlPath());
+
+  tixiCreateDocument("brave_new_root", &th);
+  model->reset(th);
+  QCOMPARE("/brave_new_root", model->_root->xmlPath());
+  QCOMPARE(model->_root->rows(), 0);
+
+  tixiCreateElement(th, "/brave_new_root", "new_better_child");
+  QCOMPARE(model->_root->rows(), 0);
+
+  // Reset with the same th, but it has been changed outside the model
+  model->reset(th);
+  QCOMPARE(model->_root->rows(), 1);
+}
+
+void QTX3ModelTest::test_tixi() {
+  TixiDocumentHandle th = model->tixi();
+
+  ReturnCode ret = tixiCheckElement(th, "/root/child_1/child");
+  QCOMPARE(ret, SUCCESS);
+}

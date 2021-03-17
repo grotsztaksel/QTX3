@@ -152,6 +152,23 @@ bool Model::removeRows(int row, int count, const QModelIndex& parent) {
   return true;
 }
 
+void Model::reset(const TixiDocumentHandle& newhandle) {
+  // first of all, check if the handle is valid
+  ReturnCode res = tixiCheckElement(newhandle, "/*[1]");
+  if (res == SUCCESS)
+    _tixihandle = newhandle;
+
+  beginResetModel();
+  _root->deleteLater();
+  _root = new Node(this);
+  _root->createChildren();
+  endResetModel();
+}
+
+TixiDocumentHandle Model::tixi() const {
+  return _tixihandle;
+}
+
 Node* Model::nodeFromIndex(QModelIndex index) const {
   if (!index.isValid())
     return _root;
