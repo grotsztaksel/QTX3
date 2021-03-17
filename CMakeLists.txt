@@ -33,7 +33,7 @@ target_link_libraries(QTX3 PUBLIC QXmodel)
 target_link_libraries(QTX3 PUBLIC Utils)
 target_compile_definitions(QTX3 PRIVATE QTX3_LIBRARY)
 
-set_target_properties(QTX3 PROPERTIES PUBLIC_HEADER "${TIXI_INCLUDE_DIRS}/tixi.h;${INSTALL_HEADERS}")
+
 
 add_subdirectory(demo)
 add_subdirectory(test)
@@ -45,6 +45,10 @@ if( NOT PYTHONINTERP_FOUND )
     message(ERROR "Could not find Python Interpreter. Will not be able to generate library header files")
 endif()
 
+set(INSTALL_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/qtx3.h")
 
+set_target_properties(QTX3 PROPERTIES PUBLIC_HEADER "${TIXI_INCLUDE_DIRS}/tixi.h;${INSTALL_HEADER}")
+
+install(CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_qtx3_h.py -i \"${INSTALL_HEADERS}\" -o ${INSTALL_HEADER})")
 install(TARGETS QTX3)
 
