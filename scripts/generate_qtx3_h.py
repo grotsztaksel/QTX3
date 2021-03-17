@@ -16,6 +16,8 @@ import re
 __date__ = '2021-03-14'
 __authors__ = ["Piotr Gradkowski <grotsztaksel@o2.pl>"]
 
+c = r"(\/\*.*?\*\/|\/\/.*?\n)"  # Regex part responsible for catching comments
+
 
 def main():
     parser = argparse.ArgumentParser(
