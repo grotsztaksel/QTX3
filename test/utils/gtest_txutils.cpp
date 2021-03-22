@@ -1,14 +1,14 @@
-#include <regex>
-#include "gtest/gtest.h"
 #include "txutils.h"
+#include "gtest/gtest.h"
+#include <regex>
 
 class TxUtilsTest : public ::testing::Test {
- protected:
+protected:
   TxUtilsTest();
   ~TxUtilsTest() override;
 
- protected:
-  const char* xml_raw = R"(<?xml version="1.0"?>
+protected:
+  const char *xml_raw = R"(<?xml version="1.0"?>
                        <root>
                            <child_1>
                                <child/>
@@ -41,7 +41,7 @@ class TxUtilsTest : public ::testing::Test {
                                </node_3>
                            </child_2>
                        </root>)";
-  char* xml;
+  char *xml;
 };
 
 TxUtilsTest::TxUtilsTest() {
@@ -52,9 +52,7 @@ TxUtilsTest::TxUtilsTest() {
   std::string stripped = std::regex_replace(rawstring, re, "><");
   xml = strdup(stripped.c_str());
 }
-TxUtilsTest::~TxUtilsTest() {
-  delete xml;
-}
+TxUtilsTest::~TxUtilsTest() { delete xml; }
 
 TEST_F(TxUtilsTest, test_handle_error) {
   ReturnCode ret = ReturnCode::ALREADY_SAVED;
@@ -96,7 +94,7 @@ TEST_F(TxUtilsTest, test_elementNumber) {
 TEST_F(TxUtilsTest, test_indexedPath) {
   TixiDocumentHandle handle;
   tixiImportFromString(this->xml, &handle);
-  char* ipath;
+  char *ipath;
   txutils::indexedPath(
       handle, "/root/child_2[1]/child_2[1]/node_3[1]/node_4[3]", 1, &ipath);
 
@@ -110,7 +108,7 @@ TEST_F(TxUtilsTest, test_copy) {
   tixiImportFromString(this->xml, &handle);
 
   ASSERT_EQ(SUCCESS, txutils::indentText(handle));
-  const char* expected_clip_raw = R"(<?xml version="1.0"?>
+  const char *expected_clip_raw = R"(<?xml version="1.0"?>
 <child_2 attr="9">
     <node_3>
         <node_4/>
@@ -128,9 +126,9 @@ TEST_F(TxUtilsTest, test_copy) {
   std::string rawstring(expected_clip_raw);
   std::regex re(R"(>\s*<)");
   std::string stripped = std::regex_replace(rawstring, re, "><");
-  const char* expected_stripped = strdup(stripped.c_str());
-  char* expected_clip;
-  char* actual_clip;
+  const char *expected_stripped = strdup(stripped.c_str());
+  char *expected_clip;
+  char *actual_clip;
   TixiDocumentHandle expected;
   tixiImportFromString(expected_stripped, &expected);
   TixiDocumentHandle clip;
@@ -155,7 +153,7 @@ TEST_F(TxUtilsTest, test_paste) {
                          handle, "/root/child_2[2]/node_3[1]/node_4[2]", clip));
   ASSERT_EQ(SUCCESS, txutils::paste(handle, "/root/child_2[2]", clip, 1));
 
-  char* path;
+  char *path;
   int i = 1;
   ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(handle, "//*", i++, &path));
   ASSERT_STREQ("/root", path);
@@ -230,18 +228,18 @@ TEST_F(TxUtilsTest, test_paste) {
 }
 
 TEST_F(TxUtilsTest, test_indentText) {
-  const char* original_text =
+  const char *original_text =
       "\n                                                           Text O\n   "
       "                                    ";
   TixiDocumentHandle handle;
   ASSERT_EQ(SUCCESS, tixiImportFromString(this->xml, &handle));
-  char* text_element;
+  char *text_element;
   ASSERT_EQ(SUCCESS, tixiGetTextElement(
                          handle, "/root/child_2[1]/child_2[1]/node_3/node_5[1]",
                          &text_element));
   ASSERT_STREQ(original_text, text_element);
 
-  const char* expected_text = "\n          Text O\n        ";
+  const char *expected_text = "\n          Text O\n        ";
 
   ASSERT_EQ(SUCCESS,
             txutils::indentText(
@@ -254,6 +252,114 @@ TEST_F(TxUtilsTest, test_indentText) {
   ASSERT_STREQ(expected_text, text_element);
 }
 
-TEST_F(TxUtilsTest, test_indentation) {
-  ASSERT_EQ(2, txutils::indentation());
+TEST_F(TxUtilsTest, test_indentation) { ASSERT_EQ(2, txutils::indentation()); }
+
+TEST_F(TxUtilsTest, test_sort) {
+  std::string str_original = R"(<?xml version="1.0" encoding="utf-8"?>
+                                <root>
+                                  <child>
+                                    <celem/>
+                                    <elem attr="6"/>
+                                    <elem noattr="not included in sorting"/>
+                                    <elem attr="5"/>
+                                    <alem/>
+                                    <elem attr="3"/>
+                                    <elem attr="1"/>
+                                    <helem/>
+                                    <elem attr="8"/>
+                                    <elem attr="7"/>
+                                    <belem/>
+                                    <elem attr="2"/>
+                                    <elem attr="4"/>
+                                  </child>
+                                </root>)";
+
+  std::string str_byAttribute = R"(<?xml version="1.0" encoding="utf-8"?>
+                                   <root>
+                                     <child>
+                                       <celem/>
+                                       <elem attr="1"/>
+                                       <elem noattr="not included in sorting"/>
+                                       <elem attr="2"/>
+                                       <alem/>
+                                       <elem attr="3"/>
+                                       <elem attr="4"/>
+                                       <helem/>
+                                       <elem attr="5"/>
+                                       <elem attr="6"/>
+                                       <belem/>
+                                       <elem attr="7"/>
+                                       <elem attr="8"/>
+                                     </child>
+                                   </root>)";
+  std::string str_byName = R"(<?xml version="1.0" encoding="utf-8"?>
+                              <root>
+                                <child>
+                                  <alem/>
+                                  <belem/>
+                                  <celem/>
+                                  <elem attr="6"/>
+                                  <elem noattr="not included in sorting"/>
+                                  <elem attr="5"/>
+                                  <elem attr="3"/>
+                                  <elem attr="1"/>
+                                  <elem attr="8"/>
+                                  <elem attr="7"/>
+                                  <elem attr="2"/>
+                                  <elem attr="4"/>
+                                  <helem/>
+                                </child>
+                              </root>)";
+
+  std::regex re(R"(>\s*<)");
+  std::string stripped = std::regex_replace(str_original, re, "><");
+  char *xml = strdup(stripped.c_str());
+
+  TixiDocumentHandle handle;
+  TixiDocumentHandle handle2;
+  ASSERT_EQ(tixiImportFromString(xml, &handle), SUCCESS);
+  ASSERT_EQ(tixiImportFromString(xml, &handle2), SUCCESS);
+  stripped = std::regex_replace(str_byAttribute, re, "><");
+  xml = strdup(stripped.c_str());
+
+  TixiDocumentHandle byAttr;
+  ASSERT_EQ(tixiImportFromString(xml, &byAttr), SUCCESS);
+
+  stripped = std::regex_replace(str_byName, re, "><");
+  xml = strdup(stripped.c_str());
+
+  TixiDocumentHandle byName;
+  ASSERT_EQ(tixiImportFromString(xml, &byName), SUCCESS);
+
+  // Make sure that there are no text elements
+  int n = 0;
+  ASSERT_EQ(tixiXPathEvaluateNodeNumber(handle, "//*[text()]", &n), FAILED);
+  ASSERT_EQ(tixiXPathEvaluateNodeNumber(byName, "//*[text()]", &n), FAILED);
+  ASSERT_EQ(tixiXPathEvaluateNodeNumber(byAttr, "//*[text()]", &n), FAILED);
+
+  char *expected;
+
+  // 1. xPath resolves to 0 elements - should not sort
+
+  ASSERT_EQ(tixiExportDocumentAsString(handle, &expected), SUCCESS);
+  ASSERT_EQ(txutils::sort(handle, "/root/child/elem[@otherattr]", "attr"),
+            FAILED);
+  ASSERT_EQ(tixiExportDocumentAsString(handle, &xml), SUCCESS);
+  ASSERT_STREQ(xml, expected);
+
+  // 2. sort by attribute
+  ASSERT_EQ(tixiExportDocumentAsString(byAttr, &expected), SUCCESS);
+
+  ASSERT_EQ(txutils::sort(handle, "/root/child/*", "attr"), SUCCESS);
+  ASSERT_EQ(tixiExportDocumentAsString(handle, &xml), SUCCESS);
+
+  ASSERT_STREQ(xml, expected);
+
+  // 3. sort by name
+
+  ASSERT_EQ(tixiExportDocumentAsString(byName, &expected), SUCCESS);
+  ASSERT_EQ(txutils::sort(handle2, "/root/child/*"), SUCCESS);
+  ASSERT_EQ(tixiExportDocumentAsString(handle2, &xml), SUCCESS);
+
+  ASSERT_STREQ(xml, expected);
 }

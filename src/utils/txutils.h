@@ -27,26 +27,21 @@ void handle_error(ReturnCode code);
   exist.
     - FAILED  if an internal error occured.
  */
-ReturnCode indexedPath(TixiDocumentHandle handle,
-                       const char* xPathExpression,
-                       int index,
-                       char** ipath);
+ReturnCode indexedPath(TixiDocumentHandle handle, const char *xPathExpression,
+                       int index, char **ipath);
 
 /**
   @brief Copies the tree content of a selected element to a new handle
  */
-ReturnCode copy(TixiDocumentHandle handle,
-                const char* elementPath,
-                TixiDocumentHandle* clip);
+ReturnCode copy(TixiDocumentHandle handle, const char *elementPath,
+                TixiDocumentHandle *clip);
 
 /**
   @brief Pastes the tree content of a clip handle element to a target handle
  */
-ReturnCode paste(TixiDocumentHandle handle,
-                 const char* elementPath,
-                 TixiDocumentHandle clip,
-                 int index = 0,
-                 const char* target_path_in = nullptr);
+ReturnCode paste(TixiDocumentHandle handle, const char *elementPath,
+                 TixiDocumentHandle clip, int index = 0,
+                 const char *target_path_in = nullptr);
 /**
   @brief indent text in all text elements satisfying the provided
   xPathExpression. If none is given, will indent all text elements
@@ -59,19 +54,39 @@ ReturnCode paste(TixiDocumentHandle handle,
   filter out the text elements
 */
 ReturnCode indentText(TixiDocumentHandle handle,
-                      const char* xPathExpression = nullptr);
-char* elementName(const char* xPathExpression);
-int elementNumber(const char* xPathExpression);
-char* uniqueName(const char* xPathExpression);
+                      const char *xPathExpression = nullptr);
+char *elementName(const char *xPathExpression);
+int elementNumber(const char *xPathExpression);
+char *uniqueName(const char *xPathExpression);
 
 /**
   @brief Helper function returning the number of spaces per each indentation in
   tixi using pretty print
-
   @return Number of spaces per each indentation in tixi using pretty print
+  @remark This is a bit expensive function. Use wisely.
 */
 int indentation();
+/**
+ @brief sort elements that the xPathExpression resolves to
 
-};  // namespace txutils
+ @param[in]  handle handle as returned by ::tixiOpenDocument,
+ ::tixiOpenDocumentRecursive, ::tixiOpenDocumentFromHTTP, ::tixiCreateDocument
+ or ::tixiImportFromString
+ @param[in] xPathExpression The XPath Expression to evaluate.
+ @param[in] criterion name of the attribute which should be considered for
+ sorting. If none given, the elemenents will by sorted by their name
+ @param[in] ascending: if true, the elements will be sorted in ascending orter.
+ Otherwise the elements will be sorted in descending order
 
-#endif  // TXUTILS_H
+ @remark The function uses TiXi swap() function.
+ @remark The sorted elements do not have
+ to have the same parent, but the xPathExpression must not resolve to elements
+ that are the others' elements ascendants or descendants
+
+ */
+ReturnCode sort(TixiDocumentHandle h, const char *xPathExpression,
+                const char *criterion = nullptr, bool ascending = true);
+
+}; // namespace txutils
+
+#endif // TXUTILS_H
