@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 
 project(QTX3 LANGUAGES CXX)
-
+include(CPack)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -23,7 +23,7 @@ include_directories(${TIXI_INCLUDE_DIRS})
 
 add_subdirectory(src)
 
-add_library(QTX3 SHARED
+add_library(QTX3 STATIC
   QTX3_global.h
 )
 
@@ -45,10 +45,11 @@ if( NOT PYTHONINTERP_FOUND )
     message(ERROR "Could not find Python Interpreter. Will not be able to generate library header files")
 endif()
 
-set(INSTALL_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/qtx3.h")
+#set(INSTALL_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/qtx3.h")
 
-set_target_properties(QTX3 PROPERTIES PUBLIC_HEADER "${TIXI_INCLUDE_DIRS}/tixi.h;${INSTALL_HEADER}")
+#set_target_properties(QTX3 PROPERTIES PUBLIC_HEADER "${TIXI_INCLUDE_DIRS}/tixi.h;${INSTALL_HEADER}")
 
-install(CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_qtx3_h.py -i \"${INSTALL_HEADERS}\" -o ${INSTALL_HEADER})")
+#install(CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_qtx3_h.py -i \"${INSTALL_HEADERS}\" -o ${INSTALL_HEADER})")
+set_target_properties(QTX3 PROPERTIES PUBLIC_HEADER "${TIXI_INCLUDE_DIRS}/tixi.h;${INSTALL_HEADERS}")
 install(TARGETS QTX3)
 
