@@ -55,7 +55,7 @@ ReturnCode txutils::indexedPath(TixiDocumentHandle handle,
   // Root will always return /*[1], need to remove the first two elements (
   std::string iPath("/*[1]");
 
-  for (std::string element : elements) {
+  for (const std::string &element : elements) {
     int n;
     const char *path = iPath.c_str();
 
@@ -183,7 +183,7 @@ ReturnCode txutils::paste(TixiDocumentHandle handle, const char *elementPath,
       char *sourcePath;
       char *xPath = strdup((std::string(target_path) + "/*").c_str());
       res = tixiXPathExpressionGetXPath(clip, xPath, i - ic, &sourcePath);
-      delete xPath;
+      free(xPath);
       CHECK_ERR(res);
 
       int n;
