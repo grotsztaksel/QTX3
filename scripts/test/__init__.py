@@ -8,5 +8,8 @@ Created on 14.03.2021 23:17 03
 Test suite for the auxiliary scripts
 """
 
+__all__ = ['TestGenerateQtx3']
 __date__ = '2021-03-14'
 __authors__ = ["Piotr Gradkowski <grotsztaksel@o2.pl>"]
+
+from .test_generate_qtx3_h import TestGenerateQtx3
