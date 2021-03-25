@@ -14,7 +14,7 @@ class Model : public QAbstractItemModel {
 public:
   friend class QTX3ModelTest;
   friend Node::Node(Model *parent_model);
-  friend int Node::createChildren();
+  friend void Node::createChildren();
   explicit Model(QObject *parent = nullptr, TixiDocumentHandle handle = -1,
                  bool initialize = true);
   explicit Model(QObject *parent = nullptr, const QString &rootName = "root",

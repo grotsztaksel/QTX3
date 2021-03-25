@@ -80,17 +80,21 @@ TEST_F(QTX3NodeGTest, test_Constructor_with_node) {
 }
 
 TEST_F(QTX3NodeGTest, test_createChildren) {
-  ASSERT_EQ(3, node->createChildren());
+  node->createChildren();
   ASSERT_EQ(3, node->rows());
+  ASSERT_EQ(SUCCESS,
+            tixiRemoveElement(
+                getHandle(node),
+                QString(node->xPath()).append("/*[3]").toStdString().c_str()));
 
   // createChildren should not work when the items are already there
   ASSERT_EQ(3, node->childAt(2)->childAt(0)->rows());
-  ASSERT_EQ(0, node->childAt(2)->childAt(0)->createChildren());
-  ASSERT_EQ(3, node->childAt(2)->childAt(0)->rows());
+  node->childAt(2)->childAt(0)->createChildren();
+  ASSERT_EQ(2, node->childAt(2)->childAt(0)->rows());
 }
 
 TEST_F(QTX3NodeGTest, test_pathProperties) {
-  ASSERT_EQ(3, node->createChildren());
+  node->createChildren();
 
   ASSERT_EQ("/*[1]/*[1]", node->childAt(0)->xPath());
   ASSERT_EQ("/root/child_1", node->childAt(0)->xmlPath());

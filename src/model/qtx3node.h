@@ -23,7 +23,7 @@ public:
 
   // Recursively create children to adjust the node tree to the tixi XML
   // structure. Return number of children created on the top level
-  int createChildren();
+  void createChildren();
 
   // Return XML path in format '/*[i]/*[j]/*[k]...' associated with this node
   QString xPath() const;
@@ -69,10 +69,10 @@ signals:
 
 protected:
   // List of child elements
-  QVector<Node *> _children;
+  QVector<Node *> _children = QVector<Node *>();
 
   // List of items to be presented in the columns
-  QVector<Item *> _columnItems;
+  QVector<Item *> _columnItems = QVector<Item *>();
 
   // Model to which the node belongs
   const Model *_model = nullptr;

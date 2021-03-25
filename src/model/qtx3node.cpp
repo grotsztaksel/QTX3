@@ -13,10 +13,9 @@ Node::Node(Node *parent_node)
     : QObject(parent_node), _model(parent_node->_model), _parent(parent_node),
       _tixihandle(parent_node->_tixihandle) {}
 
-int Node::createChildren() {
+void Node::createChildren() {
   if (_children.size() > 0)
-    // Already has children. Should use insert/remove rows to add items.
-    return 0;
+    _children.clear();
 
   std::string xpath_s = xPath().toStdString() + "/*";
   const char *xpath = xpath_s.c_str();
@@ -24,7 +23,7 @@ int Node::createChildren() {
   auto res = tixiXPathEvaluateNodeNumber(_tixihandle, xpath, &nchildren);
   txutils::handle_error(res);
   if (res == FAILED) {
-    nchildren = 0;
+    return;
   }
   for (int i = 1; i <= nchildren; i++) {
     char *newPath;
@@ -34,7 +33,6 @@ int Node::createChildren() {
     _children.append(newNode);
     newNode->createChildren();
   }
-  return nchildren;
 }
 
 QString Node::xPath() const {

@@ -22,9 +22,14 @@ void QTX3NodeTest::test_createChildren() {
   }
   auto cnode = rootNode->childAt(0)->childAt(0);
   QCOMPARE(cnode->rows(), 0);
-  QCOMPARE(cnode->createChildren(), 3);
+  cnode->createChildren();
   QCOMPARE(cnode->rows(), 3);
-  QCOMPARE(cnode->createChildren(), 0);
+  for (int i = 0; i < 3; i++) {
+    tixiCreateElement(node->_tixihandle, "/root/child_1/child", "extra");
+  }
+
+  cnode->createChildren();
+  QCOMPARE(cnode->rows(), 6);
 }
 
 void QTX3NodeTest::test_childAt() {
