@@ -1,9 +1,9 @@
 #ifndef QTX3NODE_H
 #define QTX3NODE_H
 
+#include "tixi.h"
 #include <QObject>
 #include <QVector>
-#include "tixi.h"
 
 #include "qtx3item.h"
 
@@ -14,12 +14,12 @@ class QTX3NodeTest;
 class Item;
 class Node : public QObject {
   Q_OBJECT
- public:
+public:
   friend class QTX3NodeTest;
   friend class QTX3NodeGTest;
-  friend Item::Item(Node* parent);
-  explicit Node(Model* parent_model);
-  explicit Node(Node* parent_node);
+  friend Item::Item(Node *parent);
+  explicit Node(Model *parent_model);
+  explicit Node(Node *parent_node);
 
   // Recursively create children to adjust the node tree to the tixi XML
   // structure. Return number of children created on the top level
@@ -35,9 +35,9 @@ class Node : public QObject {
   // Return name of the own element
   QString elementName() const;
 
-  Node* childAt(int row) const;
+  Node *childAt(int row) const;
 
-  void insertChild(Node* child, const int index);
+  void insertChild(Node *child, const int index);
 
   void removeChildren(const int first, const int count);
 
@@ -48,11 +48,11 @@ class Node : public QObject {
   // Return number of columns this node produces
   virtual int columnCount() const;
 
-  const Model* model() const;
+  const Model *model() const;
 
-  Node* parent() const;
+  Node *parent() const;
 
-  virtual QVariant data(const QModelIndex& index,
+  virtual QVariant data(const QModelIndex &index,
                         int role = Qt::DisplayRole) const;
 
   /* set data through this item.
@@ -60,29 +60,28 @@ class Node : public QObject {
    * otherwise returns an empty vector. Returning a vector, instead of a bool
    * allows setting specific roles to emit dataChanged from the model.
    */
-  virtual QVector<int> setData(const QModelIndex& index,
-                               const QVariant& value,
+  virtual QVector<int> setData(const QModelIndex &index, const QVariant &value,
                                int role = Qt::EditRole);
 
-  virtual Qt::ItemFlags flags(const QModelIndex& index) const;
+  virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
- signals:
+signals:
 
- protected:
+protected:
   // List of child elements
-  QVector<Node*> _children;
+  QVector<Node *> _children;
 
   // List of items to be presented in the columns
-  QVector<Item*> _columnItems;
+  QVector<Item *> _columnItems;
 
   // Model to which the node belongs
-  const Model* _model = nullptr;
+  const Model *_model = nullptr;
 
   // Parent node. Can be retrieved by calling parent(), but would have to be
   // cast onto QTX3Node every time
-  Node* _parent = nullptr;
+  Node *_parent = nullptr;
 
   TixiDocumentHandle _tixihandle;
 };
-}  // namespace QTX3
-#endif  // QTX3NODE_H
+} // namespace QTX3
+#endif // QTX3NODE_H

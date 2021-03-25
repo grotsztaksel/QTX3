@@ -9,8 +9,8 @@ class QTX3TestcaseModel;
 class Node;
 class QTX3NodeTest : public QObject {
   Q_OBJECT
- public:
- private slots:
+public:
+private slots:
   void init();
   void cleanup();
 
@@ -27,14 +27,14 @@ class QTX3NodeTest : public QObject {
   void test_model();
   void test_parent();
 
-  void test_data_f();  // for some reason, test_data() is not recognized as test
+  void test_data_f(); // for some reason, test_data() is not recognized as test
   void test_setData();
   void test_setFlags();
 
- private:
-  QTX3TestcaseModel* model;
-  Node* rootNode;
-  Node* node;
+private:
+  QTX3TestcaseModel *model;
+  Node *rootNode;
+  Node *node;
 };
-}  // namespace QTX3
-#endif  // QTX3NODETEST_H
+} // namespace QTX3
+#endif // QTX3NODETEST_H

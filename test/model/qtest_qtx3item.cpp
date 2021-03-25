@@ -7,15 +7,13 @@
 using namespace QTX3;
 void QTX3ItemTest::init() {
   model = QTX3TestcaseModel::createModel(this);
-  node = qobject_cast<QTX3specialTestNode*>(
+  node = qobject_cast<QTX3specialTestNode *>(
       model->nodeFromPath("/*[1]/*[1]/*[1]"));
 
   QVERIFY(node);
 }
 
-void QTX3ItemTest::cleanup() {
-  delete model;
-}
+void QTX3ItemTest::cleanup() { delete model; }
 
 void QTX3ItemTest::test_row() {
   auto item = node->item();

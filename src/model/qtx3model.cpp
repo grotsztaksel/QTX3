@@ -6,7 +6,7 @@
 
 using namespace QTX3;
 
-Model::Model(QObject* parent, TixiDocumentHandle handle, bool initialize)
+Model::Model(QObject *parent, TixiDocumentHandle handle, bool initialize)
     : QAbstractItemModel(parent), _tixihandle(handle), _root(new Node(this)) {
   if (handle <= 0) {
     throw(std::runtime_error(
@@ -16,14 +16,12 @@ Model::Model(QObject* parent, TixiDocumentHandle handle, bool initialize)
     init();
 }
 
-Model::Model(QObject* parent, const QString& rootName, bool initialize)
+Model::Model(QObject *parent, const QString &rootName, bool initialize)
     : Model(parent, Model::createNewHandle(rootName)) {}
 
-void Model::init() {
-  _root->createChildren();
-}
+void Model::init() { _root->createChildren(); }
 
-TixiDocumentHandle Model::createNewHandle(const QString& rootName) {
+TixiDocumentHandle Model::createNewHandle(const QString &rootName) {
   TixiDocumentHandle handle;
   ReturnCode res = tixiCreateDocument(rootName.toStdString().c_str(), &handle);
   if (res != SUCCESS) {
@@ -36,41 +34,41 @@ TixiDocumentHandle Model::createNewHandle(const QString& rootName) {
   return handle;
 }
 
-QModelIndex Model::index(int row, int column, const QModelIndex& parent) const {
+QModelIndex Model::index(int row, int column, const QModelIndex &parent) const {
   if (!hasIndex(row, column, parent))
     return QModelIndex();
 
-  Node* parentNode;
+  Node *parentNode;
 
   if (!parent.isValid())
     parentNode = _root;
   else
     parentNode = nodeFromIndex(parent);
 
-  Node* childNode = parentNode->childAt(row);
+  Node *childNode = parentNode->childAt(row);
   if (childNode)
     return createIndex(row, column, childNode);
   return QModelIndex();
 }
 
-QModelIndex Model::parent(const QModelIndex& index) const {
+QModelIndex Model::parent(const QModelIndex &index) const {
   if (!index.isValid())
     return QModelIndex();
 
-  Node* parentNode = nodeFromIndex(index)->parent();
+  Node *parentNode = nodeFromIndex(index)->parent();
   if (parentNode == _root)
     return QModelIndex();
 
   return createIndex(parentNode->row(), 0, parentNode);
 }
 
-int Model::rowCount(const QModelIndex& parent) const {
+int Model::rowCount(const QModelIndex &parent) const {
   if (parent.column() > 0)
     return 0;
   return nodeFromIndex(parent)->rows();
 }
 
-int Model::columnCount(const QModelIndex& parent) const {
+int Model::columnCount(const QModelIndex &parent) const {
   return nodeFromIndex(parent)->columnCount();
   /*
 https://stackoverflow.com/questions/53219850/how-to-show-the-proper-number-of-columns-in-a-qtreeview-for-a-model-with-differe
@@ -81,14 +79,14 @@ not be populated.
     */
 }
 
-QVariant Model::data(const QModelIndex& index, int role) const {
+QVariant Model::data(const QModelIndex &index, int role) const {
   if (!index.isValid())
     return QVariant();
 
   return nodeFromIndex(index)->data(index, role);
 }
 
-bool Model::setData(const QModelIndex& index, const QVariant& value, int role) {
+bool Model::setData(const QModelIndex &index, const QVariant &value, int role) {
   if (data(index, role) != value) {
     QVector<int> roles = nodeFromIndex(index)->setData(index, value, role);
     if (roles.empty()) {
@@ -100,16 +98,15 @@ bool Model::setData(const QModelIndex& index, const QVariant& value, int role) {
   return false;
 }
 
-Qt::ItemFlags Model::flags(const QModelIndex& index) const {
+Qt::ItemFlags Model::flags(const QModelIndex &index) const {
   if (!index.isValid())
     return Qt::NoItemFlags;
 
   return nodeFromIndex(index)->flags(index);
 }
 
-bool Model::addElement(int row,
-                       const QString& name,
-                       const QModelIndex& parent) {
+bool Model::addElement(int row, const QString &name,
+                       const QModelIndex &parent) {
   if (row < 0 || row > rowCount(parent))
     return false;
   auto parentNode = nodeFromIndex(parent);
@@ -134,7 +131,7 @@ bool Model::addElement(int row,
   return true;
 }
 
-bool Model::removeRows(int row, int count, const QModelIndex& parent) {
+bool Model::removeRows(int row, int count, const QModelIndex &parent) {
   auto parentNode = nodeFromIndex(parent);
   auto parentPath = parentNode->xPath();
   auto deletedPath = strdup(QString(parentPath + QString("/*[%1]").arg(row + 1))
@@ -152,7 +149,7 @@ bool Model::removeRows(int row, int count, const QModelIndex& parent) {
   return true;
 }
 
-void Model::reset(const TixiDocumentHandle& newhandle) {
+void Model::reset(const TixiDocumentHandle &newhandle) {
   // first of all, check if the handle is valid
   ReturnCode res = tixiCheckElement(newhandle, "/*[1]");
   if (res == SUCCESS)
@@ -165,18 +162,16 @@ void Model::reset(const TixiDocumentHandle& newhandle) {
   endResetModel();
 }
 
-TixiDocumentHandle Model::tixi() const {
-  return _tixihandle;
-}
+TixiDocumentHandle Model::tixi() const { return _tixihandle; }
 
-Node* Model::nodeFromIndex(QModelIndex index) const {
+Node *Model::nodeFromIndex(QModelIndex index) const {
   if (!index.isValid())
     return _root;
-  return static_cast<Node*>(index.internalPointer());
+  return static_cast<Node *>(index.internalPointer());
 }
 
-Node* Model::nodeFromPath(QString path) const {
-  char* ipath;
+Node *Model::nodeFromPath(QString path) const {
+  char *ipath;
   ReturnCode res =
       txutils::indexedPath(_tixihandle, path.toStdString().c_str(), 1, &ipath);
   if (res != SUCCESS)
@@ -191,7 +186,7 @@ Node* Model::nodeFromPath(QString path) const {
   // Use size() to skip the part of the path refering to the root element.
   QRegularExpressionMatchIterator i =
       re.globalMatch(QString(ipath), QString("/*[1]").size());
-  Node* node = _root;
+  Node *node = _root;
 
   while (i.hasNext()) {
     QRegularExpressionMatch match = i.next();
@@ -201,7 +196,7 @@ Node* Model::nodeFromPath(QString path) const {
   return node;
 }
 
-Node* Model::createNode(Node* parent, const QString& name) const {
+Node *Model::createNode(Node *parent, const QString &name) const {
   // Basic implementation creates always the same nodes
   return new Node(parent);
 }

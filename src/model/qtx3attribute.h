@@ -1,8 +1,8 @@
 #ifndef QTX3ATTRIBUTE_H
 #define QTX3ATTRIBUTE_H
 
-#include <QObject>
 #include "qtx3item.h"
+#include <QObject>
 
 namespace QTX3 {
 
@@ -11,13 +11,13 @@ namespace QTX3 {
 */
 class Attribute : public Item {
   Q_OBJECT
- public:
-  Attribute(Node* parent, const QString& attributeName);
+public:
+  Attribute(Node *parent, const QString &attributeName);
 
   QVariant value() const;
 
- protected:
-  const char* _attributeName;
+protected:
+  const char *_attributeName;
 };
-}  // namespace QTX3
-#endif  // QTX3ATTRIBUTE_H
+} // namespace QTX3
+#endif // QTX3ATTRIBUTE_H

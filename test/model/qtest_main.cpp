@@ -1,13 +1,13 @@
 
 #include "qtest_main.h"
-#include <qlogging.h>
-#include <QTest>
 #include "qtest_qtx3attribute.h"
 #include "qtest_qtx3item.h"
 #include "qtest_qtx3model.h"
 #include "qtest_qtx3node.h"
+#include <QTest>
+#include <qlogging.h>
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   QMap<QString, int> results;
   //-- run all tests
   {

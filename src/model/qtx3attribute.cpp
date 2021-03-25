@@ -1,14 +1,14 @@
 #include "qtx3attribute.h"
-#include <QVariant>
 #include "qtx3node.h"
+#include <QVariant>
 using namespace QTX3;
 
-Attribute::Attribute(Node* parent, const QString& attributeName)
+Attribute::Attribute(Node *parent, const QString &attributeName)
     : Item(parent),
       _attributeName(strdup(attributeName.toStdString().c_str())) {}
 
 QVariant Attribute::value() const {
-  char* value;
+  char *value;
   ReturnCode res = tixiCheckAttribute(
       _tixihandle, _parent->xPath().toStdString().c_str(), _attributeName);
   if (res == ATTRIBUTE_NOT_FOUND) {

@@ -11,8 +11,8 @@ class Item;
 
 class QTX3ItemTest : public QObject {
   Q_OBJECT
- public:
- private slots:
+public:
+private slots:
   void init();
   void cleanup();
 
@@ -20,9 +20,9 @@ class QTX3ItemTest : public QObject {
   void test_parent();
   void test_node();
 
- private:
-  Model* model;
-  QTX3specialTestNode* node;
+private:
+  Model *model;
+  QTX3specialTestNode *node;
 };
-}  // namespace QTX3
-#endif  // QTX3ITEMTEST_H
+} // namespace QTX3
+#endif // QTX3ITEMTEST_H

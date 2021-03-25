@@ -5,15 +5,12 @@
 
 using namespace QTX3;
 
-Node::Node(Model* parent_model)
-    : QObject(parent_model),
-      _model(parent_model),
+Node::Node(Model *parent_model)
+    : QObject(parent_model), _model(parent_model),
       _tixihandle(parent_model->_tixihandle) {}
 
-Node::Node(Node* parent_node)
-    : QObject(parent_node),
-      _model(parent_node->_model),
-      _parent(parent_node),
+Node::Node(Node *parent_node)
+    : QObject(parent_node), _model(parent_node->_model), _parent(parent_node),
       _tixihandle(parent_node->_tixihandle) {}
 
 int Node::createChildren() {
@@ -22,7 +19,7 @@ int Node::createChildren() {
     return 0;
 
   std::string xpath_s = xPath().toStdString() + "/*";
-  const char* xpath = xpath_s.c_str();
+  const char *xpath = xpath_s.c_str();
   int nchildren = 0;
   auto res = tixiXPathEvaluateNodeNumber(_tixihandle, xpath, &nchildren);
   txutils::handle_error(res);
@@ -30,9 +27,9 @@ int Node::createChildren() {
     nchildren = 0;
   }
   for (int i = 1; i <= nchildren; i++) {
-    char* newPath;
+    char *newPath;
     res = tixiXPathExpressionGetXPath(_tixihandle, xpath, i, &newPath);
-    Node* newNode =
+    Node *newNode =
         _model->createNode(this, QString(txutils::elementName(newPath)));
     _children.append(newNode);
     newNode->createChildren();
@@ -50,7 +47,7 @@ QString Node::xPath() const {
 }
 
 QString Node::xmlPath() const {
-  char* xmlpath;
+  char *xmlpath;
   auto res = tixiXPathExpressionGetXPath(
       _tixihandle, xPath().toStdString().c_str(), 1, &xmlpath);
   if (res == SUCCESS) {
@@ -69,11 +66,9 @@ QString Node::elementName() const {
   return QString(txutils::elementName(xmlPath().toStdString().c_str()));
 }
 
-Node* Node::childAt(int row) const {
-  return _children.at(row);
-}
+Node *Node::childAt(int row) const { return _children.at(row); }
 
-void Node::insertChild(Node* child, const int index) {
+void Node::insertChild(Node *child, const int index) {
   _children.insert(index, child);
 }
 
@@ -81,9 +76,7 @@ void Node::removeChildren(const int first, const int count) {
   _children.remove(first, count);
 }
 
-int Node::rows() const {
-  return _children.size();
-}
+int Node::rows() const { return _children.size(); }
 
 int Node::row() const {
   if (!_parent)
@@ -103,19 +96,13 @@ int Node::row() const {
   */
 }
 
-int Node::columnCount() const {
-  return 1;
-}
+int Node::columnCount() const { return 1; }
 
-const Model* Node::model() const {
-  return _model;
-}
+const Model *Node::model() const { return _model; }
 
-Node* Node::parent() const {
-  return _parent;
-}
+Node *Node::parent() const { return _parent; }
 
-QVariant Node::data(const QModelIndex& index, int role) const {
+QVariant Node::data(const QModelIndex &index, int role) const {
   if (role == Qt::DisplayRole && index.column() == 0) {
     // Default implementation displays element name
     return QVariant(elementName());
@@ -123,14 +110,13 @@ QVariant Node::data(const QModelIndex& index, int role) const {
   return QVariant();
 }
 
-QVector<int> Node::setData(const QModelIndex& index,
-                           const QVariant& value,
+QVector<int> Node::setData(const QModelIndex &index, const QVariant &value,
                            int role) {
   // Base class does not allow editing
   return QVector<int>();
 }
 
-Qt::ItemFlags Node::flags(const QModelIndex& index) const {
+Qt::ItemFlags Node::flags(const QModelIndex &index) const {
   if (!index.isValid())
     return Qt::NoItemFlags;
   auto flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;

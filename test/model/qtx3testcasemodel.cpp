@@ -1,18 +1,17 @@
 #include "qtx3testcasemodel.h"
-#include <regex>
 #include "qtx3specialtestnode.h"
+#include <regex>
 
 using namespace QTX3;
 
-QTX3TestcaseModel::QTX3TestcaseModel(QObject* parent,
-                                     TixiDocumentHandle handle,
+QTX3TestcaseModel::QTX3TestcaseModel(QObject *parent, TixiDocumentHandle handle,
                                      bool initialize)
     : Model(parent, handle, false) {
   if (initialize)
     init();
 }
 
-QTX3TestcaseModel* QTX3TestcaseModel::createModel(QObject* parent) {
+QTX3TestcaseModel *QTX3TestcaseModel::createModel(QObject *parent) {
   TixiDocumentHandle handle;
   std::string rawstring(R"(<?xml version="1.0"?>
                               <root>
@@ -49,13 +48,13 @@ QTX3TestcaseModel* QTX3TestcaseModel::createModel(QObject* parent) {
                               </root>)");
   std::regex re(R"(>\s*<)");
   std::string stripped = std::regex_replace(rawstring, re, "><");
-  const char* xml = strdup(stripped.c_str());
+  const char *xml = strdup(stripped.c_str());
   tixiImportFromString(xml, &handle);
 
   return new QTX3TestcaseModel(parent, handle);
 }
 
-Node* QTX3TestcaseModel::createNode(Node* parent, const QString& name) const {
+Node *QTX3TestcaseModel::createNode(Node *parent, const QString &name) const {
   if (parent->elementName() == "child_1") {
     return new QTX3specialTestNode(parent);
   }

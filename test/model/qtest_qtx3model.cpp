@@ -1,8 +1,8 @@
 
 #include "qtest_qtx3model.h"
+#include "qtx3testcasemodel.h"
 #include <QtTest/QAbstractItemModelTester>
 #include <QtTest/QTest>
-#include "qtx3testcasemodel.h"
 
 using namespace QTX3;
 
@@ -12,9 +12,7 @@ void QTX3ModelTest::init() {
       model, QAbstractItemModelTester::FailureReportingMode::Fatal, this);
 }
 
-void QTX3ModelTest::cleanup() {
-  delete model;
-}
+void QTX3ModelTest::cleanup() { delete model; }
 
 void QTX3ModelTest::test_constructor_with_tixihandle() {
   QCOMPARE(model->_root->rows(), 3);
@@ -35,7 +33,7 @@ void QTX3ModelTest::test_index() {
   QVERIFY(index.isValid());
   index = model->index(1, 0, QModelIndex());
   QVERIFY(index.isValid());
-  Node* node = static_cast<Node*>(index.internalPointer());
+  Node *node = static_cast<Node *>(index.internalPointer());
   QVERIFY(node);
 
   QCOMPARE("/root/child_2[1]", node->xmlPath());
@@ -43,7 +41,7 @@ void QTX3ModelTest::test_index() {
   index = model->index(1, 0, index);
 
   QVERIFY(index.isValid());
-  node = static_cast<Node*>(index.internalPointer());
+  node = static_cast<Node *>(index.internalPointer());
   QVERIFY(node);
 
   QCOMPARE("/root/child_2[1]/child_2[2]", node->xmlPath());
@@ -91,8 +89,8 @@ void QTX3ModelTest::test_setFlags() {
 }
 
 void QTX3ModelTest::test_addElement() {
-  QModelIndex index = model->index(1, 0);  // /root/child_2[1]
-  index = model->index(1, 0, index);       // /root/child_2[1]/child_2[2]
+  QModelIndex index = model->index(1, 0); // /root/child_2[1]
+  index = model->index(1, 0, index);      // /root/child_2[1]/child_2[2]
   QCOMPARE(model->rowCount(index), 0);
   QCOMPARE(model->nodeFromIndex(index)->elementName(), "child_2");
   int nChild;
@@ -140,7 +138,7 @@ void QTX3ModelTest::test_addElement() {
            SUCCESS);
   QCOMPARE(nChild, 3);
 
-  char* childName;
+  char *childName;
   QCOMPARE(tixiGetChildNodeName(model->_tixihandle,
                                 "/root/child_2[1]/child_2[2]", 1, &childName),
            SUCCESS);
@@ -156,15 +154,15 @@ void QTX3ModelTest::test_addElement() {
 }
 
 void QTX3ModelTest::test_removeElement() {
-  QModelIndex index = model->index(2, 0);  // /root/child_2[2]
-  index = model->index(0, 0, index);       // /root/child_2[2]/node_3
+  QModelIndex index = model->index(2, 0); // /root/child_2[2]
+  index = model->index(0, 0, index);      // /root/child_2[2]/node_3
   QCOMPARE(model->rowCount(index), 3);
   QCOMPARE(model->nodeFromIndex(index)->elementName(), "node_3");
 
   QVERIFY(model->removeRows(0, 2, index));
 
   QCOMPARE(model->rowCount(index), 1);
-  char* childName;
+  char *childName;
   QCOMPARE(tixiGetChildNodeName(model->_tixihandle, "/root/child_2[2]/node_3",
                                 1, &childName),
            SUCCESS);
@@ -172,16 +170,16 @@ void QTX3ModelTest::test_removeElement() {
 }
 
 void QTX3ModelTest::test_createNode_baseclass() {
-  Node* parentNode = model->_root->childAt(1)->childAt(1);
-  Node* newNode = model->Model::createNode(parentNode, QString("justName"));
+  Node *parentNode = model->_root->childAt(1)->childAt(1);
+  Node *newNode = model->Model::createNode(parentNode, QString("justName"));
   QCOMPARE(newNode->parent(), parentNode);
   QCOMPARE(newNode->model(), model);
 }
 
 void QTX3ModelTest::test_createNode_testclass() {
-  Node* parentNode = model->_root->childAt(0);
+  Node *parentNode = model->_root->childAt(0);
   QCOMPARE("child_1", parentNode->elementName());
-  Node* newNode = model->Model::createNode(parentNode, QString("justName"));
+  Node *newNode = model->Model::createNode(parentNode, QString("justName"));
   QCOMPARE(newNode->parent(), parentNode);
   QCOMPARE(newNode->model(), model);
   QCOMPARE(newNode->columnCount(), 1);
@@ -213,7 +211,7 @@ void QTX3ModelTest::test_nodeFromPath() {
     auto node = model->nodeFromPath("/root/child_2[1]/child_2[1]/noodle_3[1]");
     // Should have thrown error. If we're still here, the test should fail
     QVERIFY(false);
-  } catch (const std::runtime_error& e) {
+  } catch (const std::runtime_error &e) {
     QCOMPARE(e.what(),
              "nodeFromPath: failed to convert path "
              "/root/child_2[1]/child_2[1]/noodle_3[1] to indexed XPath (TiXi "

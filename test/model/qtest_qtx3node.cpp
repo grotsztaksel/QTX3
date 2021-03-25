@@ -1,6 +1,6 @@
 #include "qtest_qtx3node.h"
-#include <QtTest/QTest>
 #include "qtx3testcasemodel.h"
+#include <QtTest/QTest>
 
 using namespace QTX3;
 
@@ -13,9 +13,7 @@ void QTX3NodeTest::init() {
   node = rootNode->childAt(1)->childAt(0)->childAt(0);
 }
 
-void QTX3NodeTest::cleanup() {
-  delete model;
-}
+void QTX3NodeTest::cleanup() { delete model; }
 
 void QTX3NodeTest::test_createChildren() {
   // First, create some extra XMl elements in tixi
@@ -92,8 +90,8 @@ void QTX3NodeTest::test_parent() {
 
 void QTX3NodeTest::test_data_f() {
   auto cnode = rootNode->childAt(0)->childAt(0);
-  auto index = model->index(0, 0);    // /root/child_1
-  index = model->index(0, 0, index);  // /root/child_1/child
+  auto index = model->index(0, 0);   // /root/child_1
+  index = model->index(0, 0, index); // /root/child_1/child
   QCOMPARE(cnode->columnCount(), 3);
   QCOMPARE(cnode->data(index), "child");
   QCOMPARE(cnode->data(index.siblingAtColumn(2)), QVariant());
@@ -106,8 +104,8 @@ void QTX3NodeTest::test_setData() {
 
 void QTX3NodeTest::test_setFlags() {
   auto cnode = rootNode->childAt(0)->childAt(0);
-  auto index = model->index(0, 0);    // /root/child_1
-  index = model->index(0, 0, index);  // /root/child_1/child
+  auto index = model->index(0, 0);   // /root/child_1
+  index = model->index(0, 0, index); // /root/child_1/child
   QCOMPARE(cnode->columnCount(), 3);
 
   QCOMPARE(node->flags(index), Qt::ItemIsEnabled | Qt::ItemIsSelectable);

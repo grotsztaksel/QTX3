@@ -6,5 +6,4 @@
 
 int printSummary(const QMap<QString, int> results);
 
-
 #endif // QTEST_MAIN_H

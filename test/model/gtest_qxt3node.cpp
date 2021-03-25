@@ -1,9 +1,9 @@
 ﻿#include "gtest/gtest.h"
 
-#include <QObject>
 #include "qtx3model.h"
 #include "qtx3node.h"
 #include "qtx3testcasemodel.h"
+#include <QObject>
 
 #include "tixi.h"
 
@@ -18,16 +18,16 @@
 namespace QTX3 {
 
 class QTX3NodeGTest : public ::testing::Test {
- protected:
+protected:
   void SetUp() override;
   void TearDown() override;
 
-  TixiDocumentHandle getHandle(Node* node) const;
-  const Node* getParent(Node* node) const;
+  TixiDocumentHandle getHandle(Node *node) const;
+  const Node *getParent(Node *node) const;
 
- protected:
-  Node* node;
-  Model* model;
+protected:
+  Node *node;
+  Model *model;
 };
 
 /*-------------------------------*
@@ -46,13 +46,11 @@ void QTX3NodeGTest::TearDown() {
   delete model;
 }
 
-TixiDocumentHandle QTX3NodeGTest::getHandle(Node* node) const {
+TixiDocumentHandle QTX3NodeGTest::getHandle(Node *node) const {
   return node->_tixihandle;
 }
 
-const Node* QTX3NodeGTest::getParent(Node* node) const {
-  return node->_parent;
-}
+const Node *QTX3NodeGTest::getParent(Node *node) const { return node->_parent; }
 
 /***************************************************
  *
@@ -67,7 +65,7 @@ TEST_F(QTX3NodeGTest, test_xPath) {
 TEST_F(QTX3NodeGTest, test_Constructor_with_model) {
   ASSERT_EQ(model, node->model());
 
-  char* name;
+  char *name;
   TixiDocumentHandle handle = getHandle(node);
   ASSERT_EQ(SUCCESS, tixiGetChildNodeName(handle, "/", 1, &name));
 
@@ -75,7 +73,7 @@ TEST_F(QTX3NodeGTest, test_Constructor_with_model) {
 }
 
 TEST_F(QTX3NodeGTest, test_Constructor_with_node) {
-  Node* node2 = new Node(node);
+  Node *node2 = new Node(node);
   ASSERT_EQ(model, node2->model());
   ASSERT_EQ(node, node2->parent());
   ASSERT_EQ(node, getParent(node2));
@@ -129,4 +127,4 @@ TEST_F(QTX3NodeGTest, test_pathProperties) {
   ASSERT_EQ("/*[1]/*[3]/*[1]/*[3]",
             node->childAt(2)->childAt(0)->childAt(2)->xPath());
 }
-}  // namespace QTX3
+} // namespace QTX3

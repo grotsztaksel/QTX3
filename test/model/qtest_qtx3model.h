@@ -9,8 +9,8 @@ class QTX3TestcaseModel;
 
 class QTX3ModelTest : public QObject {
   Q_OBJECT
- public:
- private slots:
+public:
+private slots:
 
   void init();
   void cleanup();
@@ -24,7 +24,7 @@ class QTX3ModelTest : public QObject {
   void test_rowCount();
   void test_columnCount();
 
-  void test_data_f();  // for some reason, test_data() is not recognized as test
+  void test_data_f(); // for some reason, test_data() is not recognized as test
   void test_setData();
   void test_setFlags();
 
@@ -43,8 +43,8 @@ class QTX3ModelTest : public QObject {
   void test_reset();
   void test_tixi();
 
- private:
-  QTX3TestcaseModel* model;
+private:
+  QTX3TestcaseModel *model;
 };
-}  // namespace QTX3
-#endif  // QTX3MODELTEST_H
+} // namespace QTX3
+#endif // QTX3MODELTEST_H
