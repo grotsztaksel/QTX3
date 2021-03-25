@@ -71,6 +71,9 @@ void Node::insertChild(Node *child, const int index) {
 }
 
 void Node::removeChildren(const int first, const int count) {
+  for (int i = first; i < first + count; i++) {
+    delete _children.at(i);
+  }
   _children.remove(first, count);
 }
 
