@@ -118,3 +118,49 @@ void QTX3NodeTest::test_setFlags() {
   QVERIFY(!index.isValid());
   QCOMPARE(node->flags(index), Qt::NoItemFlags);
 }
+
+void QTX3NodeTest::test_insertChild() {
+  auto node0 = node->childAt(0);
+  auto node1 = node->childAt(1);
+  auto node2 = node->childAt(2);
+  auto node3 = node->childAt(3);
+  auto newNode = new Node(node);
+  node->insertChild(newNode, 2);
+
+  QCOMPARE(node->childAt(0), node0);
+  QCOMPARE(node->childAt(1), node1);
+  QCOMPARE(node->childAt(2), newNode);
+  QCOMPARE(node->childAt(3), node2);
+  QCOMPARE(node->childAt(4), node3);
+}
+
+void QTX3NodeTest::test_removeChildren() {
+
+  auto node0 = node->childAt(0);
+  auto node1 = node->childAt(1);
+  auto node2 = node->childAt(2);
+  auto node3 = node->childAt(3);
+
+  // Since the _children is not a vector of smart pointers, even though the
+  // nodes may be deleted, the pointers will not. therefore need an indirect way
+  // of determining the nodes' death. Therefore each of them gets a single
+  // child. When deleted, the QObject deletes all its children. The number of
+  // children under pointers will indicate whether the given node is dead or
+  // alive
+  for (int i = 0; i < node->rows(); i++) {
+    auto newNode = new Node(node->childAt(i));
+    node->childAt(i)->insertChild(newNode, 0);
+  }
+
+  QCOMPARE(node0->children().size(), 1);
+  QCOMPARE(node1->children().size(), 1);
+  QCOMPARE(node2->children().size(), 1);
+  QCOMPARE(node3->children().size(), 1);
+
+  node->removeChildren(1, 2);
+
+  QCOMPARE(node0->children().size(), 1);
+  QCOMPARE(node1->children().size(), 0);
+  QCOMPARE(node2->children().size(), 0);
+  QCOMPARE(node3->children().size(), 1);
+}

@@ -31,6 +31,9 @@ private slots:
   void test_setData();
   void test_setFlags();
 
+  void test_insertChild();
+  void test_removeChildren();
+
 private:
   QTX3TestcaseModel *model;
   Node *rootNode;
