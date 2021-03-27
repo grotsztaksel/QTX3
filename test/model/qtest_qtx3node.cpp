@@ -18,7 +18,8 @@ void QTX3NodeTest::cleanup() { delete model; }
 void QTX3NodeTest::test_createChildren() {
   // First, create some extra XMl elements in tixi
   for (int i = 0; i < 3; i++) {
-    tixiCreateElement(node->_tixihandle, "/root/child_1/child", "extra");
+    QCOMPARE(SUCCESS, tixiCreateElement(node->_tixihandle,
+                                        "/root/child_1/child", "extra"));
   }
   auto cnode = rootNode->childAt(0)->childAt(0);
   QCOMPARE(cnode->rows(), 0);
