@@ -82,15 +82,22 @@ TEST_F(QTX3NodeGTest, test_Constructor_with_node) {
 TEST_F(QTX3NodeGTest, test_createChildren) {
   node->createChildren();
   ASSERT_EQ(3, node->rows());
-  ASSERT_EQ(SUCCESS,
-            tixiRemoveElement(
-                getHandle(node),
-                QString(node->xPath()).append("/*[3]").toStdString().c_str()));
+  // Create some extra XMl elements in tixi
+  for (int i = 0; i < 3; i++) {
+    ASSERT_EQ(SUCCESS, tixiCreateElement(getHandle(node), "/root/child_1/child",
+                                         "extra"));
+  }
 
-  // createChildren should not work when the items are already there
-  ASSERT_EQ(3, node->childAt(2)->childAt(0)->rows());
-  node->childAt(2)->childAt(0)->createChildren();
-  ASSERT_EQ(2, node->childAt(2)->childAt(0)->rows());
+  auto cnode = node->childAt(0)->childAt(0);
+  ASSERT_EQ(cnode->rows(), 0);
+  cnode->createChildren();
+  ASSERT_EQ(cnode->rows(), 3);
+  for (int i = 0; i < 3; i++) {
+    tixiCreateElement(getHandle(node), "/root/child_1/child", "extra");
+  }
+
+  cnode->createChildren();
+  ASSERT_EQ(cnode->rows(), 6);
 }
 
 TEST_F(QTX3NodeGTest, test_pathProperties) {
