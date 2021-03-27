@@ -8,7 +8,8 @@ using namespace QTX3;
 
 Model::Model(QObject *parent, TixiDocumentHandle handle, bool initialize)
     : QAbstractItemModel(parent), _tixihandle(handle), _root(new Node(this)) {
-  if (handle <= 0) {
+  ReturnCode res = tixiCheckElement(handle, "/*[1]");
+  if (res == INVALID_HANDLE) {
     throw(std::runtime_error(
         "QTX3Model: constructor received invalid tixi handle!"));
   }
