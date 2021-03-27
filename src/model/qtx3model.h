@@ -63,7 +63,7 @@ public:
 
   // Reset the model using a new Tixi handle. If none (or invalid) is provided,
   // the model will be reset using its own tixi
-  void reset(const TixiDocumentHandle &newhandle = -1);
+  virtual void reset(const TixiDocumentHandle &newhandle = -1);
 
   // Access the model's tixi
   TixiDocumentHandle tixi() const;
