@@ -13,8 +13,12 @@ Model::Model(QObject *parent, TixiDocumentHandle handle, bool initialize)
     throw(std::runtime_error(
         "QTX3Model: constructor received invalid tixi handle!"));
   }
+
   if (initialize)
+    /*  WARNING!  When subclassing this model, the initialization MUST be
+     * defered (use initialize == false)   */
     init();
+  /* WARNING WARNING WARNING */
 }
 
 Model::Model(QObject *parent, const QString &rootName, bool initialize)

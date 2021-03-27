@@ -15,6 +15,9 @@ public:
   friend class QTX3ModelTest;
   friend Node::Node(Model *parent_model);
   friend void Node::createChildren();
+  /*! @brief    Create the model with a tixihanlde given
+   *  @warning  When subclassing this model, the initialization MUST be defered
+   *            (use initialize == false)   */
   explicit Model(QObject *parent = nullptr, TixiDocumentHandle handle = -1,
                  bool initialize = true);
   explicit Model(QObject *parent = nullptr, const QString &rootName = "root",
