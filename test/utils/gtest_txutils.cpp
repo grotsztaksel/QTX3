@@ -84,6 +84,8 @@ TEST_F(TxUtilsTest, test_elementName) {
   EXPECT_STREQ(
       "node_4",
       txutils::elementName("/root/child_2[1]/child_2[1]/node_3[1]/node_4[3]"));
+  EXPECT_STREQ("node_4", txutils::elementName(
+                             "/root/child_2[1]/child_2[1]/node_3[1]/node_4"));
 }
 
 TEST_F(TxUtilsTest, test_elementNumber) {
