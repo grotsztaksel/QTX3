@@ -2,3 +2,7 @@ build_release
 build_debug
 /CMakeLists.txt.user
 scripts/.idea/
+build_debug_MinGW/
+build_release_MinGW/
+build_release_MSVC/
+build_debug_MSVC/
