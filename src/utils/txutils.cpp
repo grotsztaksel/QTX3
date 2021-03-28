@@ -331,7 +331,8 @@ ReturnCode txutils::expectCode(ReturnCode tixiresult,
   bool found = (std::find(acceptedCodes.begin(), acceptedCodes.end(),
                           tixiresult) != acceptedCodes.end());
   if (!found) {
-    throw(std::runtime_error(message));
+    throw(std::runtime_error(
+        message + "\nTiXi ERROR CODE: " + std::to_string(tixiresult)));
   }
   return tixiresult;
 }
@@ -342,7 +343,8 @@ ReturnCode txutils::excludeCode(ReturnCode tixiresult,
   bool found = (std::find(unacceptedCodes.begin(), unacceptedCodes.end(),
                           tixiresult) != unacceptedCodes.end());
   if (found) {
-    throw(std::runtime_error(message));
+    throw(std::runtime_error(
+        message + "\nTiXi ERROR CODE: " + std::to_string(tixiresult)));
   }
   return tixiresult;
 }
