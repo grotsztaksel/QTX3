@@ -1,6 +1,7 @@
 #ifndef QTX3ATTRIBUTE_H
 #define QTX3ATTRIBUTE_H
 
+#include "QTX3_global.h"
 #include "qtx3item.h"
 #include <QObject>
 
@@ -9,7 +10,7 @@ namespace QTX3 {
 /*
     Special Item class to handle XML attributes
 */
-class Attribute : public Item {
+class QTX3_EXPORT Attribute : public Item {
   Q_OBJECT
 public:
   Attribute(Node *parent, const QString &attributeName);

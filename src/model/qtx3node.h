@@ -1,6 +1,7 @@
 #ifndef QTX3NODE_H
 #define QTX3NODE_H
 
+#include "QTX3_global.h"
 #include "tixi.h"
 #include <QObject>
 #include <QVector>
@@ -12,7 +13,7 @@ namespace QTX3 {
 class Model;
 class QTX3NodeTest;
 class Item;
-class Node : public QObject {
+class QTX3_EXPORT Node : public QObject {
   Q_OBJECT
 public:
   friend class QTX3NodeTest;

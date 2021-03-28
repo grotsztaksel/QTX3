@@ -1,14 +1,14 @@
 #ifndef QTX3MODEL_H
 #define QTX3MODEL_H
 
+#include "QTX3_global.h"
+#include "qtx3node.h"
 #include "tixi.h"
 #include <QAbstractItemModel>
 
-#include "qtx3node.h"
-
 namespace QTX3 {
 
-class Model : public QAbstractItemModel {
+class QTX3_EXPORT Model : public QAbstractItemModel {
   Q_OBJECT
 
 public:

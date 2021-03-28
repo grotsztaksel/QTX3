@@ -9,8 +9,6 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-
-
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
@@ -23,15 +21,16 @@ include_directories(${TIXI_INCLUDE_DIRS})
 
 add_subdirectory(src)
 
-add_library(QTX3 STATIC
-  QTX3_global.h
-)
+add_library(QTX3 SHARED)
 
 target_link_libraries(QTX3 PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(QTX3 PRIVATE ${TIXI_LIBRARIES})
 target_link_libraries(QTX3 PUBLIC QXmodel)
 target_link_libraries(QTX3 PUBLIC Utils)
 target_compile_definitions(QTX3 PRIVATE QTX3_LIBRARY)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  target_compile_definitions(QTX3 PRIVATE QTX3_MSVC)
+endif()
 
 
 
@@ -50,6 +49,6 @@ endif()
 #set_target_properties(QTX3 PROPERTIES PUBLIC_HEADER "${TIXI_INCLUDE_DIRS}/tixi.h;${INSTALL_HEADER}")
 
 #install(CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_qtx3_h.py -i \"${INSTALL_HEADERS}\" -o ${INSTALL_HEADER})")
-set_target_properties(QTX3 PROPERTIES PUBLIC_HEADER "${TIXI_INCLUDE_DIRS}/tixi.h;${INSTALL_HEADERS}")
+set_target_properties(QTX3 PROPERTIES PUBLIC_HEADER "${TIXI_INCLUDE_DIRS}/tixi.h;${INSTALL_HEADERS};${QTX3_HDR}")
 install(TARGETS QTX3)
 

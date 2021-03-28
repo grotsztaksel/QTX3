@@ -1,3 +1,7 @@
+
+set(QTX3_INC ${CMAKE_CURRENT_SOURCE_DIR})
+set(QTX3_HDR ${CMAKE_CURRENT_SOURCE_DIR}/QTX3_global.h PARENT_SCOPE)
+
 add_subdirectory(utils)
 add_subdirectory(model)
 add_subdirectory(widgets)

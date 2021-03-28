@@ -1,6 +1,7 @@
 #ifndef QTX3ITEM_H
 #define QTX3ITEM_H
 
+#include "QTX3_global.h"
 #include "tixi.h"
 #include <QObject>
 
@@ -8,7 +9,7 @@ namespace QTX3 {
 
 class Node;
 class Model;
-class Item : public QObject {
+class QTX3_EXPORT Item : public QObject {
   Q_OBJECT
 public:
   explicit Item(Node *parent);
