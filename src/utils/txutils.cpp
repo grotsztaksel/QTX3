@@ -268,6 +268,7 @@ ReturnCode txutils::sort(TixiDocumentHandle h, const char *xPathExpression,
                          const char *criterion, bool ascending) {
 
   char *xpath;
+  const char *msg = "Error while sorting XML structure";
   if (criterion) {
     // append the attribute name to the xPath
     std::string xPath(xPathExpression);
@@ -277,13 +278,15 @@ ReturnCode txutils::sort(TixiDocumentHandle h, const char *xPathExpression,
     xpath = strdup(xPathExpression);
   }
   int n;
-  ReturnCode res = tixiXPathEvaluateNodeNumber(h, xpath, &n);
+  ReturnCode res =
+      expectCode(tixiXPathEvaluateNodeNumber(h, xpath, &n), {SUCCESS, FAILED},
+                 msg + std::to_string(__LINE__));
   if (res == FAILED) {
     // xPathExpression resolved to 0 elements
     free(xpath);
     return res;
   }
-  const char *msg = "Error while sorting XML structure";
+
   // implementing bubble sort
 
   char *path_i;
@@ -294,16 +297,16 @@ ReturnCode txutils::sort(TixiDocumentHandle h, const char *xPathExpression,
   while (n > 1) {
     for (int i = 1; i < n; i++) {
       // get the paths
-      THROW_ERR(tixiXPathExpressionGetXPath(h, xpath, i, &path_i), msg,
-                __LINE__);
-      THROW_ERR(tixiXPathExpressionGetXPath(h, xpath, i + 1, &path_i1), msg,
-                __LINE__);
+      expectCode(tixiXPathExpressionGetXPath(h, xpath, i, &path_i), {SUCCESS},
+                 msg + std::to_string(__LINE__));
+      expectCode(tixiXPathExpressionGetXPath(h, xpath, i + 1, &path_i1),
+                 {SUCCESS}, msg + std::to_string(__LINE__));
 
       if (criterion) {
-        THROW_ERR(tixiGetTextAttribute(h, path_i, criterion, &val_i), msg,
-                  __LINE__);
-        THROW_ERR(tixiGetTextAttribute(h, path_i1, criterion, &val_i1), msg,
-                  __LINE__);
+        expectCode(tixiGetTextAttribute(h, path_i, criterion, &val_i),
+                   {SUCCESS}, msg + std::to_string(__LINE__));
+        expectCode(tixiGetTextAttribute(h, path_i1, criterion, &val_i1),
+                   {SUCCESS}, msg + std::to_string(__LINE__));
       } else {
         val_i = elementName(path_i);
         val_i1 = elementName(path_i1);
@@ -312,13 +315,34 @@ ReturnCode txutils::sort(TixiDocumentHandle h, const char *xPathExpression,
       int cmp = Val_i.compare(val_i1);
 
       if ((cmp > 0 && ascending) || (cmp < 0 && !ascending)) {
-        THROW_ERR(tixiSwapElements(h, path_i, path_i1), msg, __LINE__);
+        expectCode(tixiSwapElements(h, path_i, path_i1), {SUCCESS},
+                   msg + std::to_string(__LINE__));
       }
     }
     n--;
   }
   free(xpath);
-  //  delete val_i;
-  //  delete val_i1;
   return SUCCESS;
+}
+
+ReturnCode txutils::expectCode(ReturnCode tixiresult,
+                               std::list<ReturnCode> acceptedCodes,
+                               std::string message) {
+  bool found = (std::find(acceptedCodes.begin(), acceptedCodes.end(),
+                          tixiresult) != acceptedCodes.end());
+  if (!found) {
+    throw(std::runtime_error(message));
+  }
+  return tixiresult;
+}
+
+ReturnCode txutils::excludeCode(ReturnCode tixiresult,
+                                std::list<ReturnCode> unacceptedCodes,
+                                std::string message) {
+  bool found = (std::find(unacceptedCodes.begin(), unacceptedCodes.end(),
+                          tixiresult) != unacceptedCodes.end());
+  if (found) {
+    throw(std::runtime_error(message));
+  }
+  return tixiresult;
 }

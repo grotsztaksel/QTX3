@@ -2,12 +2,29 @@
 #define TXUTILS_H
 
 #include "tixi.h"
-
+#include <list>
+#include <string>
 // Collection of general-purpose tixi & xml path utilities
 namespace txutils {
 
 // Throw error when INVALID_HANDLE
 void handle_error(ReturnCode code);
+
+/** @brief if the tixiresult is contained in the acceptedCodes, return it for
+ * further processing. Otherwise throw a runtime error with message
+ *
+ */
+ReturnCode expectCode(ReturnCode tixiresult,
+                      std::list<ReturnCode> acceptedCodes = {SUCCESS},
+                      std::string message = {});
+
+/** @brief if the tixiresult is NOT contained in the acceptedCodes, return it
+ * for further processing. Otherwise throw a runtime error with message
+ *
+ */
+ReturnCode excludeCode(ReturnCode tixiresult,
+                       std::list<ReturnCode> unacceptedCodes = {SUCCESS},
+                       std::string message = {});
 
 /**
   @brief Evaluates a XPath expression and the xPath for the i-th result and
