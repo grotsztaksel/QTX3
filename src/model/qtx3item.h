@@ -25,7 +25,7 @@ public:
 protected:
   Node *_parent;
   const Model *_model;
-  const TixiDocumentHandle _tixihandle;
+  const TixiDocumentHandle *_tixihandle;
 };
 } // namespace QTX3
 #endif // QTX3ITEM_H

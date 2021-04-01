@@ -10,11 +10,11 @@ Attribute::Attribute(Node *parent, const QString &attributeName)
 QVariant Attribute::value() const {
   char *value;
   ReturnCode res = tixiCheckAttribute(
-      _tixihandle, _parent->xPath().toStdString().c_str(), _attributeName);
+      *_tixihandle, _parent->xPath().toStdString().c_str(), _attributeName);
   if (res == ATTRIBUTE_NOT_FOUND) {
     return QVariant();
   } else if (res == SUCCESS) {
-    res = tixiGetTextAttribute(_tixihandle,
+    res = tixiGetTextAttribute(*_tixihandle,
                                _parent->xPath().toStdString().c_str(),
                                _attributeName, &value);
   }

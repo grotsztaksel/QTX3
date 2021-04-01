@@ -7,7 +7,7 @@ using namespace QTX3;
 
 Node::Node(Model *parent_model)
     : QObject(parent_model), _model(parent_model),
-      _tixihandle(parent_model->_tixihandle) {}
+      _tixihandle(&parent_model->_tixihandle) {}
 
 Node::Node(Node *parent_node)
     : QObject(parent_node), _model(parent_node->_model), _parent(parent_node),
@@ -20,14 +20,14 @@ void Node::createChildren() {
   std::string xpath_s = xPath().toStdString() + "/*";
   const char *xpath = xpath_s.c_str();
   int nchildren = 0;
-  auto res = tixiXPathEvaluateNodeNumber(_tixihandle, xpath, &nchildren);
+  auto res = tixiXPathEvaluateNodeNumber(*_tixihandle, xpath, &nchildren);
   txutils::handle_error(res);
   if (res == FAILED) {
     return;
   }
   for (int i = 1; i <= nchildren; i++) {
     char *newPath;
-    res = tixiXPathExpressionGetXPath(_tixihandle, xpath, i, &newPath);
+    res = tixiXPathExpressionGetXPath(*_tixihandle, xpath, i, &newPath);
     Node *newNode =
         _model->createNode(this, QString(txutils::elementName(newPath)));
     _children.append(newNode);
@@ -47,7 +47,7 @@ QString Node::xPath() const {
 QString Node::xmlPath() const {
   char *xmlpath;
   auto res = tixiXPathExpressionGetXPath(
-      _tixihandle, xPath().toStdString().c_str(), 1, &xmlpath);
+      *_tixihandle, xPath().toStdString().c_str(), 1, &xmlpath);
   if (res == SUCCESS) {
     return QString(xmlpath);
   } else if (res == FAILED) {
