@@ -265,8 +265,8 @@ ReturnCode txutils::sort(TixiDocumentHandle h, const char *xPathExpression,
   }
   int n;
   ReturnCode res =
-      expectCode(tixiXPathEvaluateNodeNumber(h, xpath, &n), {SUCCESS, FAILED},
-                 msg + std::to_string(__LINE__));
+      expectCode(tixiXPathEvaluateNodeNumber(h, xpath, &n),
+                 msg + std::to_string(__LINE__), {SUCCESS, FAILED});
   if (res == FAILED) {
     // xPathExpression resolved to 0 elements
     free(xpath);
@@ -283,16 +283,16 @@ ReturnCode txutils::sort(TixiDocumentHandle h, const char *xPathExpression,
   while (n > 1) {
     for (int i = 1; i < n; i++) {
       // get the paths
-      expectCode(tixiXPathExpressionGetXPath(h, xpath, i, &path_i), {SUCCESS},
+      expectCode(tixiXPathExpressionGetXPath(h, xpath, i, &path_i),
                  msg + std::to_string(__LINE__));
       expectCode(tixiXPathExpressionGetXPath(h, xpath, i + 1, &path_i1),
-                 {SUCCESS}, msg + std::to_string(__LINE__));
+                 msg + std::to_string(__LINE__));
 
       if (criterion) {
         expectCode(tixiGetTextAttribute(h, path_i, criterion, &val_i),
-                   {SUCCESS}, msg + std::to_string(__LINE__));
+                   msg + std::to_string(__LINE__));
         expectCode(tixiGetTextAttribute(h, path_i1, criterion, &val_i1),
-                   {SUCCESS}, msg + std::to_string(__LINE__));
+                   msg + std::to_string(__LINE__));
       } else {
         val_i = elementName(path_i);
         val_i1 = elementName(path_i1);
@@ -301,7 +301,7 @@ ReturnCode txutils::sort(TixiDocumentHandle h, const char *xPathExpression,
       int cmp = Val_i.compare(val_i1);
 
       if ((cmp > 0 && ascending) || (cmp < 0 && !ascending)) {
-        expectCode(tixiSwapElements(h, path_i, path_i1), {SUCCESS},
+        expectCode(tixiSwapElements(h, path_i, path_i1),
                    msg + std::to_string(__LINE__));
       }
     }
@@ -311,9 +311,8 @@ ReturnCode txutils::sort(TixiDocumentHandle h, const char *xPathExpression,
   return SUCCESS;
 }
 
-ReturnCode txutils::expectCode(ReturnCode tixiresult,
-                               std::list<ReturnCode> acceptedCodes,
-                               std::string message) {
+ReturnCode txutils::expectCode(ReturnCode tixiresult, std::string message,
+                               std::list<ReturnCode> acceptedCodes) {
   bool found = (std::find(acceptedCodes.begin(), acceptedCodes.end(),
                           tixiresult) != acceptedCodes.end());
   if (!found) {
@@ -323,9 +322,16 @@ ReturnCode txutils::expectCode(ReturnCode tixiresult,
   return tixiresult;
 }
 
-ReturnCode txutils::excludeCode(ReturnCode tixiresult,
-                                std::list<ReturnCode> unacceptedCodes,
-                                std::string message) {
+ReturnCode txutils::expectCode(ReturnCode tixiresult, const int &line,
+                               std::list<ReturnCode> acceptedCodes) {
+  return expectCode(tixiresult,
+                    std::string("Unhandled TiXi error in line ") +
+                        std::to_string(line),
+                    acceptedCodes);
+}
+
+ReturnCode txutils::excludeCode(ReturnCode tixiresult, std::string message,
+                                std::list<ReturnCode> unacceptedCodes) {
   bool found = (std::find(unacceptedCodes.begin(), unacceptedCodes.end(),
                           tixiresult) != unacceptedCodes.end());
   if (found) {
@@ -333,4 +339,12 @@ ReturnCode txutils::excludeCode(ReturnCode tixiresult,
         message + "\nTiXi ERROR CODE: " + std::to_string(tixiresult)));
   }
   return tixiresult;
+}
+
+ReturnCode txutils::excludeCode(ReturnCode tixiresult, const int &line,
+                                std::list<ReturnCode> unacceptedCodes) {
+  return excludeCode(tixiresult,
+                     std::string("Unhandled TiXi error in line ") +
+                         std::to_string(line),
+                     unacceptedCodes);
 }

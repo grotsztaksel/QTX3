@@ -345,3 +345,69 @@ TEST_F(TxUtilsTest, test_sort) {
 
   ASSERT_STREQ(xml, expected);
 }
+
+TEST_F(TxUtilsTest, test_expectCode_string) {
+  ASSERT_EQ(txutils::expectCode(INVALID_HANDLE, "Test Error Message",
+                                {SUCCESS, INVALID_HANDLE}),
+            INVALID_HANDLE);
+
+  try {
+    txutils::expectCode(FAILED, "Test Error Message",
+                        {SUCCESS, INVALID_HANDLE});
+  } catch (std::runtime_error &e) {
+    ASSERT_STREQ(e.what(), "Test Error Message\nTiXi ERROR CODE: 1");
+  }
+}
+
+TEST_F(TxUtilsTest, test_expectCode_rc_specific_case) {
+  TixiDocumentHandle h;
+  tixiCreateDocument("root", &h);
+  ASSERT_EQ(tixiCreateElement(h, "/root", "node1"), SUCCESS);
+  ASSERT_EQ(tixiCreateElement(h, "/root", "directories"), SUCCESS);
+  ASSERT_EQ(tixiCreateElement(h, "/root", "node2"), SUCCESS);
+  ASSERT_EQ(tixiCreateElement(h, "/root", "node3"), SUCCESS);
+
+  const char *basepath = "/root/directories/path[@abspath]";
+  int n = 0;
+  ReturnCode res = tixiXPathEvaluateNodeNumber(h, basepath, &n);
+  ASSERT_EQ(res, FAILED);
+  // The problem was that the argument list was shifted - expected message comes
+  // before expected result list (here the empty "")
+  ASSERT_EQ(txutils::expectCode(res, "", {SUCCESS, FAILED}), FAILED);
+}
+
+TEST_F(TxUtilsTest, test_expectCode_int) {
+  ASSERT_EQ(txutils::expectCode(INVALID_HANDLE, 39, {SUCCESS, INVALID_HANDLE}),
+            INVALID_HANDLE);
+
+  try {
+    txutils::expectCode(FAILED, 39, {SUCCESS, INVALID_HANDLE});
+  } catch (std::runtime_error &e) {
+    ASSERT_STREQ(e.what(),
+                 "Unhandled TiXi error in line 39\nTiXi ERROR CODE: 1");
+  }
+}
+
+TEST_F(TxUtilsTest, test_excludeCode_string) {
+  ASSERT_EQ(txutils::excludeCode(FAILED, "Test Error Message",
+                                 {SUCCESS, INVALID_HANDLE}),
+            FAILED);
+
+  try {
+    txutils::excludeCode(FAILED, "Test Error Message",
+                         {SUCCESS, INVALID_HANDLE});
+  } catch (std::runtime_error &e) {
+    ASSERT_STREQ(e.what(), "Test Error Message\nTiXi ERROR CODE: 1");
+  }
+}
+TEST_F(TxUtilsTest, test_excludeCode_int) {
+  ASSERT_EQ(txutils::excludeCode(FAILED, 39, {SUCCESS, INVALID_HANDLE}),
+            FAILED);
+
+  try {
+    txutils::excludeCode(SUCCESS, 39, {SUCCESS, INVALID_HANDLE});
+  } catch (std::runtime_error &e) {
+    ASSERT_STREQ(e.what(),
+                 "Unhandled TiXi error in line 39\nTiXi ERROR CODE: 0");
+  }
+}

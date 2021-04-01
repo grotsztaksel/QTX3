@@ -11,17 +11,19 @@ namespace txutils {
  * further processing. Otherwise throw a runtime error with message
  *
  */
-ReturnCode expectCode(ReturnCode tixiresult,
-                      std::list<ReturnCode> acceptedCodes = {SUCCESS},
-                      std::string message = {});
+ReturnCode expectCode(ReturnCode tixiresult, std::string message = {},
+                      std::list<ReturnCode> acceptedCodes = {SUCCESS});
+ReturnCode expectCode(ReturnCode tixiresult, const int &line,
+                      std::list<ReturnCode> acceptedCodes = {SUCCESS});
 
 /** @brief if the tixiresult is NOT contained in the acceptedCodes, return it
  * for further processing. Otherwise throw a runtime error with message
  *
  */
-ReturnCode excludeCode(ReturnCode tixiresult,
-                       std::list<ReturnCode> unacceptedCodes = {SUCCESS},
-                       std::string message = {});
+ReturnCode excludeCode(ReturnCode tixiresult, std::string message = {},
+                       std::list<ReturnCode> unacceptedCodes = {FAILED});
+ReturnCode excludeCode(ReturnCode tixiresult, const int &line,
+                       std::list<ReturnCode> unacceptedCodes = {FAILED});
 
 /**
   @brief Evaluates a XPath expression and the xPath for the i-th result and
