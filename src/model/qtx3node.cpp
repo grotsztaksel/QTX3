@@ -20,8 +20,9 @@ void Node::createChildren() {
   std::string xpath_s = xPath().toStdString() + "/*";
   const char *xpath = xpath_s.c_str();
   int nchildren = 0;
-  auto res = tixiXPathEvaluateNodeNumber(*_tixihandle, xpath, &nchildren);
-  txutils::handle_error(res);
+  auto res = txutils::expectCode(
+      tixiXPathEvaluateNodeNumber(*_tixihandle, xpath, &nchildren), {},
+      {SUCCESS, FAILED});
   if (res == FAILED) {
     return;
   }
@@ -46,17 +47,15 @@ QString Node::xPath() const {
 
 QString Node::xmlPath() const {
   char *xmlpath;
-  auto res = tixiXPathExpressionGetXPath(
-      *_tixihandle, xPath().toStdString().c_str(), 1, &xmlpath);
+  ReturnCode res = txutils::excludeCode(
+      tixiXPathExpressionGetXPath(*_tixihandle, xPath().toStdString().c_str(),
+                                  1, &xmlpath),
+      std::string("Node ") + xPath().toStdString() +
+          std::string(" failed to resolve its own path!"));
+
   if (res == SUCCESS) {
     return QString(xmlpath);
-  } else if (res == FAILED) {
-    // This shouldn't happen! Nodes and element count must agree
-    throw std::runtime_error(std::string("Node ") + xPath().toStdString() +
-                             std::string(" failed to resolve its own path!"));
   }
-  //
-  txutils::handle_error(res);
   return QString();
 }
 
