@@ -12,21 +12,7 @@
       return ret;                                                              \
   }
 
-#define THROW_ERR(function, message, line)                                     \
-  {                                                                            \
-    ReturnCode ret = function;                                                 \
-    if (ret != SUCCESS)                                                        \
-      throw(std::runtime_error(std::string(message) + " " +                    \
-                               std::to_string(line)));                         \
-  }
-
 typedef std::string::size_type istr;
-
-void txutils::handle_error(ReturnCode code) {
-  if (code == INVALID_HANDLE) {
-    throw std::runtime_error("Invalid Tixi Handle! in line");
-  }
-}
 
 ReturnCode txutils::indexedPath(TixiDocumentHandle handle,
                                 const char *xPathExpression, int index,

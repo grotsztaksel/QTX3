@@ -54,26 +54,6 @@ TxUtilsTest::TxUtilsTest() {
 }
 TxUtilsTest::~TxUtilsTest() { delete xml; }
 
-TEST_F(TxUtilsTest, test_handle_error) {
-  ReturnCode ret = ReturnCode::ALREADY_SAVED;
-  try {
-    // should not throw any error
-    txutils::handle_error(ret);
-    ASSERT_TRUE(true);
-  } catch (std::runtime_error) {
-    ASSERT_TRUE(false);
-  }
-
-  ret = ReturnCode::INVALID_HANDLE;
-  try {
-    // should throw runtime_error
-    txutils::handle_error(ret);
-    ASSERT_TRUE(false);
-  } catch (std::runtime_error) {
-    ASSERT_TRUE(true);
-  }
-}
-
 TEST_F(TxUtilsTest, test_uniqueName) {
   EXPECT_STREQ(
       "node_4[3]",

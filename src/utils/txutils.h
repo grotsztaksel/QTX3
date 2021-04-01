@@ -7,9 +7,6 @@
 // Collection of general-purpose tixi & xml path utilities
 namespace txutils {
 
-// Throw error when INVALID_HANDLE
-void handle_error(ReturnCode code);
-
 /** @brief if the tixiresult is contained in the acceptedCodes, return it for
  * further processing. Otherwise throw a runtime error with message
  *
