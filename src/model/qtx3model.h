@@ -73,6 +73,8 @@ public:
 
   Node *nodeFromIndex(QModelIndex index = QModelIndex()) const;
   Node *nodeFromPath(QString path = "/*[1]") const;
+  QModelIndex indexFromNode(Node *node) const;
+
 
 protected:
   virtual void init();

@@ -219,6 +219,14 @@ void QTX3ModelTest::test_nodeFromPath() {
   }
 }
 
+void QTX3ModelTest::test_indexFromNode() {
+  auto node = model->_root->childAt(1)->childAt(0)->childAt(0);
+  QModelIndex index = model->index(1, 0);
+  index = model->index(0, 0, index);
+  index = model->index(0, 0, index);
+  QCOMPARE(model->indexFromNode(node), index);
+}
+
 void QTX3ModelTest::test_data() {
   QModelIndex child = model->index(0, 0);
   QCOMPARE("child_1", model->data(child, Qt::DisplayRole));
@@ -258,7 +266,7 @@ void QTX3ModelTest::test_reset() {
   QCOMPARE("/root/child_2[1]/node_3",
            model->_root->childAt(1)->childAt(2)->xmlPath());
 
-  TixiDocumentHandle th;
+  TixiDocumentHandle th = -1;
   model->reset(th);
   // nothing should have changed
   QCOMPARE("/root/child_1", model->_root->childAt(0)->xmlPath());

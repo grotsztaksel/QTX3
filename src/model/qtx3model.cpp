@@ -201,6 +201,12 @@ Node *Model::nodeFromPath(QString path) const {
   return node;
 }
 
+QModelIndex Model::indexFromNode(Node *node) const {
+  if (!node->parent())
+    return QModelIndex();
+  return index(node->row(), 0, indexFromNode(node->parent()));
+}
+
 Node *Model::createNode(Node *parent, const QString &name) const {
   // Basic implementation creates always the same nodes
   return new Node(parent);

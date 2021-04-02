@@ -37,6 +37,7 @@ private slots:
 
   void test_nodeFromIndex();
   void test_nodeFromPath();
+  void test_indexFromNode();
 
   void test_data();
 
