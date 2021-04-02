@@ -98,7 +98,7 @@ int Node::row() const {
 
 int Node::columnCount() const { return 1; }
 
-const Model *Node::model() const { return _model; }
+Model *Node::model() const { return const_cast<Model *>(_model); }
 
 Node *Node::parent() const { return _parent; }
 

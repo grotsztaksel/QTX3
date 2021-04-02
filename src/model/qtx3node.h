@@ -49,7 +49,7 @@ public:
   // Return number of columns this node produces
   virtual int columnCount() const;
 
-  const Model *model() const;
+  Model *model() const;
 
   Node *parent() const;
 
