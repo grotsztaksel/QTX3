@@ -27,6 +27,8 @@ private slots:
   void test_model();
   void test_parent();
 
+  void test_index();
+
   void test_data_f(); // for some reason, test_data() is not recognized as test
   void test_setData();
   void test_setFlags();

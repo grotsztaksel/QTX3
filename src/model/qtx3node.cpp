@@ -102,6 +102,8 @@ Model *Node::model() const { return const_cast<Model *>(_model); }
 
 Node *Node::parent() const { return _parent; }
 
+QModelIndex Node::index() { return model()->indexFromNode(this); }
+
 QVariant Node::data(const QModelIndex &index, int role) const {
   if (role == Qt::DisplayRole && index.column() == 0) {
     // Default implementation displays element name

@@ -53,6 +53,9 @@ public:
 
   Node *parent() const;
 
+  // Return own index;
+  QModelIndex index();
+
   virtual QVariant data(const QModelIndex &index,
                         int role = Qt::DisplayRole) const;
 

@@ -94,6 +94,13 @@ void QTX3NodeTest::test_parent() {
   QCOMPARE(node->parent(), rootNode->childAt(1)->childAt(0));
 }
 
+void QTX3NodeTest::test_index() {
+  QModelIndex index = model->index(1, 0);
+  index = model->index(0, 0, index);
+  index = model->index(0, 0, index);
+  QCOMPARE(node->index(), index);
+}
+
 void QTX3NodeTest::test_data_f() {
   auto cnode = rootNode->childAt(0)->childAt(0);
   auto index = model->index(0, 0);   // /root/child_1
