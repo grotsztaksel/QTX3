@@ -76,6 +76,16 @@ int elementNumber(const char *xPathExpression);
 char *uniqueName(const char *xPathExpression);
 
 /**
+  @brief Return element path stripped from the index numbers
+  @param[in]  xmlPath xml path
+  @note The input should not be given as XPath expression
+  @param[out]  The same string as input, but with all index substrings (e.g.
+  "[1]") removed
+
+*/
+char *cleanElementPath(const char *xmlPath);
+
+/**
   @brief Helper function returning the number of spaces per each indentation in
   tixi using pretty print
   @return Number of spaces per each indentation in tixi using pretty print

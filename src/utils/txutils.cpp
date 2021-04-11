@@ -348,3 +348,22 @@ ReturnCode txutils::excludeCode(ReturnCode tixiresult, const int &line,
                          std::to_string(line),
                      unacceptedCodes);
 }
+
+char *txutils::cleanElementPath(const char *xmlPath) {
+  std::string xml(xmlPath);
+
+  for (const std::string &illegal : {"@", "*", "="}) {
+    if (xml.find(illegal) != std::string::npos) {
+      std::string error("cleanElementPath(): Function does not accep XPath "
+                        "expressions! A full XML path is required"
+                        "input argument: \"");
+      error.append(xmlPath).append("\"");
+      throw(std::runtime_error(error));
+    }
+  }
+
+  std::regex index(R"(\[\s*\d+\s*\])");
+  xml = std::regex_replace(xml, index, "");
+
+  return strdup(xml.c_str());
+}

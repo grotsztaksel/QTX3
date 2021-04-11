@@ -382,6 +382,7 @@ TEST_F(TxUtilsTest, test_expectCode_int) {
 
   try {
     txutils::expectCode(FAILED, 39, {SUCCESS, INVALID_HANDLE});
+    ASSERT_TRUE(false);
   } catch (std::runtime_error &e) {
     ASSERT_STREQ(e.what(),
                  "Unhandled TiXi error in line 39\nTiXi ERROR CODE: 1");
@@ -409,5 +410,22 @@ TEST_F(TxUtilsTest, test_excludeCode_int) {
   } catch (std::runtime_error &e) {
     ASSERT_STREQ(e.what(),
                  "Unhandled TiXi error in line 39\nTiXi ERROR CODE: 0");
+  }
+}
+
+TEST_F(TxUtilsTest, test_cleanElementPath) {
+  ASSERT_STREQ(txutils::cleanElementPath("/root/directories[2]/path[18]"),
+               "/root/directories/path");
+
+  ASSERT_STREQ(txutils::cleanElementPath("/root/directories/path"),
+               "/root/directories/path");
+  // This is an illegal use of the function
+  try {
+    txutils::cleanElementPath("/root/directories[@attr]");
+    ASSERT_TRUE(false);
+  } catch (std::runtime_error &e) {
+    ASSERT_STREQ(e.what(), "cleanElementPath(): Function does not accep XPath "
+                           "expressions! A full XML path is required"
+                           "input argument: \"/root/directories[@attr]\"");
   }
 }
