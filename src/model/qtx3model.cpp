@@ -110,10 +110,10 @@ Qt::ItemFlags Model::flags(const QModelIndex &index) const {
   return nodeFromIndex(index)->flags(index);
 }
 
-bool Model::addElement(int row, const QString &name,
-                       const QModelIndex &parent) {
+Node *Model::addElement(int row, const QString &name,
+                        const QModelIndex &parent) {
   if (row < 0 || row > rowCount(parent))
-    return false;
+    return nullptr;
   auto parentNode = nodeFromIndex(parent);
   auto parentPath = parentNode->xPath();
 
@@ -123,17 +123,17 @@ bool Model::addElement(int row, const QString &name,
                                name.toStdString().c_str(), row + 1);
 
   if (res != SUCCESS) {
-    return false;
+    return nullptr;
   }
   auto newNode = createNode(parentNode, name);
   if (!newNode) {
-    return false;
+    return nullptr;
   }
 
   parentNode->insertChild(newNode, row);
 
   endInsertRows();
-  return true;
+  return newNode;
 }
 
 bool Model::removeRows(int row, int count, const QModelIndex &parent) {

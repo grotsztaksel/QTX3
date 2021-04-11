@@ -49,8 +49,8 @@ public:
   Qt::ItemFlags flags(const QModelIndex &index) const override;
 
   // Add data:
-  bool addElement(int row, const QString &name,
-                  const QModelIndex &parent = QModelIndex());
+  Node *addElement(int row, const QString &name,
+                   const QModelIndex &parent = QModelIndex());
 
   // Remove data:
   bool removeRows(int row, int count,
@@ -74,7 +74,6 @@ public:
   Node *nodeFromIndex(QModelIndex index = QModelIndex()) const;
   Node *nodeFromPath(QString path = "/*[1]") const;
   QModelIndex indexFromNode(Node *node) const;
-
 
 protected:
   virtual void init();

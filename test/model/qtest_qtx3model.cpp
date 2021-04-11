@@ -100,7 +100,7 @@ void QTX3ModelTest::test_addElement() {
   QCOMPARE(nChild, 0);
 
   // Cannot insert at index < 0, because that's ridiculous!
-  QCOMPARE(model->addElement(-9, "the_thing_that_should_not_be", index), false);
+  QVERIFY(!model->addElement(-9, "the_thing_that_should_not_be", index));
   // Content should not have changed
   QCOMPARE(model->rowCount(index), 0);
   QCOMPARE(tixiGetNumberOfChilds(model->_tixihandle,
@@ -109,7 +109,7 @@ void QTX3ModelTest::test_addElement() {
   QCOMPARE(nChild, 0);
 
   // Cannot insert at index > 0, because there is no children yet
-  QCOMPARE(model->addElement(2, "the_thing_that_should_not_be", index), false);
+  QVERIFY(!model->addElement(2, "the_thing_that_should_not_be", index));
   // Content should not have changed
   QCOMPARE(model->rowCount(index), 0);
   QCOMPARE(tixiGetNumberOfChilds(model->_tixihandle,
@@ -118,7 +118,7 @@ void QTX3ModelTest::test_addElement() {
   QCOMPARE(nChild, 0);
 
   // Cannot insert element of non-XML compliant name
-  QCOMPARE(model->addElement(0, "the thing that should not be", index), false);
+  QVERIFY(!model->addElement(0, "the thing that should not be", index));
   // Content should not have changed
   QCOMPARE(model->rowCount(index), 0);
   QCOMPARE(tixiGetNumberOfChilds(model->_tixihandle,
