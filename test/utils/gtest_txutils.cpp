@@ -429,3 +429,21 @@ TEST_F(TxUtilsTest, test_cleanElementPath) {
                            "input argument: \"/root/directories[@attr]\"");
   }
 }
+
+TEST_F(TxUtilsTest, DISABLED_test_tixiXpath_by_attribute_relations) {
+  TixiDocumentHandle h = -1;
+  ASSERT_EQ(SUCCESS, tixiCreateDocument("root", &h));
+  ASSERT_EQ(SUCCESS, tixiCreateElement(h, "/root", "child"));
+  ASSERT_EQ(SUCCESS, tixiCreateElement(h, "/root", "child"));
+  ASSERT_EQ(SUCCESS, tixiCreateElement(h, "/root", "child"));
+  ASSERT_EQ(SUCCESS, tixiCreateElement(h, "/root", "child"));
+  ASSERT_EQ(SUCCESS, tixiAddTextAttribute(h, "/root/child[1]", "attr", "a"));
+  ASSERT_EQ(SUCCESS, tixiAddTextAttribute(h, "/root/child[2]", "attr", "b"));
+  ASSERT_EQ(SUCCESS, tixiAddTextAttribute(h, "/root/child[3]", "attr", "c"));
+  ASSERT_EQ(SUCCESS, tixiAddTextAttribute(h, "/root/child[4]", "attr", "d"));
+
+  char *xPath;
+  // This doesn't work with Tixi 3.1.1
+  ASSERT_EQ(SUCCESS,
+            tixiXPathExpressionGetXPath(h, "//child[@attr>\"b\"]", 1, &xPath));
+}
