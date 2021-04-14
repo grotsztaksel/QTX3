@@ -126,15 +126,13 @@ ReturnCode sort(const TixiDocumentHandle h, const char *xPathExpression,
  The name can also consist of a namespace prefix + ":" + the attribute name.
  * @param [out] text value of the specified attribute as a string
  * @return
-        SUCCESS if successfully retrieve the text content of a single element
-        INVALID_HANDLE if the handle is not valid, i.e. does not or no longer
- exist INVALID_XPATH if elementPath is not a well-formed XPath-expression
-        ATTRIBUTE_NOT_FOUND if the element has no attribute attributeName
-        ELEMENT_NOT_FOUND if elementPath does not point to a node in the
- XML-document ELEMENT_PATH_NOT_UNIQUE if elementPath resolves not to a single
- element but to a list of elements INVALID_NAMESPACE_PREFIX if the prefix in
- attributeName does not match to a namespace
-
+   SUCCESS if successfully retrieve the text value of the attribute
+   INVALID_HANDLE if the handle is not valid, i.e. does not or no longer exist
+   INVALID_XPATH if elementPath is not a well-formed XPath-expression
+   ATTRIBUTE_NOT_FOUND if the element has no attribute attributeName
+   ELEMENT_NOT_FOUND if elementPath does not point to a node in the XML-document
+   ELEMENT_PATH_NOT_UNIQUE if elementPath resolves not to a single element but
+ to a list of elements
 
  */
 ReturnCode getInheritedAttribute(const TixiDocumentHandle handle,
