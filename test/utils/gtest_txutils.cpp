@@ -447,3 +447,23 @@ TEST_F(TxUtilsTest, DISABLED_test_tixiXpath_by_attribute_relations) {
   ASSERT_EQ(SUCCESS,
             tixiXPathExpressionGetXPath(h, "//child[@attr>\"b\"]", 1, &xPath));
 }
+
+TEST_F(TxUtilsTest, test_getInheritedAttribute) {
+  TixiDocumentHandle h = -1;
+  ASSERT_EQ(SUCCESS, tixiImportFromString(xml, &h));
+
+  char *attr;
+  ASSERT_EQ(SUCCESS, txutils::getInheritedAttribute(
+                         h, "/root/child_2[1]/child_2[1]/node_3[1]/node_4[2]",
+                         "attr", &attr));
+  ASSERT_STREQ(attr, "good");
+  ASSERT_EQ(SUCCESS, txutils::getInheritedAttribute(
+                         h, "/root/child_2[1]/node_3/node_4", "attr", &attr));
+  ASSERT_STREQ(attr, "foo");
+  ASSERT_EQ(SUCCESS, txutils::getInheritedAttribute(
+                         h, "/root/child_2[1]/child_2[1]/node_3[1]/node_4[1]",
+                         "attr", &attr));
+  ASSERT_STREQ(attr, "9");
+  ASSERT_EQ(ATTRIBUTE_NOT_FOUND, txutils::getInheritedAttribute(
+                                     h, "/root/child_1/child", "attr", &attr));
+}
