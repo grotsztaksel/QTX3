@@ -250,8 +250,9 @@ int txutils::indentation() {
   return (int)pos_c - pos_r;
 }
 
-ReturnCode txutils::sort(TixiDocumentHandle h, const char *xPathExpression,
-                         const char *criterion, bool ascending) {
+ReturnCode txutils::sort(const TixiDocumentHandle h,
+                         const char *xPathExpression, const char *criterion,
+                         bool ascending) {
 
   char *xpath;
   const char *msg = "Error while sorting XML structure";
