@@ -43,13 +43,13 @@ ReturnCode excludeCode(ReturnCode tixiresult, const int &line,
   exist.
     - FAILED  if an internal error occured.
  */
-ReturnCode indexedPath(TixiDocumentHandle handle, const char *xPathExpression,
-                       int index, char **ipath);
+ReturnCode indexedPath(const TixiDocumentHandle handle,
+                       const char *xPathExpression, int index, char **ipath);
 
 /**
   @brief Copies the tree content of a selected element to a new handle
  */
-ReturnCode copy(TixiDocumentHandle handle, const char *elementPath,
+ReturnCode copy(const TixiDocumentHandle handle, const char *elementPath,
                 TixiDocumentHandle *clip);
 
 /**
@@ -69,7 +69,7 @@ ReturnCode paste(TixiDocumentHandle handle, const char *elementPath,
   elements. Otherwise will return error. Use "text()" in the xPathExpression to
   filter out the text elements
 */
-ReturnCode indentText(TixiDocumentHandle handle,
+ReturnCode indentText(const TixiDocumentHandle handle,
                       const char *xPathExpression = nullptr);
 char *elementName(const char *xPathExpression);
 int elementNumber(const char *xPathExpression);
@@ -110,7 +110,7 @@ int indentation();
  that are the others' elements ascendants or descendants
 
  */
-ReturnCode sort(TixiDocumentHandle h, const char *xPathExpression,
+ReturnCode sort(const TixiDocumentHandle h, const char *xPathExpression,
                 const char *criterion = nullptr, bool ascending = true);
 
 }; // namespace txutils

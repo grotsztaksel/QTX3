@@ -14,7 +14,7 @@
 
 typedef std::string::size_type istr;
 
-ReturnCode txutils::indexedPath(TixiDocumentHandle handle,
+ReturnCode txutils::indexedPath(const TixiDocumentHandle handle,
                                 const char *xPathExpression, int index,
                                 char **ipath) {
   char *xPath;
@@ -96,8 +96,8 @@ char *txutils::uniqueName(const char *xPathExpression) {
   return strdup(path.substr(i).c_str());
 }
 
-ReturnCode txutils::copy(TixiDocumentHandle handle, const char *elementPath,
-                         TixiDocumentHandle *clip) {
+ReturnCode txutils::copy(const TixiDocumentHandle handle,
+                         const char *elementPath, TixiDocumentHandle *clip) {
   // Get the toplevel node name
   char *source_path;
   CHECK_ERR(tixiXPathExpressionGetXPath(handle, elementPath, 1, &source_path));
@@ -186,7 +186,7 @@ ReturnCode txutils::paste(TixiDocumentHandle handle, const char *elementPath,
   return SUCCESS;
 }
 
-ReturnCode txutils::indentText(TixiDocumentHandle handle,
+ReturnCode txutils::indentText(const TixiDocumentHandle handle,
                                const char *xPathExpression) {
   if (!xPathExpression) {
     xPathExpression = "//*[text()]";
