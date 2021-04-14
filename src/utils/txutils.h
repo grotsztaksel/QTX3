@@ -113,6 +113,33 @@ int indentation();
 ReturnCode sort(const TixiDocumentHandle h, const char *xPathExpression,
                 const char *criterion = nullptr, bool ascending = true);
 
+/**
+ * @brief Retrieves value of an attribute as a string. The function tries to
+ retrieve the attribute either from the element pointed to by elementPath,
+ orfrom either of its parent elements
+ * @param[in] handle handle handle as returned by ::tixiOpenDocument,
+ ::tixiOpenDocumentRecursive, ::tixiOpenDocumentFromHTTP, ::tixiCreateDocument
+ or ::tixiImportFromString
+ * @param [in] elementPath  an XPath compliant path to an element in the
+ document specified by handle
+ * @param [in] attributeName name of the attribute to be added to the element.
+ The name can also consist of a namespace prefix + ":" + the attribute name.
+ * @param [out] text value of the specified attribute as a string
+ * @return
+        SUCCESS if successfully retrieve the text content of a single element
+        INVALID_HANDLE if the handle is not valid, i.e. does not or no longer
+ exist INVALID_XPATH if elementPath is not a well-formed XPath-expression
+        ATTRIBUTE_NOT_FOUND if the element has no attribute attributeName
+        ELEMENT_NOT_FOUND if elementPath does not point to a node in the
+ XML-document ELEMENT_PATH_NOT_UNIQUE if elementPath resolves not to a single
+ element but to a list of elements INVALID_NAMESPACE_PREFIX if the prefix in
+ attributeName does not match to a namespace
+
+
+ */
+ReturnCode getInheritedAttribute(const TixiDocumentHandle handle,
+                                 const char *elementPath,
+                                 const char *attributeName, char **text);
 }; // namespace txutils
 
 #endif // TXUTILS_H

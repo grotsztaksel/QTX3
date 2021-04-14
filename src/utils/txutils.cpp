@@ -377,3 +377,23 @@ char *txutils::cleanElementPath(const char *xmlPath) {
 
   return strdup(xml.c_str());
 }
+
+ReturnCode txutils::getInheritedAttribute(const TixiDocumentHandle handle,
+                                          const char *elementPath,
+                                          const char *attributeName,
+                                          char **text) {
+  std::string xPath = std::string(elementPath) + "/ancestor-or-self::*[@" +
+                      std::string(attributeName) + "]";
+  int n = -1;
+  ReturnCode res = txutils::expectCode(
+      tixiXPathEvaluateNodeNumber(handle, xPath.c_str(), &n),
+      errmsg(__func__, __LINE__), {SUCCESS, FAILED});
+  if (res == FAILED) {
+    return ATTRIBUTE_NOT_FOUND;
+  }
+  char *path;
+  txutils::expectCode(
+      tixiXPathExpressionGetXPath(handle, xPath.c_str(), n, &path),
+      errmsg(__func__, __LINE__));
+  return tixiGetTextAttribute(handle, path, attributeName, text);
+}
