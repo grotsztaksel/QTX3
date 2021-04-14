@@ -448,6 +448,26 @@ TEST_F(TxUtilsTest, DISABLED_test_tixiXpath_by_attribute_relations) {
             tixiXPathExpressionGetXPath(h, "//child[@attr>\"b\"]", 1, &xPath));
 }
 
+TEST_F(TxUtilsTest, test_findInheritedAttribute) {
+  TixiDocumentHandle h = -1;
+  ASSERT_EQ(SUCCESS, tixiImportFromString(xml, &h));
+
+  char *path;
+  ASSERT_EQ(SUCCESS, txutils::findInheritedAttribute(
+                         h, "/root/child_2[1]/child_2[1]/node_3[1]/node_4[2]",
+                         "attr", &path));
+  ASSERT_STREQ(path, "/root/child_2[1]/child_2[1]/node_3[1]/node_4[2]");
+  ASSERT_EQ(SUCCESS, txutils::findInheritedAttribute(
+                         h, "/root/child_2[1]/node_3/node_4", "attr", &path));
+  ASSERT_STREQ(path, "/root/child_2[1]");
+  ASSERT_EQ(SUCCESS, txutils::findInheritedAttribute(
+                         h, "/root/child_2[1]/child_2[1]/node_3[1]/node_4[1]",
+                         "attr", &path));
+  ASSERT_STREQ(path, "/root/child_2[1]/child_2[1]");
+  ASSERT_EQ(ATTRIBUTE_NOT_FOUND, txutils::findInheritedAttribute(
+                                     h, "/root/child_1/child", "attr", &path));
+}
+
 TEST_F(TxUtilsTest, test_getInheritedAttribute) {
   TixiDocumentHandle h = -1;
   ASSERT_EQ(SUCCESS, tixiImportFromString(xml, &h));

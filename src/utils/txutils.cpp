@@ -382,18 +382,33 @@ ReturnCode txutils::getInheritedAttribute(const TixiDocumentHandle handle,
                                           const char *elementPath,
                                           const char *attributeName,
                                           char **text) {
+  char *path;
+  CHECK_ERR(findInheritedAttribute(handle, elementPath, attributeName, &path));
+  return tixiGetTextAttribute(handle, path, attributeName, text);
+}
+
+ReturnCode txutils::findInheritedAttribute(const TixiDocumentHandle handle,
+                                           const char *elementPath,
+                                           const char *attributeName,
+                                           char **path) {
+
+  // use Tixi function to check if everything is fine (tixiCheckAttribute
+  // returns the same errors as this function)
+  ReturnCode res = tixiCheckAttribute(handle, elementPath, attributeName);
+  if (res != SUCCESS && res != ATTRIBUTE_NOT_FOUND) {
+    return res;
+  }
+
   std::string xPath = std::string(elementPath) + "/ancestor-or-self::*[@" +
                       std::string(attributeName) + "]";
   int n = -1;
-  ReturnCode res = txutils::expectCode(
+  res = txutils::expectCode(
       tixiXPathEvaluateNodeNumber(handle, xPath.c_str(), &n),
       errmsg(__func__, __LINE__), {SUCCESS, FAILED});
   if (res == FAILED) {
     return ATTRIBUTE_NOT_FOUND;
   }
-  char *path;
-  txutils::expectCode(
-      tixiXPathExpressionGetXPath(handle, xPath.c_str(), n, &path),
+  return txutils::expectCode(
+      tixiXPathExpressionGetXPath(handle, xPath.c_str(), n, path),
       errmsg(__func__, __LINE__));
-  return tixiGetTextAttribute(handle, path, attributeName, text);
 }
