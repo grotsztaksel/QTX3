@@ -12,6 +12,15 @@
       return ret;                                                              \
   }
 
+// anonymous namespace
+namespace {
+// Helper function creating error message and appending line
+std::string errmsg(const char *fnc, int line) {
+  return "TxUtils: Error in " + std::string(fnc) + "(), line " +
+         std::to_string(line);
+}
+} // namespace
+
 typedef std::string::size_type istr;
 
 ReturnCode txutils::indexedPath(const TixiDocumentHandle handle,
