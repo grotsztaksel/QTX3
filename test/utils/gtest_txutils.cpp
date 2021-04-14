@@ -75,7 +75,7 @@ TEST_F(TxUtilsTest, test_elementNumber) {
 
 TEST_F(TxUtilsTest, test_indexedPath) {
   TixiDocumentHandle handle;
-  tixiImportFromString(this->xml, &handle);
+  ASSERT_EQ(SUCCESS, tixiImportFromString(xml, &handle));
   char *ipath;
   txutils::indexedPath(
       handle, "/root/child_2[1]/child_2[1]/node_3[1]/node_4[3]", 1, &ipath);
@@ -87,7 +87,7 @@ TEST_F(TxUtilsTest, test_indexedPath) {
 
 TEST_F(TxUtilsTest, test_copy) {
   TixiDocumentHandle handle;
-  tixiImportFromString(this->xml, &handle);
+  ASSERT_EQ(SUCCESS, tixiImportFromString(xml, &handle));
 
   ASSERT_EQ(SUCCESS, txutils::indentText(handle));
   const char *expected_clip_raw = R"(<?xml version="1.0"?>
@@ -112,7 +112,7 @@ TEST_F(TxUtilsTest, test_copy) {
   char *expected_clip;
   char *actual_clip;
   TixiDocumentHandle expected;
-  tixiImportFromString(expected_stripped, &expected);
+  ASSERT_EQ(SUCCESS, tixiImportFromString(expected_stripped, &expected));
   TixiDocumentHandle clip;
   ASSERT_EQ(SUCCESS,
             txutils::copy(handle, "/root/child_2[1]/child_2[1]", &clip));
@@ -126,7 +126,7 @@ TEST_F(TxUtilsTest, test_copy) {
 
 TEST_F(TxUtilsTest, test_paste) {
   TixiDocumentHandle handle;
-  tixiImportFromString(this->xml, &handle);
+  ASSERT_EQ(SUCCESS, tixiImportFromString(xml, &handle));
   TixiDocumentHandle clip;
   ASSERT_EQ(SUCCESS,
             txutils::copy(handle, "/root/child_2[1]/child_2[1]", &clip));
@@ -214,7 +214,7 @@ TEST_F(TxUtilsTest, test_indentText) {
       "\n                                                           Text O\n   "
       "                                    ";
   TixiDocumentHandle handle;
-  ASSERT_EQ(SUCCESS, tixiImportFromString(this->xml, &handle));
+  ASSERT_EQ(SUCCESS, tixiImportFromString(xml, &handle));
   char *text_element;
   ASSERT_EQ(SUCCESS, tixiGetTextElement(
                          handle, "/root/child_2[1]/child_2[1]/node_3/node_5[1]",
