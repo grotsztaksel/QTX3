@@ -417,3 +417,21 @@ char *txutils::parentPath(const char *elementPath) {
   std::string epath(elementPath);
   return strdup(epath.substr(0, epath.find_last_of("/")).c_str());
 }
+
+void txutils::removeComments(const TixiDocumentHandle handle) {
+  const char *xpath = "//comment()";
+  int n = -1;
+
+  if (txutils::expectCode(tixiXPathEvaluateNodeNumber(handle, xpath, &n),
+                          errmsg(__func__, __LINE__),
+                          {SUCCESS, FAILED}) == FAILED) {
+    return;
+  }
+  for (int i = n; i > 0; i--) {
+    char *path;
+    txutils::expectCode(tixiXPathExpressionGetXPath(handle, xpath, n, &path),
+                        errmsg(__func__, __LINE__));
+    txutils::expectCode(tixiRemoveElement(handle, path),
+                        errmsg(__func__, __LINE__));
+  }
+}

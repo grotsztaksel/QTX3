@@ -519,3 +519,16 @@ TEST_F(TxUtilsTest, test_getInheritedAttribute) {
   ASSERT_EQ(ATTRIBUTE_NOT_FOUND, txutils::getInheritedAttribute(
                                      h, "/root/child_1/child", "attr", &attr));
 }
+
+TEST_F(TxUtilsTest, test_removeComments) {
+  TixiDocumentHandle h = -1;
+  ASSERT_EQ(SUCCESS, tixiImportFromString(xml, &h));
+  char *name;
+  ASSERT_EQ(SUCCESS, tixiGetChildNodeName(
+                         h, "/root/child_2[1]/child_2[1]/node_3[1]", 2, &name));
+  ASSERT_STREQ(name, "#comment");
+  txutils::removeComments(h);
+  ASSERT_EQ(SUCCESS, tixiGetChildNodeName(
+                         h, "/root/child_2[1]/child_2[1]/node_3[1]", 2, &name));
+  ASSERT_STRNE(name, "#comment");
+}

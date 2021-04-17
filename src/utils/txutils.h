@@ -171,6 +171,13 @@ ReturnCode findInheritedAttribute(const TixiDocumentHandle handle,
 ReturnCode getInheritedAttribute(const TixiDocumentHandle handle,
                                  const char *elementPath,
                                  const char *attributeName, char **text);
+/**
+  @brief Remove all comments from the XML structure held by the handle
+  @param[in] handle handle handle as returned by ::tixiOpenDocument,
+  ::tixiOpenDocumentRecursive, ::tixiOpenDocumentFromHTTP, ::tixiCreateDocument
+  or ::tixiImportFromString
+ */
+void removeComments(const TixiDocumentHandle handle);
 }; // namespace txutils
 
 #endif // TXUTILS_H
