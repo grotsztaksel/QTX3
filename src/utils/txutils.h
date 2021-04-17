@@ -177,7 +177,7 @@ ReturnCode getInheritedAttribute(const TixiDocumentHandle handle,
   ::tixiOpenDocumentRecursive, ::tixiOpenDocumentFromHTTP, ::tixiCreateDocument
   or ::tixiImportFromString
  */
-void removeComments(const TixiDocumentHandle handle);
+ReturnCode removeComments(const TixiDocumentHandle handle);
 }; // namespace txutils
 
 #endif // TXUTILS_H

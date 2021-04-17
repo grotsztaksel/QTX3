@@ -34,9 +34,11 @@ protected:
                                </node_3>
                            </child_2>
                            <child_2>
+                               <!-- extra comment -->
                                <node_3>
                                    <node_4/>
                                    <node_4/>
+                                   <!-- another comment -->
                                    <node_5/>
                                </node_3>
                            </child_2>
@@ -527,8 +529,18 @@ TEST_F(TxUtilsTest, test_removeComments) {
   ASSERT_EQ(SUCCESS, tixiGetChildNodeName(
                          h, "/root/child_2[1]/child_2[1]/node_3[1]", 2, &name));
   ASSERT_STREQ(name, "#comment");
+  ASSERT_EQ(SUCCESS, tixiGetChildNodeName(h, "/root/child_2[2]", 1, &name));
+  ASSERT_STREQ(name, "#comment");
+  ASSERT_EQ(SUCCESS,
+            tixiGetChildNodeName(h, "/root/child_2[2]/node_3", 3, &name));
+  ASSERT_STREQ(name, "#comment");
   txutils::removeComments(h);
   ASSERT_EQ(SUCCESS, tixiGetChildNodeName(
                          h, "/root/child_2[1]/child_2[1]/node_3[1]", 2, &name));
+  ASSERT_STRNE(name, "#comment");
+  ASSERT_EQ(SUCCESS, tixiGetChildNodeName(h, "/root/child_2[2]", 1, &name));
+  ASSERT_STRNE(name, "#comment");
+  ASSERT_EQ(SUCCESS,
+            tixiGetChildNodeName(h, "/root/child_2[2]/node_3", 3, &name));
   ASSERT_STRNE(name, "#comment");
 }
