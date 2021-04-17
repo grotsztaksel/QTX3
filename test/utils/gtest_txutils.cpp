@@ -68,9 +68,17 @@ TEST_F(TxUtilsTest, test_elementName) {
                              "/root/child_2[1]/child_2[1]/node_3[1]/node_4"));
 }
 
+TEST_F(TxUtilsTest, test_parentPath) {
+  char *path =
+      txutils::parentPath("/root/child_2[1]/child_2[1]/node_3[1]/node_4[3]");
+  ASSERT_STREQ(path, "/root/child_2[1]/child_2[1]/node_3[1]");
+}
+
 TEST_F(TxUtilsTest, test_elementNumber) {
   EXPECT_EQ(3, txutils::elementNumber(
                    "/root/child_2[1]/child_2[1]/node_3[1]/node_4[3]"));
+  EXPECT_EQ(1, txutils::elementNumber(
+                   "/root/child_2[1]/child_2[1]/node_3[1]/node_4"));
 }
 
 TEST_F(TxUtilsTest, test_indexedPath) {

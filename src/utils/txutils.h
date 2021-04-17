@@ -76,6 +76,13 @@ int elementNumber(const char *xPathExpression);
 char *uniqueName(const char *xPathExpression);
 
 /**
+  @brief return parent path of the element
+  @param[in] elementPath an XPath compliant path to an element
+  @return path to the parent element
+  */
+char *parentPath(const char *elementPath);
+
+/**
   @brief Return element path stripped from the index numbers
   @param[in]  xmlPath xml path
   @note The input should not be given as XPath expression

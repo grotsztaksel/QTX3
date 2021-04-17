@@ -412,3 +412,8 @@ ReturnCode txutils::findInheritedAttribute(const TixiDocumentHandle handle,
       tixiXPathExpressionGetXPath(handle, xPath.c_str(), n, path),
       errmsg(__func__, __LINE__));
 }
+
+char *txutils::parentPath(const char *elementPath) {
+  std::string epath(elementPath);
+  return strdup(epath.substr(0, epath.find_last_of("/")).c_str());
+}
