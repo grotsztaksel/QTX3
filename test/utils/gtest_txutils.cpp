@@ -356,6 +356,104 @@ TEST_F(TxUtilsTest, test_sort) {
   ASSERT_STREQ(xml, expected);
 }
 
+TEST_F(TxUtilsTest, test_sort_multiple_branches) {
+  std::string EXP = R"(<?xml version="1.0"?>
+                       <root>
+                         <node attr="A">
+                           <subnode attr="1">
+                             <sortee attr="a"/>
+                             <sortee attr="b"/>
+                           </subnode>
+                           <subnode attr="2">
+                             <sortee attr="c"/>
+                             <sortee attr="d"/>
+                             <sortee attr="e"/>
+                           </subnode>
+                           <subnode attr="3">
+                             <sortee attr="f"/>
+                             <sortee attr="g"/>
+                             <sortee attr="h"/>
+                           </subnode>
+                         </node>
+                         <node attr="B">
+                           <subnode attr="4">
+                             <sortee attr="i"/>
+                             <sortee attr="j"/>
+                           </subnode>
+                           <subnode  attr="5">
+                             <sortee attr="k"/>
+                             <sortee attr="l"/>
+                             <sortee attr="m"/>
+                           </subnode>
+                           <subnode attr="6">
+                             <sortee attr="n"/>
+                             <sortee attr="o"/>
+                           </subnode>
+                         </node>
+                       </root>)";
+
+  std::regex re(R"(>\s*<)");
+  std::string stripped = std::regex_replace(EXP, re, "><");
+  char *exp = strdup(stripped.c_str());
+  TixiDocumentHandle h_expected = -1;
+  ASSERT_EQ(SUCCESS, tixiImportFromString(exp, &h_expected));
+  std::string INI = R"(<?xml version="1.0"?>
+                       <root>
+                         <node attr="B">
+                           <subnode attr="4">
+                             <sortee attr="j"/>
+                             <sortee attr="i"/>
+                           </subnode>
+                           <subnode attr="6">
+                             <sortee attr="o"/>
+                             <sortee attr="n"/>
+                           </subnode>
+                           <subnode  attr="5">
+                             <sortee attr="l"/>
+                             <sortee attr="k"/>
+                             <sortee attr="m"/>
+                           </subnode>
+                         </node>
+                         <node attr="A">
+                           <subnode attr="3">
+                             <sortee attr="g"/>
+                             <sortee attr="h"/>
+                             <sortee attr="f"/>
+                           </subnode>
+                           <subnode attr="2">
+                             <sortee attr="d"/>
+                             <sortee attr="e"/>
+                             <sortee attr="c"/>
+                           </subnode>
+                           <subnode attr="1">
+                             <sortee attr="b"/>
+                             <sortee attr="a"/>
+                           </subnode>
+                         </node>
+                       </root>)";
+
+  stripped = std::regex_replace(EXP, re, "><");
+  char *ini = strdup(stripped.c_str());
+  TixiDocumentHandle h = -1;
+  ASSERT_EQ(SUCCESS, tixiImportFromString(ini, &h));
+
+  txutils::sort(h, "/root/node[1]/subnode[1]/sortee", "attr");
+  txutils::sort(h, "/root/node[1]/subnode[2]/sortee", "attr");
+  txutils::sort(h, "/root/node[1]/subnode[3]/sortee", "attr");
+  txutils::sort(h, "/root/node[1]/subnode", "attr");
+  txutils::sort(h, "/root/node[2]/subnode[1]/sortee", "attr");
+  txutils::sort(h, "/root/node[2]/subnode[2]/sortee", "attr");
+  txutils::sort(h, "/root/node[2]/subnode[3]/sortee", "attr");
+  txutils::sort(h, "/root/node[2]", "attr");
+  txutils::sort(h, "/root/node", "attr");
+
+  char *actual;
+  char *expected;
+  ASSERT_EQ(SUCCESS, tixiExportDocumentAsString(h, &actual));
+  ASSERT_EQ(SUCCESS, tixiExportDocumentAsString(h_expected, &expected));
+  ASSERT_STREQ(actual, expected);
+}
+
 TEST_F(TxUtilsTest, test_expectCode_string) {
   ASSERT_EQ(txutils::expectCode(INVALID_HANDLE, "Test Error Message",
                                 {SUCCESS, INVALID_HANDLE}),
