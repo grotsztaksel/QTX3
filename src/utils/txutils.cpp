@@ -5,21 +5,7 @@
 
 #include <string.h>
 
-#define RET_ERR(function)                                                      \
-  {                                                                            \
-    ReturnCode ret = function;                                                 \
-    if (ret != SUCCESS)                                                        \
-      return ret;                                                              \
-  }
-
-// anonymous namespace
-namespace {
-// Helper function creating error message and appending line
-std::string errmsg(const char *fnc, int line) {
-  return "TxUtils: Error in " + std::string(fnc) + "(), line " +
-         std::to_string(line);
-}
-} // namespace
+#include "txmacros.h"
 
 typedef std::string::size_type istr;
 
@@ -322,8 +308,13 @@ ReturnCode txutils::sort(const TixiDocumentHandle h,
 
 ReturnCode txutils::expectCode(ReturnCode tixiresult, std::string message,
                                std::list<ReturnCode> acceptedCodes) {
-  bool found = (std::find(acceptedCodes.begin(), acceptedCodes.end(),
-                          tixiresult) != acceptedCodes.end());
+  bool found;
+  if (acceptedCodes.empty()) {
+    found = (tixiresult == SUCCESS);
+  } else {
+    found = (std::find(acceptedCodes.begin(), acceptedCodes.end(),
+                       tixiresult) != acceptedCodes.end());
+  }
   if (!found) {
     throw(std::runtime_error(
         message + "\nTiXi ERROR CODE: " + std::to_string(tixiresult)));
@@ -401,9 +392,8 @@ ReturnCode txutils::findInheritedAttribute(const TixiDocumentHandle handle,
   std::string xPath = std::string(elementPath) + "/ancestor-or-self::*[@" +
                       std::string(attributeName) + "]";
   int n = -1;
-  res = txutils::expectCode(
-      tixiXPathEvaluateNodeNumber(handle, xPath.c_str(), &n),
-      errmsg(__func__, __LINE__), {SUCCESS, FAILED});
+  res = CHK_ERR(tixiXPathEvaluateNodeNumber(handle, xPath.c_str(), &n),
+                ({SUCCESS, FAILED}));
   if (res == FAILED) {
     return ATTRIBUTE_NOT_FOUND;
   }
