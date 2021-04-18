@@ -5,7 +5,7 @@
 
 #include <string.h>
 
-#define CHECK_ERR(function)                                                    \
+#define RET_ERR(function)                                                      \
   {                                                                            \
     ReturnCode ret = function;                                                 \
     if (ret != SUCCESS)                                                        \
@@ -27,8 +27,7 @@ ReturnCode txutils::indexedPath(const TixiDocumentHandle handle,
                                 const char *xPathExpression, int index,
                                 char **ipath) {
   char *xPath;
-  CHECK_ERR(
-      tixiXPathExpressionGetXPath(handle, xPathExpression, index, &xPath));
+  RET_ERR(tixiXPathExpressionGetXPath(handle, xPathExpression, index, &xPath));
 
   // std::string offers way more tools to process the path than just char.
 
@@ -56,14 +55,14 @@ ReturnCode txutils::indexedPath(const TixiDocumentHandle handle,
 
     int I = txutils::elementNumber(element.c_str());
     const char *nextElementName = txutils::elementName(element.c_str());
-    CHECK_ERR(tixiGetNumberOfChilds(handle, path, &n));
+    RET_ERR(tixiGetNumberOfChilds(handle, path, &n));
 
     int i = 0;  // counter of elements of the required name
     int ic = 0; // number of comment elements - these should not be counted in
                 // the number
     for (int j = 1; j <= n; j++) {
       char *elemName;
-      CHECK_ERR(tixiGetChildNodeName(handle, path, j, &elemName));
+      RET_ERR(tixiGetChildNodeName(handle, path, j, &elemName));
       if (std::string(elemName) == "#comment") {
         ic++;
         continue;
@@ -109,13 +108,13 @@ ReturnCode txutils::copy(const TixiDocumentHandle handle,
                          const char *elementPath, TixiDocumentHandle *clip) {
   // Get the toplevel node name
   char *source_path;
-  CHECK_ERR(tixiXPathExpressionGetXPath(handle, elementPath, 1, &source_path));
+  RET_ERR(tixiXPathExpressionGetXPath(handle, elementPath, 1, &source_path));
 
   char *name = elementName(source_path);
 
-  CHECK_ERR(tixiCreateDocument(name, clip));
+  RET_ERR(tixiCreateDocument(name, clip));
   // Need some dummy namespace to enable xPathExpression functions on the clip
-  CHECK_ERR(tixiRegisterNamespace(*clip, "/local", "clp"));
+  RET_ERR(tixiRegisterNamespace(*clip, "/local", "clp"));
   const char *target_path = strdup(std::string(name).insert(0, 1, '/').c_str());
 
   // The function paste does exactly the same thing but from clip to handle
@@ -133,25 +132,25 @@ ReturnCode txutils::paste(TixiDocumentHandle handle, const char *elementPath,
     target_path = strdup("/");
   }
   int na;
-  CHECK_ERR(tixiGetNumberOfAttributes(clip, target_path, &na));
+  RET_ERR(tixiGetNumberOfAttributes(clip, target_path, &na));
 
   // copy attributes first
   for (int i = 1; i <= na; i++) {
     char *attrName;
     char *attrValue;
-    CHECK_ERR(tixiGetAttributeName(clip, target_path, i, &attrName));
-    CHECK_ERR(tixiGetTextAttribute(clip, target_path, attrName, &attrValue));
-    CHECK_ERR(tixiAddTextAttribute(handle, elementPath, attrName, attrValue));
+    RET_ERR(tixiGetAttributeName(clip, target_path, i, &attrName));
+    RET_ERR(tixiGetTextAttribute(clip, target_path, attrName, &attrValue));
+    RET_ERR(tixiAddTextAttribute(handle, elementPath, attrName, attrValue));
   }
 
   // recursively copy elements from one handle to another
 
   int ne;
-  CHECK_ERR(tixiGetNumberOfChilds(clip, target_path, &ne));
+  RET_ERR(tixiGetNumberOfChilds(clip, target_path, &ne));
   int ic = 0;
   for (int i = 1; i <= ne; i++) {
     char *elementName;
-    CHECK_ERR(tixiGetChildNodeName(clip, target_path, i, &elementName));
+    RET_ERR(tixiGetChildNodeName(clip, target_path, i, &elementName));
     if (std::string(elementName) == "#comment") {
       // skipping comments, count them first.
       ic++;
@@ -159,19 +158,19 @@ ReturnCode txutils::paste(TixiDocumentHandle handle, const char *elementPath,
     } else if (std::string(elementName) == "#text") {
       // Need to copy the text from the element and create
       char *text;
-      CHECK_ERR(tixiGetTextElement(clip, target_path, &text));
+      RET_ERR(tixiGetTextElement(clip, target_path, &text));
       // The targetPath is already the path to the element, that has been
       // created in the previous recursion
-      CHECK_ERR(tixiUpdateTextElement(handle, elementPath, text));
+      RET_ERR(tixiUpdateTextElement(handle, elementPath, text));
 
     } else {
       // 1. Create new element in the target
       // 2. Append its name to the source and target paths
       // 3. Run the function recursively with updated paths
       if (index == 0) {
-        CHECK_ERR(tixiCreateElement(handle, elementPath, elementName));
+        RET_ERR(tixiCreateElement(handle, elementPath, elementName));
       } else {
-        CHECK_ERR(
+        RET_ERR(
             tixiCreateElementAtIndex(handle, elementPath, elementName, index));
       }
       ReturnCode res;
@@ -179,17 +178,17 @@ ReturnCode txutils::paste(TixiDocumentHandle handle, const char *elementPath,
       char *xPath = strdup((std::string(target_path) + "/*").c_str());
       res = tixiXPathExpressionGetXPath(clip, xPath, i - ic, &sourcePath);
       free(xPath);
-      CHECK_ERR(res);
+      RET_ERR(res);
 
       int n;
       xPath = strdup((std::string(elementPath) + "/*").c_str());
       res = tixiXPathEvaluateNodeNumber(handle, xPath, &n);
-      CHECK_ERR(res);
+      RET_ERR(res);
 
       char *newTargetPath;
 
-      CHECK_ERR(tixiXPathExpressionGetXPath(handle, xPath, n, &newTargetPath));
-      CHECK_ERR(paste(handle, newTargetPath, clip, 0, sourcePath));
+      RET_ERR(tixiXPathExpressionGetXPath(handle, xPath, n, &newTargetPath));
+      RET_ERR(paste(handle, newTargetPath, clip, 0, sourcePath));
     }
   }
   return SUCCESS;
@@ -202,7 +201,7 @@ ReturnCode txutils::indentText(const TixiDocumentHandle handle,
   }
 
   int n;
-  CHECK_ERR(tixiXPathEvaluateNodeNumber(handle, xPathExpression, &n));
+  RET_ERR(tixiXPathEvaluateNodeNumber(handle, xPathExpression, &n));
   int ind = indentation();
   std::regex nline(
       R"(\s*\n\s*)");           // use this regex to strip newlines from spaces
@@ -211,8 +210,8 @@ ReturnCode txutils::indentText(const TixiDocumentHandle handle,
   for (int i = 1; i <= n; i++) {
     char *path;
     char *text;
-    CHECK_ERR(tixiXPathExpressionGetXPath(handle, xPathExpression, i, &path));
-    CHECK_ERR(tixiGetTextElement(handle, path, &text));
+    RET_ERR(tixiXPathExpressionGetXPath(handle, xPathExpression, i, &path));
+    RET_ERR(tixiGetTextElement(handle, path, &text));
 
     std::string s(text);
     std::string Path(path);
@@ -239,7 +238,7 @@ ReturnCode txutils::indentText(const TixiDocumentHandle handle,
     for (int i = 0; i < ind; i++) {
       s.pop_back();
     }
-    CHECK_ERR(tixiUpdateTextElement(handle, path, s.c_str()));
+    RET_ERR(tixiUpdateTextElement(handle, path, s.c_str()));
   }
   return SUCCESS;
 }
@@ -247,9 +246,9 @@ ReturnCode txutils::indentText(const TixiDocumentHandle handle,
 int txutils::indentation() {
   // Export a simple XML as string
   TixiDocumentHandle tmp;
-  CHECK_ERR(tixiImportFromString("<?xml version=\"1.0\"?><r><c/></r>", &tmp));
+  RET_ERR(tixiImportFromString("<?xml version=\"1.0\"?><r><c/></r>", &tmp));
   char *tmp_txt;
-  CHECK_ERR(tixiExportDocumentAsString(tmp, &tmp_txt));
+  RET_ERR(tixiExportDocumentAsString(tmp, &tmp_txt));
   std::string tmp_str(tmp_txt);
 
   // Find the XML tags <r> and <c/> and count spaces between right side of <r>
@@ -383,7 +382,7 @@ ReturnCode txutils::getInheritedAttribute(const TixiDocumentHandle handle,
                                           const char *attributeName,
                                           char **text) {
   char *path;
-  CHECK_ERR(findInheritedAttribute(handle, elementPath, attributeName, &path));
+  RET_ERR(findInheritedAttribute(handle, elementPath, attributeName, &path));
   return tixiGetTextAttribute(handle, path, attributeName, text);
 }
 
@@ -431,8 +430,8 @@ ReturnCode txutils::removeComments(const TixiDocumentHandle handle) {
 
   for (int i = n; i > 0; i--) {
     char *path;
-    CHECK_ERR(tixiXPathExpressionGetXPath(handle, xpath, i, &path));
-    CHECK_ERR(tixiRemoveElement(handle, path));
+    RET_ERR(tixiXPathExpressionGetXPath(handle, xpath, i, &path));
+    RET_ERR(tixiRemoveElement(handle, path));
   }
   return SUCCESS;
 }
