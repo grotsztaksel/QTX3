@@ -7,11 +7,11 @@ using namespace QTX3;
 
 Node::Node(Model *parent_model)
     : QObject(parent_model), _model(parent_model),
-      _tixihandle(&parent_model->_tixihandle) {}
+      tx(&parent_model->tx) {}
 
 Node::Node(Node *parent_node)
     : QObject(parent_node), _model(parent_node->_model), _parent(parent_node),
-      _tixihandle(parent_node->_tixihandle) {}
+      tx(parent_node->tx) {}
 
 void Node::createChildren() {
   if (_children.size() > 0)
@@ -21,14 +21,14 @@ void Node::createChildren() {
   const char *xpath = xpath_s.c_str();
   int nchildren = 0;
   auto res = txutils::expectCode(
-      tixiXPathEvaluateNodeNumber(*_tixihandle, xpath, &nchildren), {},
+      tixiXPathEvaluateNodeNumber(*tx, xpath, &nchildren), {},
       {SUCCESS, FAILED});
   if (res == FAILED) {
     return;
   }
   for (int i = 1; i <= nchildren; i++) {
     char *newPath;
-    res = tixiXPathExpressionGetXPath(*_tixihandle, xpath, i, &newPath);
+    res = tixiXPathExpressionGetXPath(*tx, xpath, i, &newPath);
     Node *newNode =
         _model->createNode(this, QString(txutils::elementName(newPath)));
     _children.append(newNode);
@@ -48,7 +48,7 @@ QString Node::xPath() const {
 QString Node::xmlPath() const {
   char *xmlpath;
   ReturnCode res = txutils::excludeCode(
-      tixiXPathExpressionGetXPath(*_tixihandle, xPath().toStdString().c_str(),
+      tixiXPathExpressionGetXPath(*tx, xPath().toStdString().c_str(),
                                   1, &xmlpath),
       std::string("Node ") + xPath().toStdString() +
           std::string(" failed to resolve its own path!"));

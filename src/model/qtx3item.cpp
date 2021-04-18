@@ -6,7 +6,7 @@ using namespace QTX3;
 
 Item::Item(Node *parent)
     : QObject(parent), _parent(parent), _model(_parent->_model),
-      _tixihandle(parent->_tixihandle) {}
+      tx(parent->tx) {}
 
 int Item::row() const { return _parent->row(); }
 

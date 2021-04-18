@@ -7,7 +7,7 @@
 using namespace QTX3;
 
 Model::Model(QObject *parent, TixiDocumentHandle handle, bool initialize)
-    : QAbstractItemModel(parent), _tixihandle(handle), _root(new Node(this)) {
+    : QAbstractItemModel(parent), tx(handle), _root(new Node(this)) {
   ReturnCode res = tixiCheckElement(handle, "/*[1]");
   if (res == INVALID_HANDLE) {
     throw(std::runtime_error(
@@ -119,7 +119,7 @@ Node *Model::addElement(int row, const QString &name,
 
   beginInsertRows(parent, row, row);
   ReturnCode res =
-      tixiCreateElementAtIndex(_tixihandle, parentPath.toStdString().c_str(),
+      tixiCreateElementAtIndex(tx, parentPath.toStdString().c_str(),
                                name.toStdString().c_str(), row + 1);
 
   if (res != SUCCESS) {
@@ -144,7 +144,7 @@ bool Model::removeRows(int row, int count, const QModelIndex &parent) {
                                 .c_str());
   beginRemoveRows(parent, row, row + count - 1);
   for (int i = 0; i < count; i++) {
-    ReturnCode res = tixiRemoveElement(_tixihandle, deletedPath);
+    ReturnCode res = tixiRemoveElement(tx, deletedPath);
     if (res != SUCCESS) {
       return false;
     }
@@ -158,7 +158,7 @@ void Model::reset(const TixiDocumentHandle &newhandle) {
   // first of all, check if the handle is valid
   ReturnCode res = tixiCheckElement(newhandle, "/*[1]");
   if (res == SUCCESS)
-    _tixihandle = newhandle;
+    tx = newhandle;
 
   beginResetModel();
   _root->deleteLater();
@@ -167,7 +167,7 @@ void Model::reset(const TixiDocumentHandle &newhandle) {
   endResetModel();
 }
 
-TixiDocumentHandle Model::tixi() const { return _tixihandle; }
+TixiDocumentHandle Model::tixi() const { return tx; }
 
 Node *Model::nodeFromIndex(QModelIndex index) const {
   if (!index.isValid())
@@ -178,7 +178,7 @@ Node *Model::nodeFromIndex(QModelIndex index) const {
 Node *Model::nodeFromPath(QString path) const {
   char *ipath;
   ReturnCode res =
-      txutils::indexedPath(_tixihandle, path.toStdString().c_str(), 1, &ipath);
+      txutils::indexedPath(tx, path.toStdString().c_str(), 1, &ipath);
   if (res != SUCCESS)
     throw(std::runtime_error(QString("nodeFromPath: failed to convert path %1 "
                                      "to indexed XPath (TiXi error code: %2)")

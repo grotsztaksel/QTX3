@@ -18,7 +18,7 @@ void QTX3NodeTest::cleanup() { delete model; }
 void QTX3NodeTest::test_createChildren() {
   // First, create some extra XMl elements in tixi
   for (int i = 0; i < 3; i++) {
-    QCOMPARE(SUCCESS, tixiCreateElement(*node->_tixihandle,
+    QCOMPARE(SUCCESS, tixiCreateElement(*node->tx,
                                         "/root/child_1/child", "extra"));
   }
   auto cnode = rootNode->childAt(0)->childAt(0);
@@ -26,7 +26,7 @@ void QTX3NodeTest::test_createChildren() {
   cnode->createChildren();
   QCOMPARE(cnode->rows(), 3);
   for (int i = 0; i < 3; i++) {
-    tixiCreateElement(*node->_tixihandle, "/root/child_1/child", "extra");
+    tixiCreateElement(*node->tx, "/root/child_1/child", "extra");
   }
 
   cnode->createChildren();

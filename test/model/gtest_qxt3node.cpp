@@ -47,7 +47,7 @@ void QTX3NodeGTest::TearDown() {
 }
 
 TixiDocumentHandle QTX3NodeGTest::getHandle(Node *node) const {
-  return *node->_tixihandle;
+  return *node->tx;
 }
 
 const Node *QTX3NodeGTest::getParent(Node *node) const { return node->_parent; }

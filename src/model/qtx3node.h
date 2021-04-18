@@ -85,7 +85,7 @@ protected:
   // cast onto QTX3Node every time
   Node *_parent = nullptr;
 
-  TixiDocumentHandle *_tixihandle;
+  TixiDocumentHandle *tx;
 };
 } // namespace QTX3
 #endif // QTX3NODE_H

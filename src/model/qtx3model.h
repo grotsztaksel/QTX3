@@ -85,7 +85,7 @@ protected:
   virtual Node *createNode(Node *parent, const QString &name) const;
 
 protected:
-  TixiDocumentHandle _tixihandle = -1;
+  TixiDocumentHandle tx = -1;
 
   Node *_root;
 };
