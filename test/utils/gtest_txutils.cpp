@@ -250,7 +250,7 @@ TEST_F(TxUtilsTest, test_sort) {
   std::string str_original = R"(<?xml version="1.0" encoding="utf-8"?>
                                 <root>
                                   <child>
-                                    <celem/>
+                                    <celem attr="9"/>
                                     <elem attr="6"/>
                                     <elem noattr="not included in sorting"/>
                                     <elem attr="5"/>
@@ -269,7 +269,7 @@ TEST_F(TxUtilsTest, test_sort) {
   std::string str_byAttribute = R"(<?xml version="1.0" encoding="utf-8"?>
                                    <root>
                                      <child>
-                                       <celem/>
+                                       <celem attr="9"/>
                                        <elem attr="1"/>
                                        <elem noattr="not included in sorting"/>
                                        <elem attr="2"/>
@@ -289,7 +289,7 @@ TEST_F(TxUtilsTest, test_sort) {
                                 <child>
                                   <alem/>
                                   <belem/>
-                                  <celem/>
+                                  <celem attr="9"/>
                                   <elem attr="6"/>
                                   <elem noattr="not included in sorting"/>
                                   <elem attr="5"/>
@@ -303,23 +303,44 @@ TEST_F(TxUtilsTest, test_sort) {
                                 </child>
                               </root>)";
 
+  std::string str_alt_names_by_attribute =
+      R"(<?xml version="1.0" encoding="utf-8"?>
+         <root>
+           <child>
+             <elem attr="1"/>
+             <elem attr="2"/>
+             <elem noattr="not included in sorting"/>
+             <elem attr="3"/>
+             <alem/>
+             <elem attr="4"/>
+             <elem attr="5"/>
+             <helem/>
+             <elem attr="6"/>
+             <elem attr="7"/>
+             <belem/>
+             <elem attr="8"/>
+             <celem attr="9"/>
+           </child>
+         </root>)";
+
   std::regex re(R"(>\s*<)");
   std::string stripped = std::regex_replace(str_original, re, "><");
   char *xml = strdup(stripped.c_str());
 
   TixiDocumentHandle handle;
   TixiDocumentHandle handle2;
+  TixiDocumentHandle handle3;
   ASSERT_EQ(tixiImportFromString(xml, &handle), SUCCESS);
   ASSERT_EQ(tixiImportFromString(xml, &handle2), SUCCESS);
+  ASSERT_EQ(tixiImportFromString(xml, &handle3), SUCCESS);
+
   stripped = std::regex_replace(str_byAttribute, re, "><");
   xml = strdup(stripped.c_str());
-
   TixiDocumentHandle byAttr;
   ASSERT_EQ(tixiImportFromString(xml, &byAttr), SUCCESS);
 
   stripped = std::regex_replace(str_byName, re, "><");
   xml = strdup(stripped.c_str());
-
   TixiDocumentHandle byName;
   ASSERT_EQ(tixiImportFromString(xml, &byName), SUCCESS);
 
@@ -342,7 +363,7 @@ TEST_F(TxUtilsTest, test_sort) {
   // 2. sort by attribute
   ASSERT_EQ(tixiExportDocumentAsString(byAttr, &expected), SUCCESS);
 
-  ASSERT_EQ(txutils::sort(handle, "/root/child/*", "attr"), SUCCESS);
+  ASSERT_EQ(txutils::sort(handle, "/root/child/elem", "attr"), SUCCESS);
   ASSERT_EQ(tixiExportDocumentAsString(handle, &xml), SUCCESS);
 
   ASSERT_STREQ(xml, expected);
@@ -353,6 +374,24 @@ TEST_F(TxUtilsTest, test_sort) {
   ASSERT_EQ(txutils::sort(handle2, "/root/child/*"), SUCCESS);
   ASSERT_EQ(tixiExportDocumentAsString(handle2, &xml), SUCCESS);
 
+  ASSERT_STREQ(xml, expected);
+
+  // 4. sort by attribute elements with different names
+
+  stripped = std::regex_replace(str_alt_names_by_attribute, re, "><");
+  xml = strdup(stripped.c_str());
+  TixiDocumentHandle altNames_byAttr;
+
+  ASSERT_EQ(tixiImportFromString(xml, &altNames_byAttr), SUCCESS);
+  ASSERT_EQ(tixiXPathEvaluateNodeNumber(altNames_byAttr, "//*[text()]", &n),
+            FAILED);
+  ASSERT_EQ(tixiExportDocumentAsString(altNames_byAttr, &expected), SUCCESS);
+  ASSERT_EQ(txutils::sort(handle3, "/root/child/*[self::elem or self::celem]",
+                          "attr"),
+            SUCCESS);
+  ASSERT_EQ(tixiExportDocumentAsString(handle3, &xml), SUCCESS);
+  tixiSaveCompleteDocument(handle3, "actual.xml");
+  tixiSaveCompleteDocument(altNames_byAttr, "expected.xml");
   ASSERT_STREQ(xml, expected);
 }
 
