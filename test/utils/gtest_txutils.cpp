@@ -555,7 +555,36 @@ TEST_F(TxUtilsTest, DISABLED_test_tixiXpath_by_attribute_relations) {
   ASSERT_EQ(SUCCESS,
             tixiXPathExpressionGetXPath(h, "//child[@attr>\"b\"]", 1, &xPath));
 }
+TEST_F(TxUtilsTest, text_tixiXpathSearchOrder) {
+  /* NOT A TXUTILS TEST
+   *
+   * This actually checks how Tixi behaves with XPathExpressions - if the order
+   * of possible element names influences the order of search
+   */
+  TixiDocumentHandle h = -1;
+  ASSERT_EQ(SUCCESS, tixiCreateDocument("root", &h));
+  ASSERT_EQ(SUCCESS, tixiCreateElement(h, "/root", "child"));
+  ASSERT_EQ(SUCCESS, tixiCreateElement(h, "/root/child", "subchild"));
+  ASSERT_EQ(SUCCESS,
+            tixiCreateElement(h, "/root/child/subchild", "grandchild"));
 
+  int n = -1;
+  char *path;
+
+  const char *xpath = "//*[self::grandchild or self::subchild or self::child]";
+
+  ASSERT_EQ(SUCCESS, tixiXPathEvaluateNodeNumber(h, xpath, &n));
+  ASSERT_EQ(n, 3);
+
+  // Apparently the order of the element names does not influence the order of
+  // paths:
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(h, xpath, 1, &path));
+  ASSERT_STREQ(path, "/root/child");
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(h, xpath, 2, &path));
+  ASSERT_STREQ(path, "/root/child/subchild");
+  ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(h, xpath, 3, &path));
+  ASSERT_STREQ(path, "/root/child/subchild/grandchild");
+}
 TEST_F(TxUtilsTest, test_findInheritedAttribute) {
   TixiDocumentHandle h = -1;
 
