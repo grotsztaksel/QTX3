@@ -178,6 +178,16 @@ ReturnCode getInheritedAttribute(const TixiDocumentHandle handle,
   or ::tixiImportFromString
  */
 ReturnCode removeComments(const TixiDocumentHandle handle);
+
+/** @brief Sort attributes alphabetically
+ *  @param[in]  handle handle as returned by ::tixiOpenDocument,
+ ::tixiOpenDocumentRecursive, ::tixiOpenDocumentFromHTTP, ::tixiCreateDocument
+ or ::tixiImportFromString
+ @param[in] xPathExpression The XPath Expression to evaluate.
+
+ */
+ReturnCode sortAttributes(TixiDocumentHandle h, const char *xPathExpression);
+
 }; // namespace txutils
 
 #endif // TXUTILS_H

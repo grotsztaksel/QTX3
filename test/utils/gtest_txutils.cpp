@@ -548,6 +548,7 @@ TEST_F(TxUtilsTest, test_excludeCode_string) {
     ASSERT_STREQ(e.what(), "Test Error Message\nTiXi ERROR CODE: 1");
   }
 }
+
 TEST_F(TxUtilsTest, test_excludeCode_int) {
   ASSERT_EQ(txutils::excludeCode(FAILED, 39, {SUCCESS, INVALID_HANDLE}),
             FAILED);
@@ -594,6 +595,7 @@ TEST_F(TxUtilsTest, DISABLED_test_tixiXpath_by_attribute_relations) {
   ASSERT_EQ(SUCCESS,
             tixiXPathExpressionGetXPath(h, "//child[@attr>\"b\"]", 1, &xPath));
 }
+
 TEST_F(TxUtilsTest, text_tixiXpathSearchOrder) {
   /* NOT A TXUTILS TEST
    *
@@ -624,6 +626,7 @@ TEST_F(TxUtilsTest, text_tixiXpathSearchOrder) {
   ASSERT_EQ(SUCCESS, tixiXPathExpressionGetXPath(h, xpath, 3, &path));
   ASSERT_STREQ(path, "/root/child/subchild/grandchild");
 }
+
 TEST_F(TxUtilsTest, test_findInheritedAttribute) {
   TixiDocumentHandle h = -1;
 
@@ -709,4 +712,48 @@ TEST_F(TxUtilsTest, test_removeComments) {
   ASSERT_EQ(SUCCESS,
             tixiGetChildNodeName(h, "/root/child_2[2]/node_3", 3, &name));
   ASSERT_STRNE(name, "#comment");
+}
+
+TEST_F(TxUtilsTest, test_sortAttributes) {
+  TixiDocumentHandle h = -1;
+  ASSERT_EQ(SUCCESS, tixiCreateDocument("root", &h));
+  ASSERT_EQ(SUCCESS, tixiCreateElement(h, "/root", "node"));
+
+  const char *xpath = "/root/node";
+  int i = 0;
+  for (std::string attr : {"b", "e", "c", "a", "d"}) {
+    ASSERT_EQ(SUCCESS, tixiAddTextAttribute(h, xpath, attr.c_str(),
+                                            std::to_string(++i).c_str()));
+  }
+
+  ASSERT_EQ(SUCCESS, txutils::sortAttributes(h, xpath));
+
+  char *attrName;
+  char *attrValue;
+
+  i = 0;
+  ASSERT_EQ(SUCCESS, tixiGetAttributeName(h, xpath, ++i, &attrName));
+  ASSERT_EQ(SUCCESS, tixiGetTextAttribute(h, xpath, attrName, &attrValue));
+  ASSERT_STREQ("a", attrName);
+  ASSERT_STREQ("4", attrValue);
+
+  ASSERT_EQ(SUCCESS, tixiGetAttributeName(h, xpath, ++i, &attrName));
+  ASSERT_EQ(SUCCESS, tixiGetTextAttribute(h, xpath, attrName, &attrValue));
+  ASSERT_STREQ("b", attrName);
+  ASSERT_STREQ("1", attrValue);
+
+  ASSERT_EQ(SUCCESS, tixiGetAttributeName(h, xpath, ++i, &attrName));
+  ASSERT_EQ(SUCCESS, tixiGetTextAttribute(h, xpath, attrName, &attrValue));
+  ASSERT_STREQ("c", attrName);
+  ASSERT_STREQ("3", attrValue);
+
+  ASSERT_EQ(SUCCESS, tixiGetAttributeName(h, xpath, ++i, &attrName));
+  ASSERT_EQ(SUCCESS, tixiGetTextAttribute(h, xpath, attrName, &attrValue));
+  ASSERT_STREQ("d", attrName);
+  ASSERT_STREQ("5", attrValue);
+
+  ASSERT_EQ(SUCCESS, tixiGetAttributeName(h, xpath, ++i, &attrName));
+  ASSERT_EQ(SUCCESS, tixiGetTextAttribute(h, xpath, attrName, &attrValue));
+  ASSERT_STREQ("e", attrName);
+  ASSERT_STREQ("2", attrValue);
 }

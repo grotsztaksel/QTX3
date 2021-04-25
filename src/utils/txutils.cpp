@@ -3,6 +3,7 @@
 #include <regex>
 #include <stdexcept>
 
+#include <map>
 #include <string.h>
 
 #include "txmacros.h"
@@ -422,6 +423,39 @@ ReturnCode txutils::removeComments(const TixiDocumentHandle handle) {
     char *path;
     RET_ERR(tixiXPathExpressionGetXPath(handle, xpath, i, &path));
     RET_ERR(tixiRemoveElement(handle, path));
+  }
+  return SUCCESS;
+}
+
+ReturnCode txutils::sortAttributes(TixiDocumentHandle h,
+                                   const char *xPathExpression) {
+  int n = 0;
+  ReturnCode res = tixiXPathEvaluateNodeNumber(h, xPathExpression, &n);
+  if (res == FAILED) {
+    return SUCCESS;
+  }
+  RET_ERR(res);
+
+  for (int i = 1; i <= n; i++) {
+    char *path;
+    RET_ERR(tixiXPathExpressionGetXPath(h, xPathExpression, i, &path));
+
+    int nattr = 0;
+    RET_ERR(tixiGetNumberOfAttributes(h, path, &nattr));
+    std::map<std::string, std::string> attrmap;
+    char *attrName;
+    char *attrValue;
+    for (int j = nattr; j > 0; j--) {
+      RET_ERR(tixiGetAttributeName(h, path, j, &attrName));
+      RET_ERR(tixiGetTextAttribute(h, path, attrName, &attrValue));
+      RET_ERR(tixiRemoveAttribute(h, path, attrName));
+      attrmap.insert({attrName, attrValue});
+    }
+    for (std::map<std::string, std::string>::iterator itr = attrmap.begin();
+         itr != attrmap.end(); itr++) {
+      RET_ERR(tixiAddTextAttribute(h, path, itr->first.c_str(),
+                                   itr->second.c_str()));
+    }
   }
   return SUCCESS;
 }
