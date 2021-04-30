@@ -173,6 +173,50 @@ void QTX3ModelTest::test_addElement() {
   QCOMPARE(childName, "last");
 }
 
+void QTX3ModelTest::test_addElement2() {
+  TixiDocumentHandle h = -1;
+  // This test was inspired by problems in a project using this lib
+  QCOMPARE(SUCCESS, tixiCreateDocument("shooting_db", &h));
+  QCOMPARE(SUCCESS, tixiCreateElement(h, "/shooting_db", "settings"));
+  QCOMPARE(SUCCESS, tixiCreateElement(h, "/shooting_db", "data"));
+  QCOMPARE(SUCCESS, tixiCreateElement(h, "/shooting_db/data", "dir"));
+  QCOMPARE(SUCCESS, tixiCreateElement(h, "/shooting_db/data/dir", "session"));
+  QCOMPARE(SUCCESS, tixiCreateElement(h, "/shooting_db/data/dir", "session"));
+  QCOMPARE(SUCCESS, tixiCreateElement(h, "/shooting_db/data/dir", "session"));
+  QCOMPARE(SUCCESS, tixiCreateElement(h, "/shooting_db/data/dir", "event"));
+
+  QCOMPARE(SUCCESS, tixiAddTextAttribute(h, "/shooting_db/data/dir", "path",
+                                         "../some/path"));
+  QCOMPARE(SUCCESS, tixiAddTextAttribute(h, "/shooting_db/data/dir/session[1]",
+                                         "timestamp", "2018-04-22T11:06:49"));
+  QCOMPARE(SUCCESS, tixiAddTextAttribute(h, "/shooting_db/data/dir/session[2]",
+                                         "timestamp", "2018-05-31T11:57:13"));
+  QCOMPARE(SUCCESS, tixiAddTextAttribute(h, "/shooting_db/data/dir/session[3]",
+                                         "timestamp", "2018-06-12T17:36:07"));
+  QCOMPARE(SUCCESS, tixiAddTextAttribute(h, "/shooting_db/data/dir/event",
+                                         "timestamp", "2018-12-24T18:47:16"));
+
+  char *name;
+
+  QTX3::Model model(nullptr, h);
+  QTX3::Node *dir = model.nodeFromPath("/shooting_db/data/dir");
+  QModelIndex dirIndex = dir->index();
+  QCOMPARE(dirIndex.row(), 0);
+
+  QTX3::Node *newNode = model.addElement(4, "session", dirIndex);
+  QCOMPARE(newNode->row(), 4);
+  QCOMPARE(newNode->elementName(), "session");
+  QCOMPARE(SUCCESS, tixiCheckElement(h, "/shooting_db/data/dir/session[1]"));
+  QCOMPARE(SUCCESS, tixiGetChildNodeName(h, "/shooting_db/data/dir", 5, &name));
+  QCOMPARE(name, "session");
+
+  QCOMPARE(dir->childAt(0)->elementName(), "session");
+  QCOMPARE(dir->childAt(1)->elementName(), "session");
+  QCOMPARE(dir->childAt(2)->elementName(), "session");
+  QCOMPARE(dir->childAt(3)->elementName(), "event");
+  QCOMPARE(dir->childAt(4)->elementName(), "session");
+}
+
 void QTX3ModelTest::test_removeElement() {
   QModelIndex index = model->index(2, 0); // /root/child_2[2]
   index = model->index(0, 0, index);      // /root/child_2[2]/node_3

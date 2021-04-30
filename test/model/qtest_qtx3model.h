@@ -29,6 +29,7 @@ private slots:
   void test_setFlags();
 
   void test_addElement();
+  void test_addElement2();
   void test_removeElement();
 
   void test_createNode_baseclass();
