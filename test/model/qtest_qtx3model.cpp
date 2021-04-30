@@ -94,63 +94,83 @@ void QTX3ModelTest::test_addElement() {
   QCOMPARE(model->rowCount(index), 0);
   QCOMPARE(model->nodeFromIndex(index)->elementName(), "child_2");
   int nChild;
-  QCOMPARE(tixiGetNumberOfChilds(model->tx,
-                                 "/root/child_2[1]/child_2[2]", &nChild),
-           SUCCESS);
+  QCOMPARE(
+      tixiGetNumberOfChilds(model->tx, "/root/child_2[1]/child_2[2]", &nChild),
+      SUCCESS);
   QCOMPARE(nChild, 0);
 
   // Cannot insert at index < 0, because that's ridiculous!
   QVERIFY(!model->addElement(-9, "the_thing_that_should_not_be", index));
   // Content should not have changed
   QCOMPARE(model->rowCount(index), 0);
-  QCOMPARE(tixiGetNumberOfChilds(model->tx,
-                                 "/root/child_2[1]/child_2[2]", &nChild),
-           SUCCESS);
+  QCOMPARE(
+      tixiGetNumberOfChilds(model->tx, "/root/child_2[1]/child_2[2]", &nChild),
+      SUCCESS);
   QCOMPARE(nChild, 0);
 
   // Cannot insert at index > 0, because there is no children yet
   QVERIFY(!model->addElement(2, "the_thing_that_should_not_be", index));
   // Content should not have changed
   QCOMPARE(model->rowCount(index), 0);
-  QCOMPARE(tixiGetNumberOfChilds(model->tx,
-                                 "/root/child_2[1]/child_2[2]", &nChild),
-           SUCCESS);
+  QCOMPARE(
+      tixiGetNumberOfChilds(model->tx, "/root/child_2[1]/child_2[2]", &nChild),
+      SUCCESS);
   QCOMPARE(nChild, 0);
 
   // Cannot insert element of non-XML compliant name
   QVERIFY(!model->addElement(0, "the thing that should not be", index));
   // Content should not have changed
   QCOMPARE(model->rowCount(index), 0);
-  QCOMPARE(tixiGetNumberOfChilds(model->tx,
-                                 "/root/child_2[1]/child_2[2]", &nChild),
-           SUCCESS);
+  QCOMPARE(
+      tixiGetNumberOfChilds(model->tx, "/root/child_2[1]/child_2[2]", &nChild),
+      SUCCESS);
   QCOMPARE(nChild, 0);
 
   // Should be able to insert after all; The order and row of insertion should
   // result in sequential element numbers
-  QVERIFY(model->addElement(0, "elem2", index));
-  QVERIFY(model->addElement(0, "elem0", index));
-  QVERIFY(model->addElement(1, "elem1", index));
 
-  QCOMPARE(model->rowCount(index), 3);
-  QCOMPARE(tixiGetNumberOfChilds(model->tx,
-                                 "/root/child_2[1]/child_2[2]", &nChild),
-           SUCCESS);
-  QCOMPARE(nChild, 3);
+  QTX3::Node *node;
+  node = model->addElement(0, "elem2", index);
+  QVERIFY(node);
+  QCOMPARE(node->row(), 0);
+  QCOMPARE(node->elementName(), "elem2");
+  node = model->addElement(0, "elem0", index);
+  QVERIFY(node);
+  QCOMPARE(node->row(), 0);
+  QCOMPARE(node->elementName(), "elem0");
+  node = model->addElement(1, "elem1", index);
+  QVERIFY(node);
+  QCOMPARE(node->row(), 1);
+  QCOMPARE(node->elementName(), "elem1");
+
+  node = model->addElement(3, "last", index);
+  QVERIFY(node);
+  QCOMPARE(node->row(), 3);
+  QCOMPARE(node->elementName(), "last");
+
+  QCOMPARE(model->rowCount(index), 4);
+  QCOMPARE(
+      tixiGetNumberOfChilds(model->tx, "/root/child_2[1]/child_2[2]", &nChild),
+      SUCCESS);
+  QCOMPARE(nChild, 4);
 
   char *childName;
-  QCOMPARE(tixiGetChildNodeName(model->tx,
-                                "/root/child_2[1]/child_2[2]", 1, &childName),
+  QCOMPARE(tixiGetChildNodeName(model->tx, "/root/child_2[1]/child_2[2]", 1,
+                                &childName),
            SUCCESS);
   QCOMPARE(childName, "elem0");
-  QCOMPARE(tixiGetChildNodeName(model->tx,
-                                "/root/child_2[1]/child_2[2]", 2, &childName),
+  QCOMPARE(tixiGetChildNodeName(model->tx, "/root/child_2[1]/child_2[2]", 2,
+                                &childName),
            SUCCESS);
   QCOMPARE(childName, "elem1");
-  QCOMPARE(tixiGetChildNodeName(model->tx,
-                                "/root/child_2[1]/child_2[2]", 3, &childName),
+  QCOMPARE(tixiGetChildNodeName(model->tx, "/root/child_2[1]/child_2[2]", 3,
+                                &childName),
            SUCCESS);
   QCOMPARE(childName, "elem2");
+  QCOMPARE(tixiGetChildNodeName(model->tx, "/root/child_2[1]/child_2[2]", 4,
+                                &childName),
+           SUCCESS);
+  QCOMPARE(childName, "last");
 }
 
 void QTX3ModelTest::test_removeElement() {
@@ -163,9 +183,9 @@ void QTX3ModelTest::test_removeElement() {
 
   QCOMPARE(model->rowCount(index), 1);
   char *childName;
-  QCOMPARE(tixiGetChildNodeName(model->tx, "/root/child_2[2]/node_3",
-                                1, &childName),
-           SUCCESS);
+  QCOMPARE(
+      tixiGetChildNodeName(model->tx, "/root/child_2[2]/node_3", 1, &childName),
+      SUCCESS);
   QCOMPARE(childName, "node_5");
 }
 
