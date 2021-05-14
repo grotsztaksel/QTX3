@@ -126,3 +126,5 @@ Qt::ItemFlags Node::flags(const QModelIndex &index) const {
     flags | Qt::ItemNeverHasChildren;
   return flags;
 }
+
+QVector<Node *> Node::childNodes() const { return _children; }

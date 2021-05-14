@@ -69,6 +69,8 @@ public:
 
   virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
+  QVector<Node *> childNodes() const;
+
 signals:
 
 protected:
