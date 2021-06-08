@@ -24,7 +24,10 @@ Model::Model(QObject *parent, TixiDocumentHandle handle, bool initialize)
 Model::Model(QObject *parent, const QString &rootName, bool initialize)
     : Model(parent, Model::createNewHandle(rootName)) {}
 
-void Model::init() { _root->createChildren(); }
+void Model::init() {
+  txutils::removeComments(tx);
+  _root->createChildren();
+}
 
 TixiDocumentHandle Model::createNewHandle(const QString &rootName) {
   TixiDocumentHandle handle;
@@ -163,6 +166,7 @@ void Model::reset(const TixiDocumentHandle &newhandle) {
   beginResetModel();
   _root->deleteLater();
   _root = new Node(this);
+  txutils::removeComments(tx);
   _root->createChildren();
   endResetModel();
 }
