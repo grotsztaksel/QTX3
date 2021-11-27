@@ -6,8 +6,10 @@
 
 using namespace QTX3;
 
-Model::Model(QObject *parent, TixiDocumentHandle handle, bool initialize)
-    : QAbstractItemModel(parent), tx(handle), _root(new Node(this)) {
+Model::Model(QObject *parent, TixiDocumentHandle handle, bool initialize,
+             int fetchmax)
+    : QAbstractItemModel(parent), tx(handle), maxNodesToFetch(fetchmax),
+      _root(new Node(this)) {
   ReturnCode res = tixiCheckElement(handle, "/*[1]");
   if (res == INVALID_HANDLE) {
     throw(std::runtime_error(
@@ -21,8 +23,9 @@ Model::Model(QObject *parent, TixiDocumentHandle handle, bool initialize)
   /* WARNING WARNING WARNING */
 }
 
-Model::Model(QObject *parent, const QString &rootName, bool initialize)
-    : Model(parent, Model::createNewHandle(rootName)) {}
+Model::Model(QObject *parent, const QString &rootName, bool initialize,
+             int fetchmax)
+    : Model(parent, Model::createNewHandle(rootName), initialize, fetchmax) {}
 
 void Model::init() {
   txutils::removeComments(tx);
@@ -137,6 +140,26 @@ Node *Model::addElement(int row, const QString &name,
 
   endInsertRows();
   return newNode;
+}
+
+bool Model::canFetchMore(const QModelIndex &parent) const {
+  return nodeFromIndex(parent)->canFetchMore();
+}
+
+void Model::fetchMore(const QModelIndex &parent) {
+  auto node = nodeFromIndex(parent);
+  int nTixi;
+
+  txutils::expectCode(
+      tixiGetNumberOfChilds(tx, node->xPath().toStdString().c_str(), &nTixi),
+      {SUCCESS});
+
+  int currentRowCount = node->rows();
+  int remainder = nTixi - currentRowCount;
+  int itemsToFetch = qMin(maxNodesToFetch, remainder);
+  beginInsertRows(parent, currentRowCount, currentRowCount + itemsToFetch - 1);
+  node->createChildren();
+  endInsertRows();
 }
 
 bool Model::removeRows(int row, int count, const QModelIndex &parent) {

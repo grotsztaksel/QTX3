@@ -14,14 +14,14 @@ class QTX3_EXPORT Model : public QAbstractItemModel {
 public:
   friend class QTX3ModelTest;
   friend Node::Node(Model *parent_model);
-  friend void Node::createChildren();
+  friend void Node::createChildren(bool recursive);
   /*! @brief    Create the model with a tixihanlde given
    *  @warning  When subclassing this model, the initialization MUST be defered
    *            (use initialize == false)   */
   explicit Model(QObject *parent = nullptr, TixiDocumentHandle handle = -1,
-                 bool initialize = true);
+                 bool initialize = true, int fetchmax = 100);
   explicit Model(QObject *parent = nullptr, const QString &rootName = "root",
-                 bool initialize = true);
+                 bool initialize = true, int fetchmax = 100);
 
   /****************************************************
    *
@@ -51,6 +51,10 @@ public:
   // Add data:
   Node *addElement(int row, const QString &name,
                    const QModelIndex &parent = QModelIndex());
+
+  bool canFetchMore(const QModelIndex &parent) const override;
+
+  void fetchMore(const QModelIndex &parent) override;
 
   // Remove data:
   bool removeRows(int row, int count,
@@ -86,6 +90,7 @@ protected:
 
 protected:
   TixiDocumentHandle tx = -1;
+  const int maxNodesToFetch;
 
   Node *_root;
 };

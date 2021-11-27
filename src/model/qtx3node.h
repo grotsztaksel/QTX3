@@ -22,9 +22,10 @@ public:
   explicit Node(Model *parent_model);
   explicit Node(Node *parent_node);
 
-  // Recursively create children to adjust the node tree to the tixi XML
+  // Create children to adjust the node tree to the tixi XML
   // structure. Return number of children created on the top level
-  void createChildren();
+  // If recursive is true, then create the tree of children recursively
+  void createChildren(bool recursive = false);
 
   // Return XML path in format '/*[i]/*[j]/*[k]...' associated with this node
   QString xPath() const;
@@ -69,6 +70,8 @@ public:
 
   virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
+  bool canFetchMore() const;
+
   QVector<Node *> childNodes() const;
 
 signals:
@@ -88,6 +91,8 @@ protected:
   Node *_parent = nullptr;
 
   TixiDocumentHandle *tx;
+
+  const int maxNodesToFetch;
 };
 } // namespace QTX3
 #endif // QTX3NODE_H

@@ -6,15 +6,14 @@
 using namespace QTX3;
 
 Node::Node(Model *parent_model)
-    : QObject(parent_model), _model(parent_model), tx(&parent_model->tx) {}
+    : QObject(parent_model), _model(parent_model), tx(&parent_model->tx),
+      maxNodesToFetch(parent_model->maxNodesToFetch) {}
 
 Node::Node(Node *parent_node)
     : QObject(parent_node), _model(parent_node->_model), _parent(parent_node),
-      tx(parent_node->tx) {}
+      tx(parent_node->tx), maxNodesToFetch(parent_node->maxNodesToFetch) {}
 
-void Node::createChildren() {
-  if (_children.size() > 0)
-    _children.clear();
+void Node::createChildren(bool recursive) {
 
   std::string xpath_s = xPath().toStdString() + "/*";
   const char *xpath = xpath_s.c_str();
@@ -25,13 +24,17 @@ void Node::createChildren() {
   if (res == FAILED) {
     return;
   }
-  for (int i = 1; i <= nchildren; i++) {
+  int remainder = nchildren - rows();
+
+  for (int i = 1; i <= qMin(remainder, maxNodesToFetch); i++) {
     char *newPath;
     res = tixiXPathExpressionGetXPath(*tx, xpath, i, &newPath);
     Node *newNode =
         _model->createNode(this, QString(txutils::elementName(newPath)));
     _children.append(newNode);
-    newNode->createChildren();
+    if (recursive) {
+      newNode->createChildren(recursive);
+    }
   }
 }
 
@@ -124,6 +127,15 @@ Qt::ItemFlags Node::flags(const QModelIndex &index) const {
   if (index.column() != 0)
     flags | Qt::ItemNeverHasChildren;
   return flags;
+}
+
+bool Node::canFetchMore() const {
+  int nTixi;
+  txutils::expectCode(
+      tixiGetNumberOfChilds(*tx, xPath().toStdString().c_str(), &nTixi),
+      {SUCCESS});
+
+  return nTixi > rows();
 }
 
 QVector<Node *> Node::childNodes() const { return _children; }
