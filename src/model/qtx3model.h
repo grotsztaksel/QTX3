@@ -76,7 +76,7 @@ public:
   TixiDocumentHandle tixi() const;
 
   Node *nodeFromIndex(QModelIndex index = QModelIndex()) const;
-  Node *nodeFromPath(QString path = "/*[1]") const;
+  Node *nodeFromPath(QString path = "/*[1]");
   QModelIndex indexFromNode(Node *node) const;
 
 protected:

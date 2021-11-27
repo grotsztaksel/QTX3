@@ -202,7 +202,7 @@ Node *Model::nodeFromIndex(QModelIndex index) const {
   return static_cast<Node *>(index.internalPointer());
 }
 
-Node *Model::nodeFromPath(QString path) const {
+Node *Model::nodeFromPath(QString path) {
   char *ipath;
   ReturnCode res =
       txutils::indexedPath(tx, path.toStdString().c_str(), 1, &ipath);
@@ -219,11 +219,17 @@ Node *Model::nodeFromPath(QString path) const {
   QRegularExpressionMatchIterator i =
       re.globalMatch(QString(ipath), QString("/*[1]").size());
   Node *node = _root;
+  QModelIndex idx = QModelIndex();
 
   while (i.hasNext()) {
     QRegularExpressionMatch match = i.next();
     int number = match.captured().toInt() - 1;
+    while (node->rows() <= number) {
+      // If we want a node, we must make sure that there exists one
+      fetchMore(idx);
+    }
     node = node->childAt(number);
+    idx = index(number, 0, idx);
   }
   return node;
 }
