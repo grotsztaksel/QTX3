@@ -9,7 +9,7 @@ void QTX3NodeTest::init() {
 
   rootNode = new Node(model);
 
-  rootNode->createChildren();
+  rootNode->createChildren(true);
   node = rootNode->childAt(1)->childAt(0)->childAt(0);
 }
 
@@ -18,8 +18,8 @@ void QTX3NodeTest::cleanup() { delete model; }
 void QTX3NodeTest::test_createChildren() {
   // First, create some extra XMl elements in tixi
   for (int i = 0; i < 3; i++) {
-    QCOMPARE(SUCCESS, tixiCreateElement(*node->tx,
-                                        "/root/child_1/child", "extra"));
+    QCOMPARE(SUCCESS,
+             tixiCreateElement(*node->tx, "/root/child_1/child", "extra"));
   }
   auto cnode = rootNode->childAt(0)->childAt(0);
   QCOMPARE(cnode->rows(), 0);
@@ -103,9 +103,14 @@ void QTX3NodeTest::test_index() {
 
 void QTX3NodeTest::test_data_f() {
   auto cnode = rootNode->childAt(0)->childAt(0);
-  auto index = model->index(0, 0);   // /root/child_1
+  model->fetchMore(QModelIndex());
+  auto index = model->index(0, 0); // /root/child_1
+  model->fetchMore(index);
   index = model->index(0, 0, index); // /root/child_1/child
+  model->fetchMore(index);
   QCOMPARE(cnode->columnCount(), 3);
+
+  QCOMPARE(index.column(), 0);
   QCOMPARE(cnode->data(index), "child");
   QCOMPARE(cnode->data(index.siblingAtColumn(2)), QVariant());
 }
@@ -117,8 +122,11 @@ void QTX3NodeTest::test_setData() {
 
 void QTX3NodeTest::test_setFlags() {
   auto cnode = rootNode->childAt(0)->childAt(0);
-  auto index = model->index(0, 0);   // /root/child_1
+  model->fetchMore(QModelIndex());
+  auto index = model->index(0, 0); // /root/child_1
+  model->fetchMore(index);
   index = model->index(0, 0, index); // /root/child_1/child
+  model->fetchMore(index);
   QCOMPARE(cnode->columnCount(), 3);
 
   QCOMPARE(node->flags(index), Qt::ItemIsEnabled | Qt::ItemIsSelectable);

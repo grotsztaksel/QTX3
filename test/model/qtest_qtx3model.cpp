@@ -18,6 +18,12 @@ void QTX3ModelTest::test_constructor_with_tixihandle() {
   QCOMPARE(model->_root->rows(), 3);
   QVERIFY(model->tx > 0);
 
+  QModelIndex i = QModelIndex();
+  model->fetchMore(i);
+  i = model->index(0, 0, i);
+  model->fetchMore(i);
+  i = model->index(0, 0, i);
+  model->fetchMore(i);
   QCOMPARE(model->_root->childAt(0)->childAt(0)->columnCount(), 3);
 }
 
@@ -38,6 +44,7 @@ void QTX3ModelTest::test_index() {
 
   QCOMPARE("/root/child_2[1]", node->xmlPath());
 
+  model->fetchMore(index);
   index = model->index(1, 0, index);
 
   QVERIFY(index.isValid());
@@ -52,17 +59,21 @@ void QTX3ModelTest::test_parent() {
   QVERIFY(!index.isValid());
 
   index = model->index(1, 0, QModelIndex());
+  model->fetchMore(index);
   QModelIndex childindex = model->index(1, 0, index);
   QCOMPARE(index, model->parent(childindex));
 }
 
 void QTX3ModelTest::test_rowCount() {
+  model->fetchMore(QModelIndex());
   QCOMPARE(3, model->rowCount(QModelIndex()));
-  QModelIndex index = model->index(2, 0, QModelIndex());
 
+  QModelIndex index = model->index(2, 0, QModelIndex());
+  model->fetchMore(index);
   QCOMPARE(1, model->rowCount(index));
 
   index = model->index(0, 0, index);
+  model->fetchMore(index);
   QCOMPARE(3, model->rowCount(index));
 }
 
@@ -89,8 +100,11 @@ void QTX3ModelTest::test_setFlags() {
 }
 
 void QTX3ModelTest::test_addElement() {
+  model->fetchMore(QModelIndex());
   QModelIndex index = model->index(1, 0); // /root/child_2[1]
-  index = model->index(1, 0, index);      // /root/child_2[1]/child_2[2]
+  model->fetchMore(index);
+  index = model->index(1, 0, index); // /root/child_2[1]/child_2[2]
+  model->fetchMore(index);
   QCOMPARE(model->rowCount(index), 0);
   QCOMPARE(model->nodeFromIndex(index)->elementName(), "child_2");
   int nChild;
@@ -199,10 +213,13 @@ void QTX3ModelTest::test_addElement2() {
   char *name;
 
   QTX3::Model model(nullptr, h);
+
   QTX3::Node *dir = model.nodeFromPath("/shooting_db/data/dir");
   QModelIndex dirIndex = dir->index();
+  QVERIFY(dirIndex.isValid());
   QCOMPARE(dirIndex.row(), 0);
-
+  model.fetchMore(dirIndex);
+  QCOMPARE(4, dir->rows());
   QTX3::Node *newNode = model.addElement(4, "session", dirIndex);
   QCOMPARE(newNode->row(), 4);
   QCOMPARE(newNode->elementName(), "session");
@@ -218,8 +235,11 @@ void QTX3ModelTest::test_addElement2() {
 }
 
 void QTX3ModelTest::test_removeElement() {
+  model->fetchMore(QModelIndex());
   QModelIndex index = model->index(2, 0); // /root/child_2[2]
-  index = model->index(0, 0, index);      // /root/child_2[2]/node_3
+  model->fetchMore(index);
+  index = model->index(0, 0, index); // /root/child_2[2]/node_3
+  model->fetchMore(index);
   QCOMPARE(model->rowCount(index), 3);
   QCOMPARE(model->nodeFromIndex(index)->elementName(), "node_3");
 
@@ -234,6 +254,13 @@ void QTX3ModelTest::test_removeElement() {
 }
 
 void QTX3ModelTest::test_createNode_baseclass() {
+  auto i = QModelIndex();
+  model->fetchMore(i);
+  i = model->index(1, 0, i);
+  model->fetchMore(i);
+  i = model->index(1, 0, i);
+  model->fetchMore(i);
+
   Node *parentNode = model->_root->childAt(1)->childAt(1);
   Node *newNode = model->Model::createNode(parentNode, QString("justName"));
   QCOMPARE(newNode->parent(), parentNode);
@@ -256,21 +283,24 @@ void QTX3ModelTest::test_createNode_testclass() {
 }
 
 void QTX3ModelTest::test_nodeFromIndex() {
+  model->fetchMore(QModelIndex());
   QModelIndex index = model->index(1, 0);
   QCOMPARE(model->nodeFromIndex(index), model->_root->childAt(1));
+  model->fetchMore(index);
   index = model->index(1, 0, index);
   QCOMPARE(model->nodeFromIndex(index), model->_root->childAt(1)->childAt(1));
 }
 
 void QTX3ModelTest::test_nodeFromPath() {
-  QCOMPARE(model->nodeFromPath("/root/child_2[1]/child_2[1]/node_3[1]"),
-           model->_root->childAt(1)->childAt(0)->childAt(0));
-  QCOMPARE(model->nodeFromPath("/root/child_2[1]/*[2]"),
-           model->_root->childAt(1)->childAt(1));
-  QCOMPARE(model->nodeFromPath("/*[1]/*[2]/*[2]"),
-           model->_root->childAt(1)->childAt(1));
-  QCOMPARE(model->nodeFromPath("//*[@attr=\"9\"]/node_3[1]"),
-           model->_root->childAt(1)->childAt(0)->childAt(0));
+
+  QCOMPARE(model->_root->childAt(1)->childAt(0)->childAt(0),
+           model->nodeFromPath("/root/child_2[1]/child_2[1]/node_3[1]"));
+  QCOMPARE(model->_root->childAt(1)->childAt(1),
+           model->nodeFromPath("/root/child_2[1]/*[2]"));
+  QCOMPARE(model->_root->childAt(1)->childAt(1),
+           model->nodeFromPath("/*[1]/*[2]/*[2]"));
+  QCOMPARE(model->_root->childAt(1)->childAt(0)->childAt(0),
+           model->nodeFromPath("//*[@attr=\"9\"]/node_3[1]"));
   try {
     auto node = model->nodeFromPath("/root/child_2[1]/child_2[1]/noodle_3[1]");
     // Should have thrown error. If we're still here, the test should fail
@@ -284,10 +314,14 @@ void QTX3ModelTest::test_nodeFromPath() {
 }
 
 void QTX3ModelTest::test_indexFromNode() {
-  auto node = model->_root->childAt(1)->childAt(0)->childAt(0);
+  model->fetchMore(QModelIndex());
   QModelIndex index = model->index(1, 0);
+  model->fetchMore(index);
   index = model->index(0, 0, index);
+  model->fetchMore(index);
   index = model->index(0, 0, index);
+  model->fetchMore(index);
+  auto node = model->_root->childAt(1)->childAt(0)->childAt(0);
   QCOMPARE(model->indexFromNode(node), index);
 }
 
@@ -308,6 +342,11 @@ void QTX3ModelTest::test_data() {
 }
 
 void QTX3ModelTest::test_reset() {
+
+  model->fetchMore(QModelIndex());
+  model->fetchMore(model->index(0, 0));
+  model->fetchMore(model->index(1, 0));
+
   // First check, if the structure is as expected
   QCOMPARE("/root/child_1", model->_root->childAt(0)->xmlPath());
   QCOMPARE("/root/child_1/child",
@@ -320,6 +359,10 @@ void QTX3ModelTest::test_reset() {
 
   // reset without valid handle
   model->reset();
+  model->fetchMore(QModelIndex());
+  model->fetchMore(model->index(0, 0));
+  model->fetchMore(model->index(1, 0));
+
   // nothing should have changed
   QCOMPARE("/root/child_1", model->_root->childAt(0)->xmlPath());
   QCOMPARE("/root/child_1/child",
@@ -332,6 +375,10 @@ void QTX3ModelTest::test_reset() {
 
   TixiDocumentHandle th = -1;
   model->reset(th);
+  model->fetchMore(QModelIndex());
+  model->fetchMore(model->index(0, 0));
+  model->fetchMore(model->index(1, 0));
+
   // nothing should have changed
   QCOMPARE("/root/child_1", model->_root->childAt(0)->xmlPath());
   QCOMPARE("/root/child_1/child",
@@ -344,6 +391,10 @@ void QTX3ModelTest::test_reset() {
 
   tixiCreateDocument("brave_new_root", &th);
   model->reset(th);
+  model->fetchMore(QModelIndex());
+  model->fetchMore(model->index(0, 0));
+  model->fetchMore(model->index(1, 0));
+
   QCOMPARE("/brave_new_root", model->_root->xmlPath());
   QCOMPARE(model->_root->rows(), 0);
 
@@ -352,6 +403,10 @@ void QTX3ModelTest::test_reset() {
 
   // Reset with the same th, but it has been changed outside the model
   model->reset(th);
+  model->fetchMore(QModelIndex());
+  model->fetchMore(model->index(0, 0));
+  model->fetchMore(model->index(1, 0));
+
   QCOMPARE(model->_root->rows(), 1);
 }
 
