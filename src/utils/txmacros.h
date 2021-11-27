@@ -8,7 +8,7 @@
  *
  */
 
-//! @brief From the function, where this macro si used, return ReturnCode
+//! @brief From the function, where this macro is used, return ReturnCode
 //! returned by the function called in this macro.
 
 #define RET_ERR(function)                                                      \
