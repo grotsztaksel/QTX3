@@ -578,6 +578,39 @@ TEST_F(TxUtilsTest, test_cleanElementPath) {
   }
 }
 
+TEST_F(TxUtilsTest, test_getElementNumber) {
+  TixiDocumentHandle handle;
+  ASSERT_EQ(SUCCESS, tixiImportFromString(xml, &handle));
+
+  std::map<std::string, int> m{
+      {"/root", 1},
+      {"/root/child_1", 1},
+      {"/root/child_1/child", 1},
+      {"/root/child_2[1]", 2},
+      {"/root/child_2[1]/child_2[1]", 1},
+      {"/root/child_2[1]/child_2[1]/node_3[1]", 1},
+      {"/root/child_2[1]/child_2[1]/node_3[1]/node_4[1]", 1},
+      {"/root/child_2[1]/child_2[1]/node_3[1]/node_4[2]", 2},
+      {"/root/child_2[1]/child_2[1]/node_3[1]/node_5", 3},
+      {"/root/child_2[1]/child_2[1]/node_3[1]/node_4[3]", 4},
+      {"/root/child_2[1]/child_2[1]/node_3[2]", 2},
+      {"/root/child_2[1]/child_2[2]", 2},
+      {"/root/child_2[1]/node_3", 3},
+      {"/root/child_2[1]/node_3/node_4", 1},
+      {"/root/child_2[2]", 3},
+      {"/root/child_2[2]/node_3", 1},
+      {"/root/child_2[2]/node_3/node_4[1]", 1},
+      {"/root/child_2[2]/node_3/node_4[2]", 2},
+      {"/root/child_2[2]/node_3/node_5", 3}};
+
+  for (const auto &[key, expected] : m) {
+    int actual = 0;
+    auto ret = txutils::getElementNumber(handle, key.c_str(), &actual);
+    ASSERT_EQ(SUCCESS, ret);
+    ASSERT_EQ(expected, actual);
+  }
+}
+
 TEST_F(TxUtilsTest, DISABLED_test_tixiXpath_by_attribute_relations) {
   TixiDocumentHandle h = -1;
   ASSERT_EQ(SUCCESS, tixiCreateDocument("root", &h));

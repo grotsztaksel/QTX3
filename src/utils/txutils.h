@@ -93,6 +93,20 @@ char *parentPath(const char *elementPath);
 char *cleanElementPath(const char *xmlPath);
 
 /**
+  @brief Return the number of the element in a given path. This function is kind
+  of reversed tixiGetChildNodeName
+  @note The function ignores comment nodes
+  @param[in]  handle handle as returned by ::tixiOpenDocument,
+  ::tixiOpenDocumentRecursive, ::tixiOpenDocumentFromHTTP, ::tixiCreateDocument
+  or ::tixiImportFromString
+  @param[in]  xmlPath xml path
+  @param[out] Tixi result code
+  "[1]") removed
+*/
+ReturnCode getElementNumber(const TixiDocumentHandle handle,
+                            const char *xmlPath, int *number);
+
+/**
   @brief Helper function returning the number of spaces per each indentation in
   tixi using pretty print
   @return Number of spaces per each indentation in tixi using pretty print

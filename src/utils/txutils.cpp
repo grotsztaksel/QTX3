@@ -459,3 +459,33 @@ ReturnCode txutils::sortAttributes(TixiDocumentHandle h,
   }
   return SUCCESS;
 }
+
+ReturnCode txutils::getElementNumber(const TixiDocumentHandle handle,
+                                     const char *xmlPath, int *number) {
+  int numElems = 0; // Number of elements to which the xmlPath resolves
+  RET_ERR(tixiXPathEvaluateNodeNumber(handle, xmlPath, &numElems));
+  if (numElems > 1) {
+    return ELEMENT_PATH_NOT_UNIQUE;
+  }
+
+  char *mypath;
+  RET_ERR(tixiXPathExpressionGetXPath(handle, xmlPath, 1, &mypath));
+
+  char *parent = parentPath(mypath);
+
+  int nchilds = 0;
+
+  std::string xpath(parent);
+  xpath.append("/*");
+  RET_ERR(tixiXPathEvaluateNodeNumber(handle, xpath.c_str(), &nchilds));
+  for (int i = 1; i <= nchilds; i++) {
+    char *tmp;
+    RET_ERR(tixiXPathExpressionGetXPath(handle, xpath.c_str(), i, &tmp));
+    if (strcmp(tmp, mypath) == 0) {
+      *number = i;
+      return SUCCESS;
+    }
+  }
+
+  return FAILED;
+}
